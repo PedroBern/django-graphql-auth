@@ -1,8 +1,9 @@
 import graphene
 import graphql_jwt
 
+from .utils import resolve_fields
 from .types import UserNode
-from .settings import settings
+from .settings import graphql_auth_settings as settings
 from .mixins import (
     MutationMixin,
     ObtainJSONWebTokenMixin,
@@ -71,10 +72,10 @@ class Register(
     Mutation to register a user
     """
 
-    _required_args = settings.MUTATION_FIELDS_REGISTER + [
-        "password1",
-        "password2",
-    ]
+    _required_args = resolve_fields(
+        settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",]
+    )
+    _args = settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
 
 class UpdateAccount(
@@ -84,7 +85,7 @@ class UpdateAccount(
         Update user models fields
     """
 
-    _args = settings.MUTATION_FIELDS_UPDATE
+    _args = settings.UPDATE_MUTATION_FIELDS
 
 
 class ResendActivationEmail(

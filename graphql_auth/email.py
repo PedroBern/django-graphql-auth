@@ -3,7 +3,7 @@ from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.utils.text import normalize_newlines
 
-from .settings import settings
+from .settings import graphql_auth_settings as settings
 
 
 class EmailBase:

@@ -1,7 +1,8 @@
 import graphene
 import graphql_jwt
 
-from .settings import settings
+from .utils import resolve_fields
+from .settings import graphql_auth_settings as settings
 from .types import UserNodeRelay
 from .mixins import (
     RelayMutationMixin,
@@ -95,10 +96,10 @@ class Register(
     Mutation to register a user
     """
 
-    _required_inputs = settings.MUTATION_FIELDS_REGISTER + [
-        "password1",
-        "password2",
-    ]
+    _required_inputs = resolve_fields(
+        settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",]
+    )
+    _inputs = settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
 
 class UpdateAccount(
@@ -111,7 +112,7 @@ class UpdateAccount(
         Update user models fields
     """
 
-    _inputs = settings.MUTATION_FIELDS_UPDATE
+    _inputs = settings.UPDATE_MUTATION_FIELDS
 
 
 class ResendActivationEmail(

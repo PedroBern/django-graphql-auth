@@ -42,7 +42,7 @@ from .utils import (
     get_token_field_name,
 )
 from .constants import Messages, TokenAction
-from .settings import settings
+from .settings import graphql_auth_settings as settings
 from .email import ActivationEmail, ResendActivationEmail, PasswordResetEmail
 from .decorators import is_authenticated_and_verified, password_confirmation
 from .forms import (
@@ -118,7 +118,7 @@ class DynamicInputMixin:
                     }
                 )
         elif isinstance(cls._inputs, list):
-            for key in cls._string_inputs:
+            for key in cls._inputs:
                 cls._meta.arguments["input"]._meta.fields.update(
                     {key: graphene.InputField(graphene.String)}
                 )
@@ -273,7 +273,7 @@ class RegisterMixin(SendEmailMixin):
     form = RegisterForm
     email_class = ActivationEmail
     token_action = TokenAction.ACTIVATION
-    url = settings.EMAIL_URL_ACTIVATION
+    url = settings.ACTIVATION_URL_ON_EMAIL
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -282,7 +282,7 @@ class RegisterMixin(SendEmailMixin):
             if f.is_valid():
                 user = f.save(commit=False)
                 send_activation = (
-                    settings.SEND_EMAIL_ACTIVATION == True and kwargs["email"]
+                    settings.SEND_ACTIVATION_EMAIL == True and kwargs["email"]
                 )
                 user.is_active = False if send_activation else True
                 if send_activation:
@@ -339,7 +339,7 @@ class ResendActivationEmailMixin(UserEmailMixin, SendEmailMixin):
 
     email_class = ResendActivationEmail
     token_action = TokenAction.ACTIVATION
-    url = settings.EMAIL_URL_ACTIVATION
+    url = settings.ACTIVATION_URL_ON_EMAIL
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -445,7 +445,7 @@ class SendPasswordResetEmailMixin(UserEmailMixin, SendEmailMixin):
 
     email_class = PasswordResetEmail
     token_action = TokenAction.PASSWORD_RESET
-    url = settings.EMAIL_URL_PASSWORD_RESET
+    url = settings.PASSWORD_RESET_URL_ON_EMAIL
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):

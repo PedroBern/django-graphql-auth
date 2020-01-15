@@ -43,3 +43,20 @@ def get_token_field_name(dt, default=None):
     return next(
         (i for i in dt.keys() if i in ["token", "refresh_token"]), default,
     )
+
+
+def set_fields(dict_or_list):
+    return (
+        list(dict_or_list.keys())
+        if isinstance(dict_or_list, dict)
+        else dict_or_list
+    )
+
+
+def resolve_fields(dict_or_list, extra_list):
+    if isinstance(dict_or_list, dict):
+        for i in extra_list:
+            dict_or_list[i] = "String"
+        return dict_or_list
+    else:
+        return dict_or_list + extra_list

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.1.3
+-----
+* Better settings api.
+
 0.1.2
 -----
 * Update setup.py

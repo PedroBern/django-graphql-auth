@@ -7,7 +7,7 @@ import graphene
 from graphene_django.types import DjangoObjectType
 from graphene_django.utils import camelize
 
-from .settings import settings
+from .settings import graphql_auth_settings as settings
 
 
 class UserNode(DjangoObjectType):
