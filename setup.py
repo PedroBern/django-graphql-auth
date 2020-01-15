@@ -26,17 +26,15 @@ setup(
     version=get_version("graphql_auth"),
     license="MIT",
     description="Graphql and relay authentication with Graphene for Django.",
-    long_description=open("README.rst").read(),
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     author="pedrobern",
     author_email="pedrobermoreira@gmail.com",
     maintainer="pedrobern",
-    url="",
-    # project_urls=OrderedDict(
-    #     (
-    #         ("Documentation", ""),
-    #         ("Issues", ""),
-    #     )
-    # ),
+    url="https://github.com/PedroBern/django-graphql-auth",
+    project_urls=OrderedDict(
+        (("Issues", "https://github.com/PedroBern/django-graphql-auth/issues"),)
+    ),
     packages=find_packages(exclude=["tests*"]),
     install_requires=[
         "Django >=3.0.0",
