@@ -1,1 +1,1 @@
-# Django Graphql Auth
+# Django GraphQL Auth
