@@ -1,0 +1,41 @@
+language: python
+cache: pip
+dist: xenial
+
+install:
+  - pip install tox tox-travis
+
+script:
+  - tox
+
+after_success:
+  - pip install codecov
+  - codecov
+
+stages:
+  - test
+
+jobs:
+  fast_finish: true
+
+allow_failures:
+  - env: DJANGO=master
+
+include:
+  - python: 2.7
+    env: DJANGO=1.11
+
+  - python: 3.6
+    env: DJANGO=3.0
+  - python: 3.6
+    env: DJANGO=master
+
+  - python: 3.7
+    env: DJANGO=3.0
+  - python: 3.7
+    env: DJANGO=master
+
+  - python: 3.8
+    env: DJANGO=3.0
+  - python: 3.8
+    env: DJANGO=master

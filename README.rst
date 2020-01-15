@@ -1,0 +1,3 @@
+=====
+Django Graphql Auth
+=====
