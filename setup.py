@@ -14,6 +14,12 @@ def get_version(package):
         return re.search(pattern, f.read(), re.MULTILINE).group(1)
 
 
+def get_long_description():
+    for filename in ("README.rst",):
+        with io.open(filename, "r", encoding="utf-8") as f:
+            yield f.read()
+
+
 tests_require = [
     "pytest>=3.6.3",
     "pytest-cov>=2.4.0",
@@ -26,7 +32,7 @@ setup(
     version=get_version("graphql_auth"),
     license="MIT",
     description="Graphql and relay authentication with Graphene for Django.",
-    long_description="\n\n".join(open("README.rst").read()),
+    long_description="\n\n".join(get_long_description()),
     long_description_content_type="text/x-rst",
     author="pedrobern",
     author_email="pedrobermoreira@gmail.com",

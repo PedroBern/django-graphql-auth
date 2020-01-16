@@ -1,4 +1,4 @@
-.PHONY : pre-release check-release release test-local
+.PHONY : pre-release check-release release test-local lint-rst
 
 release:
 	python -m twine upload dist/* --verbose
@@ -10,7 +10,10 @@ pre-release:
 check-release:
 	python -m twine check dist/*
 
-release: pre-release check-release release
+lint-rst:
+	rst-lint README.rst
+
+release: lint-rst pre-release check-release release
 
 test-local:
 	tox -e py37-django30

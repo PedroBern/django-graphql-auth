@@ -21,7 +21,7 @@ Features
 * Password change
 * Password reset through email
 * Revoke user tokens on account archive and password change/reset
-* All mutations return ```success``` and ```errors```
+* All mutations return ``success`` and ``errors``
 * Customizable
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/django-graphql-auth.svg
