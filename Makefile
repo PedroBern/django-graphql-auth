@@ -1,10 +1,3 @@
-.PHONY: tests
-tests:
-	py.test graphql_auth --cov=graphql_auth -vv
-
-.PHONY: test
-test: tests  # Alias test -> tests
-
 .PHONY: release
 release:
 	rm -rf dist build django_graphql_auth.egg-info

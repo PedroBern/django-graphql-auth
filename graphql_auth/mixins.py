@@ -21,7 +21,7 @@ from datetime import datetime
 from smtplib import SMTPException
 import json
 
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
@@ -420,7 +420,31 @@ class DeleteAccountMixin(ArchiveOrDeleteMixin):
         user.delete()
 
 
-class PasswordChangeMixin(Output):
+class RevokeRefreshTokenMixin(graphql_jwt.refresh_token.mixins.RevokeMixin):
+    """
+    Revoke refresh token on password change or password reset
+    revoke only if:
+    GRAPHQL_JWT['JWT_LONG_RUNNING_REFRESH_TOKEN'] is True
+    """
+
+    @classmethod
+    def revoke_user_refresh_token(cls, root, info, user, should_revoke):
+        if not should_revoke:
+            return
+        if hasattr(
+            django_settings, "GRAPHQL_JWT"
+        ) and django_settings.GRAPHQL_JWT.get(
+            "JWT_LONG_RUNNING_REFRESH_TOKEN", False
+        ):
+            try:
+                refresh_tokens = user.refresh_tokens.all()
+                for refresh_token in refresh_tokens:
+                    revoked = cls.revoke(root, info, refresh_token)
+            except (JSONWebTokenExpired, JSONWebTokenError):
+                pass
+
+
+class PasswordChangeMixin(Output, RevokeRefreshTokenMixin):
     """
     Mutation to change account password
     """
@@ -434,6 +458,9 @@ class PasswordChangeMixin(Output):
         user = info.context.user
         f = cls.form(user, kwargs)
         if f.is_valid():
+            cls.revoke_user_refresh_token(
+                root, info, user, settings.LOGOUT_ON_PASSWORD_CHANGE
+            )
             user = f.save()
             return cls(success=True)
         else:
@@ -470,7 +497,7 @@ class SendPasswordResetEmailMixin(UserEmailMixin, SendEmailMixin, Output):
         return cls(success=True)
 
 
-class PasswordResetMixin(Output):
+class PasswordResetMixin(Output, RevokeRefreshTokenMixin):
     """
     Mutation to reset password
     """
@@ -479,8 +506,8 @@ class PasswordResetMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        token = kwargs.pop("token")
         try:
+            token = kwargs.pop("token")
             payload = get_token_paylod(
                 token,
                 TokenAction.PASSWORD_RESET,
@@ -489,6 +516,9 @@ class PasswordResetMixin(Output):
             user = get_user_model()._default_manager.get(**payload)
             f = cls.form(user, kwargs)
             if f.is_valid():
+                cls.revoke_user_refresh_token(
+                    root, info, user, settings.LOGOUT_ON_PASSWORD_RESET
+                )
                 user = f.save()
                 return cls(success=True)
             else:

@@ -45,8 +45,35 @@ class PasswordChangeTestCaseMixin:
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["newPassword2"])
 
+    def test_revoke_refresh_tokens_on_password_change(self):
+        executed = self.make_request(self.get_login_query())
+        self.user.refresh_from_db()
+        refresh_tokens = self.user.refresh_tokens.all()
+        for token in refresh_tokens:
+            self.assertFalse(token.revoked)
+        variables = {"user": self.user}
+        executed = self.make_request(self.get_query(), variables)
+        self.assertEqual(executed["success"], True)
+        self.assertEqual(executed["errors"], None)
+        self.user.refresh_from_db()
+        self.assertFalse(self.old_pass == self.user.password)
+        refresh_tokens = self.user.refresh_tokens.all()
+        for token in refresh_tokens:
+            self.assertTrue(token.revoked)
+
 
 class PasswordChangeTestCase(PasswordChangeTestCaseMixin, DefaultTestCase):
+    def get_login_query(self):
+        return """
+        mutation {
+            tokenAuth(
+                username: "username",
+                password: "aksdhaksda435",
+            )
+            { success, errors, refreshToken }
+        }
+        """
+
     def get_query(
         self, new_password1="new_password", new_password2="new_password"
     ):
@@ -66,6 +93,19 @@ class PasswordChangeTestCase(PasswordChangeTestCaseMixin, DefaultTestCase):
 
 
 class PasswordChangeRelayTestCase(PasswordChangeTestCaseMixin, RelayTestCase):
+    def get_login_query(self):
+        return """
+        mutation {
+            tokenAuth(
+                input: {
+                    username: "username",
+                    password: "aksdhaksda435",
+                }
+            )
+            { success, errors, refreshToken }
+        }
+        """
+
     def get_query(
         self, new_password1="new_password", new_password2="new_password"
     ):

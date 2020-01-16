@@ -30,6 +30,10 @@ DEFAULTS = {
         "first_name": "String",
         "last_name": "String",
     },
+    # logout on password reset/change works only if
+    # GRAPHQL_JWT.JWT_LONG_RUNNING_REFRESH_TOKEN = True
+    "LOGOUT_ON_PASSWORD_RESET": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": True,
     # tokens
     "EXPIRATION_ACTIVATION_TOKEN": timedelta(days=7),
     "EXPIRATION_PASSWORD_RESET_TOKEN": timedelta(hours=1),

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.1.4
+-----
+* Allow to revoke refresh tokens on password change and reset.
+
 0.1.3
 -----
 * Better settings api.
