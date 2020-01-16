@@ -23,10 +23,6 @@ jobs:
 
   include:
     - python: 3.6
-      env: DJANGO=1.11
-    - python: 3.6
-      env: DJANGO=2.0
-    - python: 3.6
       env: DJANGO=2.1
     - python: 3.6
       env: DJANGO=2.2
@@ -36,10 +32,6 @@ jobs:
       env: DJANGO=master
 
     - python: 3.7
-      env: DJANGO=1.11
-    - python: 3.7
-      env: DJANGO=2.0
-    - python: 3.7
       env: DJANGO=2.1
     - python: 3.7
       env: DJANGO=2.2
@@ -48,10 +40,6 @@ jobs:
     - python: 3.7
       env: DJANGO=master
 
-    - python: 3.8
-      env: DJANGO=1.11
-    - python: 3.8
-      env: DJANGO=2.0
     - python: 3.8
       env: DJANGO=2.1
     - python: 3.8
