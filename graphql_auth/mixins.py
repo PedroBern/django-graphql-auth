@@ -248,7 +248,7 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
             )
 
 
-class SendEmailMixin(Output):
+class SendEmailMixin:
     @classmethod
     def send_email(cls, info, user, email):
         token = get_token(user, cls.token_action)
@@ -265,7 +265,7 @@ class SendEmailMixin(Output):
         return cls.email_class.send(to=email, context=context)
 
 
-class RegisterMixin(SendEmailMixin):
+class RegisterMixin(SendEmailMixin, Output):
     """
     Mutation to register a user
     """
@@ -334,7 +334,7 @@ class UserEmailMixin:
             return cls(success=False, errors=f.errors.get_json_data())
 
 
-class ResendActivationEmailMixin(UserEmailMixin, SendEmailMixin):
+class ResendActivationEmailMixin(UserEmailMixin, SendEmailMixin, Output):
     """
     Mutation to resend an activation email
     """
@@ -440,7 +440,7 @@ class PasswordChangeMixin(Output):
             return cls(success=False, errors=f.errors.get_json_data())
 
 
-class SendPasswordResetEmailMixin(UserEmailMixin, SendEmailMixin):
+class SendPasswordResetEmailMixin(UserEmailMixin, SendEmailMixin, Output):
     """
     Mutation to send password reset email
     """
