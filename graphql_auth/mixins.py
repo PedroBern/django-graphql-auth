@@ -389,37 +389,6 @@ class VerifyAccountMixin(Output):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
-class ArchiveOrDeleteMixin(Output):
-    @classmethod
-    @is_authenticated_and_verified
-    @password_confirmation
-    def resolve_mutation(cls, root, info, **kwargs):
-        user = info.context.user
-        cls.resolve_action(user)
-        return cls(success=True)
-
-
-class ArchiveAccountMixin(ArchiveOrDeleteMixin):
-    """
-    Mutation to archive account
-    """
-
-    @classmethod
-    def resolve_action(cls, user):
-        user.is_active = False
-        user.save()
-
-
-class DeleteAccountMixin(ArchiveOrDeleteMixin):
-    """
-    Mutation to delete account
-    """
-
-    @classmethod
-    def resolve_action(cls, user):
-        user.delete()
-
-
 class RevokeRefreshTokenMixin(graphql_jwt.refresh_token.mixins.RevokeMixin):
     """
     Revoke refresh token on password change or password reset
@@ -428,7 +397,7 @@ class RevokeRefreshTokenMixin(graphql_jwt.refresh_token.mixins.RevokeMixin):
     """
 
     @classmethod
-    def revoke_user_refresh_token(cls, root, info, user, should_revoke):
+    def revoke_user_refresh_token(cls, root, info, user, should_revoke=True):
         if not should_revoke:
             return
         if hasattr(
@@ -442,6 +411,38 @@ class RevokeRefreshTokenMixin(graphql_jwt.refresh_token.mixins.RevokeMixin):
                     revoked = cls.revoke(root, info, refresh_token)
             except (JSONWebTokenExpired, JSONWebTokenError):
                 pass
+
+
+class ArchiveOrDeleteMixin(Output):
+    @classmethod
+    @is_authenticated_and_verified
+    @password_confirmation
+    def resolve_mutation(cls, root, info, *args, **kwargs):
+        user = info.context.user
+        cls.resolve_action(user, root=root, info=info)
+        return cls(success=True)
+
+
+class ArchiveAccountMixin(ArchiveOrDeleteMixin, RevokeRefreshTokenMixin):
+    """
+    Mutation to archive account
+    """
+
+    @classmethod
+    def resolve_action(cls, user, *args, **kwargs):
+        user.is_active = False
+        cls.revoke_user_refresh_token(user=user, *args, **kwargs)
+        user.save()
+
+
+class DeleteAccountMixin(ArchiveOrDeleteMixin):
+    """
+    Mutation to delete account
+    """
+
+    @classmethod
+    def resolve_action(cls, user, *args, **kwargs):
+        user.delete()
 
 
 class PasswordChangeMixin(Output, RevokeRefreshTokenMixin):

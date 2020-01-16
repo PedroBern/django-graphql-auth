@@ -52,8 +52,43 @@ class ArchiveAccountTestCaseMixin:
         self.assertEqual(executed["errors"], None)
         self.assertEqual(self.user1.is_active, False)
 
+    def test_revoke_refresh_tokens_on_archive_account(self):
+        """
+        when archive account, all refresh tokens should be revoked
+        """
+
+        executed = self.make_request(self.get_login_query())
+        self.user1.refresh_from_db()
+        refresh_tokens = self.user1.refresh_tokens.all()
+        for token in refresh_tokens:
+            self.assertFalse(token.revoked)
+
+        query = self.make_query()
+        variables = {"user": self.user1}
+        self.assertEqual(self.user1.is_active, True)
+        executed = self.make_request(query, variables)
+        self.assertEqual(executed["success"], True)
+        self.assertEqual(executed["errors"], None)
+        self.assertEqual(self.user1.is_active, False)
+
+        self.user1.refresh_from_db()
+        refresh_tokens = self.user1.refresh_tokens.all()
+        for token in refresh_tokens:
+            self.assertTrue(token.revoked)
+
 
 class ArchiveAccountTestCase(ArchiveAccountTestCaseMixin, DefaultTestCase):
+    def get_login_query(self):
+        return """
+        mutation {
+            tokenAuth(
+                email: "foo@email.com",
+                password: "23kegbsi7g2k",
+            )
+            { success, errors, refreshToken }
+        }
+        """
+
     def make_query(self, password="23kegbsi7g2k"):
         return """
             mutation {
@@ -67,6 +102,19 @@ class ArchiveAccountTestCase(ArchiveAccountTestCaseMixin, DefaultTestCase):
 
 
 class ArchiveAccountRelayTestCase(ArchiveAccountTestCaseMixin, RelayTestCase):
+    def get_login_query(self):
+        return """
+        mutation {
+            tokenAuth(
+                input: {
+                    email: "foo@email.com",
+                    password: "23kegbsi7g2k",
+                }
+            )
+            { success, errors, refreshToken }
+        }
+        """
+
     def make_query(self, password="23kegbsi7g2k"):
         return """
             mutation {
