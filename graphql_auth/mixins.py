@@ -53,8 +53,6 @@ from .forms import (
     SetPasswordForm,
 )
 
-UserModel = get_user_model()
-
 
 class MutationMixin:
     """
@@ -206,9 +204,11 @@ class ObtainJSONWebTokenMixin(Output):
 
         next_kwargs = None
 
-        if UserModel.USERNAME_FIELD in kwargs:
+        if get_user_model().USERNAME_FIELD in kwargs:
             query_kwargs = {
-                UserModel.USERNAME_FIELD: kwargs[UserModel.USERNAME_FIELD]
+                get_user_model().USERNAME_FIELD: kwargs[
+                    get_user_model().USERNAME_FIELD
+                ]
             }
             next_kwargs = kwargs
         else:
@@ -216,12 +216,12 @@ class ObtainJSONWebTokenMixin(Output):
             query_field, query_value = kwargs.popitem()
             query_kwargs = {query_field: query_value}
         try:
-            user = UserModel._default_manager.get(**query_kwargs)
+            user = get_user_model()._default_manager.get(**query_kwargs)
             if not next_kwargs:
                 next_kwargs = {
                     "password": password,
-                    UserModel.USERNAME_FIELD: getattr(
-                        user, UserModel.USERNAME_FIELD
+                    get_user_model().USERNAME_FIELD: getattr(
+                        user, get_user_model().USERNAME_FIELD
                     ),
                 }
             if is_archived_user(user):
@@ -325,8 +325,10 @@ class UserEmailMixin:
         f = EmailForm({"email": email})
         if f.is_valid():
             # can raise ObjectDoesNotExist
-            email_field_name = UserModel.get_email_field_name()
-            user = UserModel._default_manager.get(**{email_field_name: email})
+            email_field_name = get_user_model().get_email_field_name()
+            user = get_user_model()._default_manager.get(
+                **{email_field_name: email}
+            )
             return user
         else:
             return cls(success=False, errors=f.errors.get_json_data())
@@ -376,7 +378,7 @@ class VerifyAccountMixin(Output):
                 TokenAction.ACTIVATION,
                 settings.EXPIRATION_ACTIVATION_TOKEN,
             )
-            user = UserModel._default_manager.get(**payload)
+            user = get_user_model()._default_manager.get(**payload)
             if not is_archived_user(user) and is_not_verified_user(user):
                 user.is_active = True
                 user.save()
@@ -484,7 +486,7 @@ class PasswordResetMixin(Output):
                 TokenAction.PASSWORD_RESET,
                 settings.EXPIRATION_PASSWORD_RESET_TOKEN,
             )
-            user = UserModel._default_manager.get(**payload)
+            user = get_user_model()._default_manager.get(**payload)
             f = cls.form(user, kwargs)
             if f.is_valid():
                 user = f.save()

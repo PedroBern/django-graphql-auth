@@ -10,12 +10,10 @@ from django import forms
 from .utils import set_fields
 from .settings import graphql_auth_settings as settings
 
-UserModel = get_user_model()
-
 
 class RegisterForm(UserCreationForm):
     class Meta:
-        model = UserModel
+        model = get_user_model()
         fields = set_fields(settings.REGISTER_MUTATION_FIELDS) + set_fields(
             settings.REGISTER_MUTATION_FIELDS_OPTIONAL
         )
@@ -31,7 +29,7 @@ class SetPasswordForm(DjangoSetPasswordForm):
 
 class UpdateAccountForm(UserChangeForm):
     class Meta:
-        model = UserModel
+        model = get_user_model()
         fields = set_fields(settings.UPDATE_MUTATION_FIELDS)
 
 
