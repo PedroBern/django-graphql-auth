@@ -1,9 +1,16 @@
-.PHONY: release
+.PHONY : pre-release check-release release test-local
+
 release:
-	rm -rf dist build django_graphql_auth.egg-info
-	python setup.py sdist bdist_wheel
 	python -m twine upload dist/* --verbose
 
-.PHONY: test-local
+pre-release:
+	rm -rf dist build django_graphql_auth.egg-info
+	python setup.py sdist bdist_wheel
+
+check-release:
+	python -m twine check dist/*
+
+release: pre-release check-release release
+
 test-local:
 	tox -e py37-django30
