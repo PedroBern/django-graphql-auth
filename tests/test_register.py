@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 
-from .utils import fake_email_templates
 from .testCases import RelayTestCase, DefaultTestCase
 from graphql_auth.constants import Messages
 from graphql_auth.utils import get_token, get_token_paylod
@@ -17,7 +16,6 @@ class RegisterTestCaseMixin:
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"])
 
-    @fake_email_templates
     def test_register(self):
         """
         Register user, fail to register same user again
@@ -33,7 +31,6 @@ class RegisterTestCaseMixin:
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["username"])
 
-    @fake_email_templates
     def test_register_with_email_verification(self):
         """
         register a user, check if is_active is False,

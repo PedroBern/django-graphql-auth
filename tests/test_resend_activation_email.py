@@ -3,7 +3,6 @@ from unittest import mock
 
 from django.contrib.auth import get_user_model
 
-from .utils import fake_email_templates
 from .testCases import RelayTestCase, DefaultTestCase
 from graphql_auth.constants import Messages
 
@@ -30,7 +29,6 @@ class ResendActivationEmailTestCaseMixin:
         self.assertEqual(executed["success"], True)
         self.assertEqual(executed["errors"], None)
 
-    @fake_email_templates
     def test_resend_email_valid_email(self):
         query = self.get_query("foo@email.com")
         executed = self.make_request(query)

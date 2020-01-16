@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "django_filters",
+    "graphql_auth",
 ]
 
 DATABASES = {

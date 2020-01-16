@@ -4,7 +4,6 @@ from unittest import mock
 
 from django.contrib.auth import get_user_model
 
-from .utils import fake_email_templates
 from .testCases import RelayTestCase, DefaultTestCase
 from graphql_auth.constants import Messages
 
@@ -39,7 +38,6 @@ class SendPasswordResetEmailTestCaseMixin:
             executed["errors"]["email"], [Messages.NOT_VERIFIED_PASSWORD_RESET]
         )
 
-    @fake_email_templates
     def test_send_email_valid_email_is_active(self):
         query = self.get_query("bar@email.com")
         executed = self.make_request(query)
