@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.1.6
+-----
+* Support for Django >= 2.1
+
 0.1.5
 -----
 * Revoke refresh tokens when archiving user.
