@@ -42,6 +42,7 @@ class LoginTestCaseMixin:
         self.archived_user.refresh_from_db()
         self.assertEqual(self.archived_user.is_active, True)
         self.assertTrue(executed["token"])
+        self.assertTrue(executed["refreshToken"])
 
     def test_login_not_model_username_field(self):
         """
@@ -60,6 +61,7 @@ class LoginTestCaseMixin:
         )
         executed = self.make_request(query)
         self.assertTrue(executed["token"])
+        self.assertTrue(executed["refreshToken"])
 
     def test_not_verified_user_login(self):
         """
@@ -78,7 +80,7 @@ class LoginTestCase(LoginTestCaseMixin, DefaultTestCase):
         return """
         mutation {
         tokenAuth(%s: "%s", password: "%s" )
-            { token, success, errors  }
+            { token, refreshToken, success, errors  }
         }
         """ % (
             field,
@@ -92,7 +94,7 @@ class LoginRelayTestCase(LoginTestCaseMixin, RelayTestCase):
         return """
         mutation {
         tokenAuth(input:{ %s: "%s", password: "%s" })
-            { token, success, errors  }
+            { token, refreshToken, success, errors  }
         }
         """ % (
             field,

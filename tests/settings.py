@@ -40,8 +40,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-print(templates_root_dir)
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -51,18 +49,15 @@ TEMPLATES = [
     }
 ]
 
-TEMPLATE_LOADERS = (
-    "django.template.loaders.filesystem.Loader",
-    "django.template.loaders.app_directories.Loader",
-    # 'django.template.loaders.eggs.Loader',
-)
-
 MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
 ]
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 GRAPHENE = {
     "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
+}
+
+GRAPHQL_JWT = {
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }

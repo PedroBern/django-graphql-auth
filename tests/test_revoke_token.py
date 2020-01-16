@@ -24,7 +24,7 @@ class RevokeTokenTestCaseMixin:
         self.user.set_password("b23odxi2b34b")
         self.user.save()
 
-    @skip
+    # @skip
     def test_revoke_token(self):
         query = self.get_login_query()
         executed = self.make_request(query)
@@ -36,7 +36,7 @@ class RevokeTokenTestCaseMixin:
         self.assertTrue(executed["revoked"])
         self.assertFalse(executed["errors"])
 
-    @skip
+    # @skip
     def test_invalid_token(self):
         query = self.get_revoke_query("invalid_token")
         executed = self.make_request(query)
