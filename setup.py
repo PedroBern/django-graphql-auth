@@ -26,7 +26,7 @@ setup(
     version=get_version("graphql_auth"),
     license="MIT",
     description="Graphql and relay authentication with Graphene for Django.",
-    long_description=open("README.rst").read(),
+    long_description="\n\n".join(open("README.rst").read()),
     long_description_content_type="text/x-rst",
     author="pedrobern",
     author_email="pedrobermoreira@gmail.com",
