@@ -1,0 +1,52 @@
+site_name: Django GraphQL Auth
+site_description: GraphQL authentication for Django
+site_author: pedrobern
+repo_name: pedrobern/django-graphql-auth
+repo_url: https://github.com/pedrobern/django-graphql-auth
+
+theme:
+  name: "material"
+  language: en
+  # palette:
+  #   primary: 'black'
+  #   accent: 'purple'
+
+extra:
+  social:
+    - type: github-alt
+      link: https://github.com/pedrobern
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - pymdownx.caret
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+dev_addr: 127.0.0.1:7000
+
+nav:
+  - Start here: index.md
+  - Installation: installation.md
+  - Quickstart: quickstart.md
+  - Relay: relay.md
+  - Settings: settings.md
+  - API: api.md

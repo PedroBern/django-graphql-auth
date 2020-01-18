@@ -1,4 +1,4 @@
-.PHONY : pre-release check-release release test-local lint-rst
+.PHONY : pre-release check-release release test-local lint-rst serve build-docs
 
 release:
 	python -m twine upload dist/* --verbose
@@ -17,3 +17,9 @@ release: lint-rst pre-release check-release release
 
 test-local:
 	tox -e py37-django30
+
+serve:
+	mkdocs serve
+
+build-docs:
+	mkdocs build
