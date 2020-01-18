@@ -58,6 +58,7 @@ DEFAULTS = {
     "USER_NODE_FILTER_FIELDS": {
         "email": ["exact",],
         "username": ["exact", "icontains", "istartswith"],
+        "is_active": ["exact"],
     },
 }
 
@@ -78,7 +79,7 @@ class GraphQLAuthSettings(object):
     @property
     def user_settings(self):
         if not hasattr(self, "_user_settings"):
-            self._user_settings = getattr(django_settings, "GRAPQL_AUTH", {})
+            self._user_settings = getattr(django_settings, "GRAPHQL_AUTH", {})
         return self._user_settings
 
     def __getattr__(self, attr):

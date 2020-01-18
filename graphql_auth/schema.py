@@ -1,17 +1,12 @@
 import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 
-from .types import UserNodeRelay, UserNode
+from .types import UserNode
 
 
 class UserQuery(graphene.ObjectType):
-    user = graphene.Field(UserNode)
+    user = graphene.relay.Node.Field(UserNode)
     users = DjangoFilterConnectionField(UserNode)
-
-
-class UserRelayQuery(graphene.ObjectType):
-    user = graphene.relay.Node.Field(UserNodeRelay)
-    users = DjangoFilterConnectionField(UserNodeRelay)
 
 
 # example schema:

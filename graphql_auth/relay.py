@@ -3,7 +3,7 @@ import graphql_jwt
 
 from .utils import resolve_fields
 from .settings import graphql_auth_settings as settings
-from .types import UserNodeRelay
+from .types import UserNode
 from .mixins import (
     RelayMutationMixin,
     ObtainJSONWebTokenMixin,
@@ -31,7 +31,7 @@ class ObtainJSONWebToken(
     If user is archived, make it active
     """
 
-    user = graphene.Field(UserNodeRelay)
+    user = graphene.Field(UserNode)
 
     @classmethod
     def Field(cls, *args, **kwargs):

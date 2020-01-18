@@ -33,7 +33,7 @@ import graphql_jwt
 from graphql_jwt.exceptions import JSONWebTokenExpired, JSONWebTokenError
 from graphql_jwt.decorators import login_required, permission_required
 
-from .types import UserNode, ErrorType
+from .types import ErrorType
 from .utils import (
     get_token,
     get_token_paylod,

@@ -2,14 +2,9 @@ import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 import graphql_jwt
 
-from graphql_auth.types import UserNodeRelay, UserNode
+from graphql_auth.schema import UserQuery
 from graphql_auth import relay
 from graphql_auth import mutations
-
-
-class UserQuery(graphene.ObjectType):
-    user = graphene.Field(UserNode)
-    users = DjangoFilterConnectionField(UserNode)
 
 
 class AuthMutation(graphene.ObjectType):
@@ -28,11 +23,6 @@ class AuthMutation(graphene.ObjectType):
     password_reset = mutations.PasswordReset.Field()
 
 
-class UserRelayQuery(graphene.ObjectType):
-    user = graphene.relay.Node.Field(UserNodeRelay)
-    users = DjangoFilterConnectionField(UserNodeRelay)
-
-
 class AuthRelayMutation(graphene.ObjectType):
     token_auth = relay.ObtainJSONWebToken.Field()
     verify_token = relay.VerifyToken.Field()
@@ -49,17 +39,6 @@ class AuthRelayMutation(graphene.ObjectType):
     password_reset = relay.PasswordReset.Field()
 
 
-class RelayQuery(UserRelayQuery, graphene.ObjectType):
-    pass
-
-
-class RelayMutation(AuthRelayMutation, graphene.ObjectType):
-    pass
-
-
-relay_schema = graphene.Schema(query=RelayQuery, mutation=RelayMutation)
-
-
 class Query(UserQuery, graphene.ObjectType):
     pass
 
@@ -68,4 +47,9 @@ class Mutation(AuthMutation, graphene.ObjectType):
     pass
 
 
+class RelayMutation(AuthRelayMutation, graphene.ObjectType):
+    pass
+
+
+relay_schema = graphene.Schema(query=Query, mutation=RelayMutation)
 default_schema = graphene.Schema(query=Query, mutation=Mutation)

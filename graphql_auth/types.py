@@ -19,18 +19,6 @@ class UserNode(DjangoObjectType):
         model = get_user_model()
         filter_fields = settings.USER_NODE_FILTER_FIELDS
         exclude_fields = settings.USER_NODE_EXCLUDE_FIELDS
-        interfaces = (graphene.Node,)
-
-
-class UserNodeRelay(UserNode):
-    """
-    User Node
-    """
-
-    class Meta:
-        model = get_user_model()
-        filter_fields = settings.USER_NODE_FILTER_FIELDS
-        exclude_fields = settings.USER_NODE_EXCLUDE_FIELDS
         interfaces = (relay.Node,)
 
 
