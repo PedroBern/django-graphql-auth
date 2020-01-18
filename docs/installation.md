@@ -1,7 +1,7 @@
 # Installation
 
 !!! info
-    If you are not familiarized with 
+    If you are not familiarized with
     [Graphene](https://github.com/graphql-python/graphene)
     or [GraphQL JWT](https://github.com/flavors/django-graphql-jwt), skip this
     installation section and go to the [quickstart](/quickstart) guide.
@@ -25,6 +25,7 @@
 ```bash
 pip install django-graphql-auth
 ```
+
 !!! Note ""
     For those that are not installed, this will automatically install `graphene`, `graphene-django`,
     `django-graphql-jwt`, `django-filter` and `django`.
