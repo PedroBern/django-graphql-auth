@@ -260,7 +260,7 @@ class SendEmailMixin:
             "site_name": site.name,
             "domain": site.domain,
             "protocol": "https" if info.context.is_secure() else "http",
-            "url": cls.url,
+            "path": cls.path,
         }
         return cls.email_class.send(to=email, context=context)
 
@@ -273,7 +273,7 @@ class RegisterMixin(SendEmailMixin, Output):
     form = RegisterForm
     email_class = ActivationEmail
     token_action = TokenAction.ACTIVATION
-    url = settings.ACTIVATION_URL_ON_EMAIL
+    path = settings.ACTIVATION_PATH_ON_EMAIL
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -341,7 +341,7 @@ class ResendActivationEmailMixin(UserEmailMixin, SendEmailMixin, Output):
 
     email_class = ResendActivationEmail
     token_action = TokenAction.ACTIVATION
-    url = settings.ACTIVATION_URL_ON_EMAIL
+    path = settings.ACTIVATION_PATH_ON_EMAIL
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -475,7 +475,7 @@ class SendPasswordResetEmailMixin(UserEmailMixin, SendEmailMixin, Output):
 
     email_class = PasswordResetEmail
     token_action = TokenAction.PASSWORD_RESET
-    url = settings.PASSWORD_RESET_URL_ON_EMAIL
+    path = settings.PASSWORD_RESET_PATH_ON_EMAIL
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):

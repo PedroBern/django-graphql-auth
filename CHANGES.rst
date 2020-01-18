@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.1.9
+-----
+* Rename settings params
+
+0.1.8
+-----
+* Fix typo in settings
+
 0.1.7
 -----
 * No changes (testing release on Travis)

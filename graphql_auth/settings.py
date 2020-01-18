@@ -43,9 +43,9 @@ DEFAULTS = {
     ),
     "SEND_ACTIVATION_EMAIL": True,
     # client: example.com/activate/token
-    "ACTIVATION_URL_ON_EMAIL": "activate",
+    "ACTIVATION_PATH_ON_EMAIL": "activate",
     # client: example.com/password-reset/token
-    "PASSWORD_RESET_URL_ON_EMAIL": "password-reset",
+    "PASSWORD_RESET_PATH_ON_EMAIL": "password-reset",
     # email templates
     "EMAIL_SUBJECT_ACTIVATION": "email/activation_subject.txt",
     "EMAIL_SUBJECT_RESEND_ACTIVATION": "email/activation_subject.txt",
