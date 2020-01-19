@@ -87,7 +87,7 @@ class Output:
     All public classes should return success and errors
     """
 
-    success = graphene.Boolean(default_value=True)
+    success = graphene.Boolean(default_value=False)
     errors = graphene.Field(ErrorType)
 
 
@@ -179,12 +179,15 @@ class DynamicArgsMixin:
         return super().Field(*args, **kwargs)
 
 
-class ObtainJSONWebTokenMixin(Output):
+class ObtainJSONWebTokenMixin:
     """
     Get token and allow access to user
     If user is archived, make it active
     Allow login with different fields, deffined in settings.LOGIN_ALLOWED_FIELDS
     """
+
+    success = graphene.Boolean(default_value=True)
+    errors = graphene.Field(ErrorType)
 
     @classmethod
     def resolve(cls, root, info, **kwargs):
@@ -232,7 +235,11 @@ class ObtainJSONWebTokenMixin(Output):
             return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
 
 
-class VerifyOrRefreshOrRevokeTokenMixin(Output):
+class VerifyOrRefreshOrRevokeTokenMixin:
+
+    success = graphene.Boolean(default_value=True)
+    errors = graphene.Field(ErrorType)
+
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:

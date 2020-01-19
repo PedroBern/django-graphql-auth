@@ -6,6 +6,11 @@
 
 ---
 
+### 0.1.10
+- Fix authentication mutations
+
+---
+
 ### 0.1.9
 - Rename settings params
 
