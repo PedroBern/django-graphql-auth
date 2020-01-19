@@ -669,7 +669,7 @@ query {
 - Navigate through the GraphiQL Documentation Explorer.
 - Change the [settings](/settings).
 - Explore the [api](/api).
-- [Override email templates]("/overriding-email-templates").
+- [Override email templates](/overriding-email-templates).
 - Explore [these useful links](/community).
 
 ### Full schema

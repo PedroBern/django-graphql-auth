@@ -1,10 +1,10 @@
 # Settings
 
-Configuration is made from a single Django setting named `#!python GRAPHQL_AUTH`.
-
 ---
 
 ## Example
+
+Configuration is made from a single Django setting named `#!python GRAPHQL_AUTH`.
 
 ```python
 # settings.py

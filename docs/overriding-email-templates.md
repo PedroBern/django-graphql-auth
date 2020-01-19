@@ -1,5 +1,7 @@
 # Overriding Email Templates
 
+---
+
 The default email templates are just examples, you probably want to customize it.
 
 ## Update your settings:
