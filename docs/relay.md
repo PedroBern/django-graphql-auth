@@ -2,7 +2,7 @@
 
 ---
 
-Simply import mutations from ``relay``:
+Import mutations defined in the ``relay`` module:
 
 ```python
 

@@ -37,7 +37,7 @@ pip install django-graphql-auth
 ### 1. Email Templates
 
 !!! Note ""
-    Overriding email templates is covered on the [quickstart](/quickstart/#overriding-email-templates) guide.
+    Overriding email templates is covered [here](/overriding-email-templates).
 
 If you plan to use the default email templates, add ``graphql_auth`` to your
 installed apps.

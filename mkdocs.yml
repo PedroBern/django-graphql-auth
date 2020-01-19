@@ -47,6 +47,10 @@ nav:
   - Start here: index.md
   - Installation: installation.md
   - Quickstart: quickstart.md
+  - Overriding email templates: overriding-email-templates.md
   - Relay: relay.md
   - Settings: settings.md
   - API: api.md
+  - Community: community.md
+  - Changelog: CHANGES.md
+  - Contributors: CONTRIBUTORS.md

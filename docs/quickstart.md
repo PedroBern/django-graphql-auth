@@ -472,7 +472,7 @@ mutation {
 }
 ```
 
-```python tab="relay" hl_lines="3"
+```python tab="relay" hl_lines="3 8"
 mutation {
   register(
     input: {
@@ -663,96 +663,18 @@ query {
 
 ---
 
-## Overriding Email Templates
-
-The default email templates are just examples, you probably want to customize it.
-
-Update your settings:
-
-```python
-# settings.py
-
-TEMPLATES = [
-    {
-        #...
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
-        # ...
-    },
-]
-```
-
-Create the following folder and files structure:
-
-
-```bash hl_lines="2 3 4 5 6 7"
-project/
-templates/
-  email/
-    activation_email.html
-    activation_subject.txt
-    password_reset_email.html
-    password_reset_subject.txt
-db.sqlite3
-manage.py
-users.json
-```
-
-Now you can remove ``graphql_auth`` from installed apps:
-
-
-```diff
-    # settings.py
-
-    INSTALLED_APPS = [
-      # ...
----   "graphql_auth",
-    ]
-```
-
-Both subject and email templates receive the following variables:
-
-- user
-- token --> activation or password reset
-- port
-- site_name --> from [django sites framework](https://docs.djangoproject.com/en/3.0/ref/contrib/sites/) <small>(optional)</small>
-- domain --> from [django sites framework](https://docs.djangoproject.com/en/3.0/ref/contrib/sites/) <small>(optional)</small>
-- protocol
-- path --> defined in [settings](/settings) <small>(some frontend path)</small>
-
-Write your templates like this:
-
-```html
-<!-- activation_email.html -->
-
-<h3>{{ site_name }}</h3>
-
-<p>Hello {{ user.username }}!</p>
-
-<p>Please activate your account on the link:</p>
-
-<p>{{ protocol }}://{{ domain }}/{{ path }}/{{ token }}</p>
-```
-
-Write just the `html` template. It will be converted to `text` later.
-
----
-
 ## Next steps
 
 - Add all mutations to your schema!
 - Navigate through the GraphiQL Documentation Explorer.
 - Change the [settings](/settings).
 - Explore the [api](/api).
+- [Override email templates]("/overriding-email-templates").
+- Explore [these useful links](/community).
 
 ### Full schema
 
-```python tab="GraphQL"
-
-import graphene
-
-from graphql_auth.schema import UserQuery
-from graphql_auth import mutations
-
+```python tab="GraphQL" hl_lines="4 5 6 7 8 9 10 14 15 16 17"
 class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
     verify_account = mutations.VerifyAccount.Field()
@@ -770,26 +692,9 @@ class AuthMutation(graphene.ObjectType):
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()
     revoke_token = mutations.RevokeToken.Field()
-
-
-class Query(UserQuery, graphene.ObjectType):
-    pass
-
-
-class Mutation(AuthMutation, graphene.ObjectType):
-    pass
-
-
-schema = graphene.Schema(query=Query, mutation=Mutation)
 ```
 
-```python tab="Relay"
-
-import graphene
-
-from graphql_auth.schema import UserQuery
-from graphql_auth import relay
-
+```python tab="Relay" hl_lines="4 5 6 7 8 9 10 14 15 16 17"
 class AuthRelayMutation(graphene.ObjectType):
     register = relay.Register.Field()
     verify_account = relay.VerifyAccount.Field()
@@ -807,15 +712,4 @@ class AuthRelayMutation(graphene.ObjectType):
     verify_token = relay.VerifyToken.Field()
     refresh_token = relay.RefreshToken.Field()
     revoke_token = relay.RevokeToken.Field()
-
-
-class Query(UserQuery, graphene.ObjectType):
-    pass
-
-
-class Mutation(AuthRelayMutation, graphene.ObjectType):
-    pass
-
-
-schema = graphene.Schema(query=Query, mutation=Mutation)
 ```
