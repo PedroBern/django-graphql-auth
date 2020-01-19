@@ -6,8 +6,13 @@
 
 ---
 
+### 0.1.11
+- Fix minor bugs
+
+---
+
 ### 0.1.10
-- Fix authentication mutations
+- Fix minor bugs
 
 ---
 

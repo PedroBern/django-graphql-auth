@@ -87,7 +87,7 @@ class Output:
     All public classes should return success and errors
     """
 
-    success = graphene.Boolean(default_value=False)
+    success = graphene.Boolean(default_value=True)
     errors = graphene.Field(ErrorType)
 
 
@@ -96,7 +96,6 @@ class DynamicInputMixin:
     get inputs from
         cls._inputs
         cls._required_inputs
-
     inputs is dict { input_name: input_type }
     or list [input_name,] -> defaults to String
     """
@@ -143,7 +142,6 @@ class DynamicArgsMixin:
     get args from
         cls._args
         cls._required_args
-
     args is dict { arg_name: arg_type }
     or list [arg_name,] -> defaults to String
     """
@@ -179,15 +177,12 @@ class DynamicArgsMixin:
         return super().Field(*args, **kwargs)
 
 
-class ObtainJSONWebTokenMixin:
+class ObtainJSONWebTokenMixin(Output):
     """
     Get token and allow access to user
     If user is archived, make it active
     Allow login with different fields, deffined in settings.LOGIN_ALLOWED_FIELDS
     """
-
-    success = graphene.Boolean(default_value=True)
-    errors = graphene.Field(ErrorType)
 
     @classmethod
     def resolve(cls, root, info, **kwargs):
@@ -235,11 +230,7 @@ class ObtainJSONWebTokenMixin:
             return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
 
 
-class VerifyOrRefreshOrRevokeTokenMixin:
-
-    success = graphene.Boolean(default_value=True)
-    errors = graphene.Field(ErrorType)
-
+class VerifyOrRefreshOrRevokeTokenMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
@@ -338,7 +329,8 @@ class UserEmailMixin:
             )
             return user
         else:
-            return cls(success=False, errors=f.errors.get_json_data())
+            # TODO specify exception
+            raise Exception(f.errors.get_json_data())
 
 
 class ResendActivationEmailMixin(UserEmailMixin, SendEmailMixin, Output):
@@ -368,6 +360,10 @@ class ResendActivationEmailMixin(UserEmailMixin, SendEmailMixin, Output):
         except ObjectDoesNotExist:
             # return true even if user is not registred
             return cls(success=True)
+        # TODO specify exception
+        except Exception as err:
+            (dt,) = err.args
+            return cls(success=False, errors=dt)
         return cls(success=True)
 
 
@@ -502,6 +498,10 @@ class SendPasswordResetEmailMixin(UserEmailMixin, SendEmailMixin, Output):
         except ObjectDoesNotExist:
             # return true even if user is not registred
             return cls(success=True)
+        # TODO specify exception
+        except Exception as err:
+            (dt,) = err.args
+            return cls(success=False, errors=dt)
         return cls(success=True)
 
 
