@@ -1,4 +1,4 @@
-.PHONY : pre-release check-release release test-local lint-rst serve build-docs
+.PHONY : pre-release check-release release test-local lint-rst serve build-docs check-readme
 
 release:
 	python -m twine upload dist/* --verbose
@@ -10,10 +10,15 @@ pre-release:
 check-release:
 	python -m twine check dist/*
 
+check-readme:
+	rm -rf dist build django_graphql_auth.egg-info
+	python setup.py sdist bdist_wheel
+	python -m twine check dist/*
+
 lint-rst:
 	rst-lint README.rst
 
-release: lint-rst pre-release check-release release
+release: pre-release check-release release
 
 test-local:
 	tox -e py37-django30
