@@ -91,7 +91,9 @@ class ResendActivationEmailMixin(Output):
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
         except UserAlreadyVerified:
-            return cls(success=False, errors=Messages.ALREADY_VERIFIED)
+            return cls(
+                success=False, errors={"email": Messages.ALREADY_VERIFIED}
+            )
 
 
 class SendPasswordResetEmailMixin(Output):
