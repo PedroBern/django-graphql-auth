@@ -1,6 +1,9 @@
 from django.core import signing
 from django.contrib.auth import get_user_model
 from django.conf import settings as django_settings
+from django.core.signing import BadSignature
+
+from .exceptions import TokenScopeError
 
 
 def get_token(user, action, exp=None):
@@ -16,7 +19,7 @@ def get_token_paylod(token, action, exp=None):
     payload = signing.loads(token, max_age=exp)
     _action = payload.pop("action")
     if _action != action:
-        raise Exception("Invalid token.")
+        raise TokenScopeError
     return payload
 
 

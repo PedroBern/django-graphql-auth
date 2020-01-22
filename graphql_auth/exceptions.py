@@ -19,6 +19,10 @@ class UserNotVerified(GraphQLAuthError):
     default_message = _("User is not verified.")
 
 
+class TokenScopeError(GraphQLAuthError):
+    default_message = _("This token if for something else.")
+
+
 class WrongUsage(GraphQLAuthError):
     """
     internal exception

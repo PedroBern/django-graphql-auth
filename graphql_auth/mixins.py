@@ -12,7 +12,12 @@ from .forms import RegisterForm, EmailForm, UpdateAccountForm
 from .bases import Output
 from .models import UserStatus
 from .settings import graphql_auth_settings as app_settings
-from .exceptions import UserAlreadyVerified, UserNotVerified, WrongUsage
+from .exceptions import (
+    UserAlreadyVerified,
+    UserNotVerified,
+    WrongUsage,
+    TokenScopeError,
+)
 from .constants import Messages
 from .utils import (
     get_user_by_email,
@@ -67,7 +72,7 @@ class VerifyAccountMixin(Output):
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
         except SignatureExpired:
             return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
-        except BadSignature:
+        except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
@@ -146,7 +151,7 @@ class PasswordResetMixin(Output):
             return cls(success=False, errors=f.errors.get_json_data())
         except SignatureExpired:
             return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
-        except BadSignature:
+        except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
