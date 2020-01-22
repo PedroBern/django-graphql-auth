@@ -9,16 +9,12 @@ from graphql_auth.constants import Messages
 
 class ResendActivationEmailTestCaseMixin:
     def setUp(self):
-        self.user1 = get_user_model().objects.create(
-            email="foo@email.com", username="foo@email.com", is_active=False
+        self.user1 = self.register_user(
+            email="gaa@email.com", username="gaa", verified=False
         )
-        self.user1.set_password("fh39fh3344o")
-        self.user1.save()
-        self.user1 = get_user_model().objects.create(
-            email="bar@email.com", username="bar@email.com", is_active=True
+        self.user2 = self.register_user(
+            email="bar@email.com", username="bar", verified=True
         )
-        self.user1.set_password("fh39fh3344o")
-        self.user1.save()
 
     def test_resend_email_invalid_email(self):
         """
@@ -30,21 +26,27 @@ class ResendActivationEmailTestCaseMixin:
         self.assertEqual(executed["errors"], None)
 
     def test_resend_email_valid_email(self):
-        query = self.get_query("foo@email.com")
+        query = self.get_query("gaa@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], True)
         self.assertEqual(executed["errors"], None)
 
-    def test_resend_email_valid_email_is_active(self):
+    def test_resend_email_valid_email_verified(self):
         query = self.get_query("bar@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
         self.assertEqual(
-            executed["errors"]["email"], [Messages.ALREADY_VERIFIED],
+            executed["errors"]["email"], Messages.ALREADY_VERIFIED,
         )
 
+    def test_invalid_form(self):
+        query = self.get_query("baremail.com")
+        executed = self.make_request(query)
+        self.assertEqual(executed["success"], False)
+        self.assertTrue(executed["errors"]["email"])
+
     @mock.patch(
-        "graphql_auth.mixins.SendEmailMixin.send_email",
+        "graphql_auth.models.UserStatus.resend_activation_email",
         mock.MagicMock(side_effect=SMTPException),
     )
     def test_resend_email_fail_to_send_email(self):
@@ -52,7 +54,7 @@ class ResendActivationEmailTestCaseMixin:
         Something went wrong when sending email
         """
         mock
-        query = self.get_query("foo@email.com")
+        query = self.get_query("gaa@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
         self.assertEqual(
