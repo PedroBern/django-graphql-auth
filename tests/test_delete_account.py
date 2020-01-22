@@ -1,12 +1,11 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 
 from .testCases import RelayTestCase, DefaultTestCase
 
 from graphql_auth.constants import Messages
 from graphql_auth.models import UserStatus
 
-#
+
 class DeleteAccountTestCaseMixin:
     def setUp(self):
         self.user1 = self.register_user(email="foo@email.com", username="foo")
@@ -76,6 +75,30 @@ class DeleteAccountTestCaseMixin:
             executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
         )
         self.assertEqual(self.user1.is_active, True)
+
+    def get_login_query(self):
+        return """
+        mutation {
+            tokenAuth(
+                email: "foo@email.com",
+                password: "%s",
+            )
+            { success, errors, refreshToken }
+        }
+        """ % (
+            self.default_password,
+        )
+
+    def make_query(self, password=None):
+        return """
+            mutation {
+              deleteAccount(password: "%s") {
+                success, errors
+              }
+            }
+        """ % (
+            password or self.default_password,
+        )
 
 
 class DeleteAccountTestCase(DeleteAccountTestCaseMixin, DefaultTestCase):
