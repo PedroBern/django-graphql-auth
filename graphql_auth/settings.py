@@ -25,11 +25,7 @@ DEFAULTS = {
     "REGISTER_MUTATION_FIELDS": ["email", "username"],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": [],
     # optional fields on update account, can be list of fields
-    "UPDATE_MUTATION_FIELDS": {
-        # "username": "String",
-        "first_name": "String",
-        "last_name": "String",
-    },
+    "UPDATE_MUTATION_FIELDS": {"first_name": "String", "last_name": "String",},
     # tokens
     "EXPIRATION_ACTIVATION_TOKEN": timedelta(days=7),
     "EXPIRATION_PASSWORD_RESET_TOKEN": timedelta(hours=1),
