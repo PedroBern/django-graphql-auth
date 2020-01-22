@@ -1,25 +1,5 @@
-import json
-
-from django.contrib.auth import get_user_model
-
-from graphene import relay
 import graphene
-from graphene_django.types import DjangoObjectType
 from graphene_django.utils import camelize
-
-from .settings import graphql_auth_settings as settings
-
-
-class UserNode(DjangoObjectType):
-    """
-    User Node
-    """
-
-    class Meta:
-        model = get_user_model()
-        filter_fields = settings.USER_NODE_FILTER_FIELDS
-        exclude_fields = settings.USER_NODE_EXCLUDE_FIELDS
-        interfaces = (relay.Node,)
 
 
 class ErrorType(graphene.Scalar):
@@ -27,7 +7,6 @@ class ErrorType(graphene.Scalar):
         description = """
     Errors messages and codes mapped to
     fields or non fields errors.
-
     Example:
     {
         field_name: [
@@ -60,11 +39,3 @@ class ErrorType(graphene.Scalar):
         elif isinstance(errors, list):
             return {"nonFieldErrors": errors}
         raise Exception("`errors` must be list or dict!")
-
-    # @staticmethod
-    # def parse_literal(node):
-    #     return node.value
-    #
-    # @staticmethod
-    # def parse_value(value):
-    #     return value

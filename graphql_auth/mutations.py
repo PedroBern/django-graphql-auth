@@ -1,91 +1,30 @@
 import graphene
-import graphql_jwt
 
-from .utils import resolve_fields
-from .types import UserNode
-from .settings import graphql_auth_settings as settings
+from .bases import MutationMixin, DynamicArgsMixin
 from .mixins import (
-    MutationMixin,
-    ObtainJSONWebTokenMixin,
-    DynamicArgsMixin,
     RegisterMixin,
-    UpdateAccountMixin,
-    ResendActivationEmailMixin,
     VerifyAccountMixin,
-    ArchiveAccountMixin,
-    DeleteAccountMixin,
-    PasswordChangeMixin,
+    ResendActivationEmailMixin,
     SendPasswordResetEmailMixin,
     PasswordResetMixin,
-    VerifyOrRefreshOrRevokeTokenMixin,
 )
-
-
-class ObtainJSONWebToken(
-    MutationMixin, ObtainJSONWebTokenMixin, graphql_jwt.JSONWebTokenMutation,
-):
-    """
-    Get token and allow access to user
-    If user is archived, make it active
-    """
-
-    user = graphene.Field(UserNode)
-
-    @classmethod
-    def Field(cls, *args, **kwargs):
-        cls._meta.arguments.update({"password": graphene.String(required=True)})
-        for field in settings.LOGIN_ALLOWED_FIELDS:
-            cls._meta.arguments.update({field: graphene.String()})
-        return super(graphql_jwt.JSONWebTokenMutation, cls).Field(
-            *args, **kwargs
-        )
-
-
-class VerifyToken(
-    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Verify
-):
-    """
-    Verify token mutation
-    """
-
-
-class RefreshToken(
-    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Refresh
-):
-    """
-    Refresh token mutation
-    """
-
-
-class RevokeToken(
-    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Revoke
-):
-    """
-    Revoke token mutation
-    """
+from .utils import normalize_fields
+from .settings import graphql_auth_settings as app_settings
 
 
 class Register(
     MutationMixin, DynamicArgsMixin, RegisterMixin, graphene.Mutation,
 ):
-    """
-    Mutation to register a user
-    """
-
-    _required_args = resolve_fields(
-        settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",]
+    _required_args = normalize_fields(
+        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",],
     )
-    _args = settings.REGISTER_MUTATION_FIELDS_OPTIONAL
+    _args = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
 
-class UpdateAccount(
-    MutationMixin, DynamicArgsMixin, UpdateAccountMixin, graphene.Mutation,
+class VerifyAccount(
+    MutationMixin, DynamicArgsMixin, VerifyAccountMixin, graphene.Mutation
 ):
-    """
-        Update user models fields
-    """
-
-    _args = settings.UPDATE_MUTATION_FIELDS
+    _required_args = ["token"]
 
 
 class ResendActivationEmail(
@@ -94,71 +33,19 @@ class ResendActivationEmail(
     ResendActivationEmailMixin,
     graphene.Mutation,
 ):
-    """
-    Mutation to resend an activation email
-    """
-
     _required_args = ["email"]
-
-
-class VerifyAccount(
-    MutationMixin, DynamicArgsMixin, VerifyAccountMixin, graphene.Mutation,
-):
-    """
-    Mutation to verify user from email authentication
-    """
-
-    _required_args = ["token"]
-
-
-class ArchiveAccount(
-    MutationMixin, ArchiveAccountMixin, DynamicArgsMixin, graphene.Mutation,
-):
-    """
-    Mutation to archive account
-    """
-
-    _required_args = ["password"]
-
-
-class DeleteAccount(
-    MutationMixin, DeleteAccountMixin, DynamicArgsMixin, graphene.Mutation,
-):
-    """
-    Mutation to delete account
-    """
-
-    _required_args = ["password"]
-
-
-class PasswordChange(
-    MutationMixin, PasswordChangeMixin, DynamicArgsMixin, graphene.Mutation,
-):
-    """
-    Mutation to delete account
-    """
-
-    _required_args = ["old_password", "new_password1", "new_password2"]
-
-
-class PasswordReset(
-    MutationMixin, PasswordResetMixin, DynamicArgsMixin, graphene.Mutation,
-):
-    """
-    Mutation to delete account
-    """
-
-    _required_args = ["token", "new_password1", "new_password2"]
 
 
 class SendPasswordResetEmail(
     MutationMixin,
-    SendPasswordResetEmailMixin,
     DynamicArgsMixin,
+    SendPasswordResetEmailMixin,
     graphene.Mutation,
 ):
-    """
-    Mutation to send password reset email
-    """
-
     _required_args = ["email"]
+
+
+class PasswordReset(
+    MutationMixin, DynamicArgsMixin, PasswordResetMixin, graphene.Mutation
+):
+    _required_args = ["token", "new_password1", "new_password2"]

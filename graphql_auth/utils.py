@@ -1,9 +1,6 @@
-import re
-from collections import Mapping
-
 from django.core import signing
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+from django.conf import settings as django_settings
 
 
 def get_token(user, action, exp=None):
@@ -23,29 +20,34 @@ def get_token_paylod(token, action, exp=None):
     return payload
 
 
-def is_archived_user(user):
-    if not user.is_active and user.last_login:
-        return True
-    return False
+def get_user_by_email(email):
+    email_field_name = get_user_model().get_email_field_name()
+    user = get_user_model()._default_manager.get(**{email_field_name: email})
+    return user
 
 
-def is_not_verified_user(user):
-    if not user.is_active and not user.last_login:
-        return True
-    return False
+def revoke_user_refresh_token(user):
+    if (
+        hasattr(django_settings, "GRAPHQL_JWT")
+        and django_settings.GRAPHQL_JWT.get(
+            "JWT_LONG_RUNNING_REFRESH_TOKEN", False
+        )
+        and "graphql_jwt.refresh_token.apps.RefreshTokenConfig"
+        in django_settings.INSTALLED_APPS
+    ):
+        refresh_tokens = user.refresh_tokens.all()
+        for refresh_token in refresh_tokens:
+            try:
+                refresh_token.revoke()
+            except Exception:  # JSONWebTokenError
+                pass
 
 
-def get_token_field_name(dt, default=None):
+def flat_dict(dict_or_list):
     """
-    return the token field name, can be
-    'token', 'refresh_token',
+    if is dict, return list of dict keys,
+    if is list, return the list
     """
-    return next(
-        (i for i in dt.keys() if i in ["token", "refresh_token"]), default,
-    )
-
-
-def set_fields(dict_or_list):
     return (
         list(dict_or_list.keys())
         if isinstance(dict_or_list, dict)
@@ -53,7 +55,11 @@ def set_fields(dict_or_list):
     )
 
 
-def resolve_fields(dict_or_list, extra_list):
+def normalize_fields(dict_or_list, extra_list):
+    """
+    helper merge settings defined fileds and
+    other fields on mutations
+    """
     if isinstance(dict_or_list, dict):
         for i in extra_list:
             dict_or_list[i] = "String"
