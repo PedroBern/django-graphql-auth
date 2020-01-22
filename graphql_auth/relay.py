@@ -1,7 +1,7 @@
 import graphene
 import graphql_jwt
 
-from .bases import RelayRelayMutationMixin, DynamicInputMixin
+from .bases import RelayMutationMixin, DynamicInputMixin
 from .mixins import (
     RegisterMixin,
     VerifyAccountMixin,
