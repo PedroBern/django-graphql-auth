@@ -100,3 +100,17 @@ class UserStatus(models.Model):
             user_status.save(update_fields=["verified"])
         else:
             raise UserAlreadyVerified
+
+    @classmethod
+    def unarchive(cls, user):
+        user_status = cls.objects.get(user=user)
+        if user_status.archived == True:
+            user_status.archived = False
+            user_status.save(update_fields=["archived"])
+
+    @classmethod
+    def archive(cls, user):
+        user_status = cls.objects.get(user=user)
+        if user_status.archived == False:
+            user_status.archived = True
+            user_status.save(update_fields=["archived"])

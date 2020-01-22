@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "graphene_django",
-    # "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "django_filters",
     "graphql_auth",
 ]
@@ -104,7 +104,7 @@ GRAPHENE = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    "graphql_jwt.backends.JSONWebTokenBackend",
+    "graphql_auth.backends.GraphQLAuthBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -117,6 +117,7 @@ GRAPHQL_JWT = {
         "graphql_auth.mutations.ResendActivationEmail",
         "graphql_auth.mutations.SendPasswordResetEmail",
         "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.ObtainJSONWebToken",
     ],
 }
 

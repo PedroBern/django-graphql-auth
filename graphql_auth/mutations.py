@@ -1,4 +1,5 @@
 import graphene
+import graphql_jwt
 
 from .bases import MutationMixin, DynamicArgsMixin
 from .mixins import (
@@ -7,9 +8,15 @@ from .mixins import (
     ResendActivationEmailMixin,
     SendPasswordResetEmailMixin,
     PasswordResetMixin,
+    ObtainJSONWebTokenMixin,
+    ArchiveAccountMixin,
+    DeleteAccountMixin,
+    PasswordChangeMixin,
+    UpdateAccountMixin,
 )
 from .utils import normalize_fields
 from .settings import graphql_auth_settings as app_settings
+from .schema import UserNode
 
 
 class Register(
@@ -49,3 +56,48 @@ class PasswordReset(
     MutationMixin, DynamicArgsMixin, PasswordResetMixin, graphene.Mutation
 ):
     _required_args = ["token", "new_password1", "new_password2"]
+
+
+class ObtainJSONWebToken(
+    MutationMixin, ObtainJSONWebTokenMixin, graphql_jwt.JSONWebTokenMutation,
+):
+
+    user = graphene.Field(UserNode)
+    unarchiving = graphene.Boolean(default_value=False)
+
+    @classmethod
+    def Field(cls, *args, **kwargs):
+        cls._meta.arguments.update({"password": graphene.String(required=True)})
+        for field in app_settings.LOGIN_ALLOWED_FIELDS:
+            cls._meta.arguments.update({field: graphene.String()})
+        return super(graphql_jwt.JSONWebTokenMutation, cls).Field(
+            *args, **kwargs
+        )
+
+
+class ArchiveAccount(
+    MutationMixin, ArchiveAccountMixin, DynamicArgsMixin, graphene.Mutation,
+):
+
+    _required_args = ["password"]
+
+
+class DeleteAccount(
+    MutationMixin, DeleteAccountMixin, DynamicArgsMixin, graphene.Mutation,
+):
+
+    _required_args = ["password"]
+
+
+class PasswordChange(
+    MutationMixin, PasswordChangeMixin, DynamicArgsMixin, graphene.Mutation,
+):
+
+    _required_args = ["old_password", "new_password1", "new_password2"]
+
+
+class UpdateAccount(
+    MutationMixin, DynamicArgsMixin, UpdateAccountMixin, graphene.Mutation,
+):
+
+    _args = app_settings.UPDATE_MUTATION_FIELDS

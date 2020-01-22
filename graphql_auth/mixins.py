@@ -3,21 +3,22 @@ from smtplib import SMTPException
 from django.core.signing import BadSignature
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 
 from graphql_jwt.exceptions import JSONWebTokenError
 
-from .forms import RegisterForm, EmailForm
+from .forms import RegisterForm, EmailForm, UpdateAccountForm
 from .bases import Output
 from .models import UserStatus
 from .settings import graphql_auth_settings as app_settings
-from .exceptions import UserAlreadyVerified, UserNotVerified
+from .exceptions import UserAlreadyVerified, UserNotVerified, WrongUsage
 from .constants import Messages
 from .utils import (
     get_user_by_email,
     revoke_user_refresh_token,
     get_token_paylod,
 )
+from .decorators import password_confirmation_required, verification_required
 
 
 class RegisterMixin(Output):
@@ -46,8 +47,6 @@ class RegisterMixin(Output):
                 return cls(success=False, errors=f.errors.get_json_data())
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
-        except Exception as err:
-            raise Exception(err)
 
 
 class VerifyAccountMixin(Output):
@@ -65,8 +64,6 @@ class VerifyAccountMixin(Output):
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
         except BadSignature:
             return cls(success=False, errors=Messages.INVALID_TOKEN)
-        except Exception as err:
-            raise Exception(err)
 
 
 class ResendActivationEmailMixin(Output):
@@ -90,8 +87,6 @@ class ResendActivationEmailMixin(Output):
             return cls(success=False, errors=Messages.EMAIL_FAIL)
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
-        except Exception as err:
-            raise Exception(err)
 
 
 class SendPasswordResetEmailMixin(Output):
@@ -117,8 +112,6 @@ class SendPasswordResetEmailMixin(Output):
             return cls(
                 success=False, errors=Messages.NOT_VERIFIED_PASSWORD_RESET
             )
-        except Exception as err:
-            raise Exception(err)
 
 
 class PasswordResetMixin(Output):
@@ -146,5 +139,132 @@ class PasswordResetMixin(Output):
             return cls(success=False, errors=f.errors.get_json_data())
         except BadSignature:
             return cls(success=False, errors=Messages.INVALID_TOKEN)
-        except Exception as err:
-            raise Exception(err)
+
+
+class ObtainJSONWebTokenMixin(Output):
+    """
+    Perform login.
+    If user is archived, make it unarchived again.
+
+    Allow login with different fields than USERNAME_FIELD
+    deffined in settings.LOGIN_ALLOWED_FIELDS
+    """
+
+    @classmethod
+    def resolve(cls, root, info, **kwargs):
+        unarchiving = kwargs.get("unarchiving", False)
+        return cls(user=info.context.user, unarchiving=unarchiving)
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        if len(kwargs.items()) != 2:
+            raise WrongUsage(
+                "Must login with password and one of the following fields %s."
+                % (app_settings.LOGIN_ALLOWED_FIELDS)
+            )
+
+        try:
+            next_kwargs = None
+            USERNAME_FIELD = get_user_model().USERNAME_FIELD
+            unarchiving = False
+
+            # extract USERNAME_FIELD to use in query
+            if USERNAME_FIELD in kwargs:
+                query_kwargs = {USERNAME_FIELD: kwargs[USERNAME_FIELD]}
+                next_kwargs = kwargs
+            else:  # use what is left to query
+                password = kwargs.pop("password")
+                query_field, query_value = kwargs.popitem()
+                query_kwargs = {query_field: query_value}
+
+            user = get_user_model()._default_manager.get(**query_kwargs)
+            if not next_kwargs:
+                next_kwargs = {
+                    "password": password,
+                    USERNAME_FIELD: getattr(user, USERNAME_FIELD),
+                }
+            if user.status.archived == True:  # unarchive on login
+                UserStatus.unarchive(user)
+                unarchiving = True
+            return cls.parent_resolve(
+                root, info, unarchiving=unarchiving, **next_kwargs
+            )
+        except (JSONWebTokenError, ObjectDoesNotExist):
+            return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
+
+
+class ArchiveOrDeleteMixin(Output):
+    @classmethod
+    @verification_required
+    @password_confirmation_required
+    def resolve_mutation(cls, root, info, *args, **kwargs):
+        user = info.context.user
+        cls.resolve_action(user, root=root, info=info)
+        return cls(success=True)
+
+
+class ArchiveAccountMixin(ArchiveOrDeleteMixin):
+    """
+    Archive account and revoke refresh tokens
+    """
+
+    @classmethod
+    def resolve_action(cls, user, *args, **kwargs):
+        UserStatus.archive(user)
+        revoke_user_refresh_token(user=user)
+
+
+class DeleteAccountMixin(ArchiveOrDeleteMixin):
+    """
+    Delete account or turn is_active to False
+    and revoke tokens. Based on settings
+    """
+
+    @classmethod
+    def resolve_action(cls, user, *args, **kwargs):
+        if app_settings.ALLOW_DELETE_ACCOUNT:
+            user.delete()
+        else:
+            user.is_active = False
+            user.save(update_fields=["is_active"])
+            revoke_user_refresh_token(user=user)
+
+
+class PasswordChangeMixin(Output):
+    """
+    Change account password when user remenbers the old password
+    """
+
+    form = PasswordChangeForm
+
+    @classmethod
+    @verification_required
+    @password_confirmation_required
+    def resolve_mutation(cls, root, info, **kwargs):
+        user = info.context.user
+        f = cls.form(user, kwargs)
+        if f.is_valid():
+            revoke_user_refresh_token(user)
+            user = f.save()
+            return cls(success=True)
+        else:
+            return cls(success=False, errors=f.errors.get_json_data())
+
+
+class UpdateAccountMixin(Output):
+    """
+    Update user models fields
+    """
+
+    form = UpdateAccountForm
+
+    @classmethod
+    @verification_required
+    def resolve_mutation(cls, root, info, **kwargs):
+        user = info.context.user
+        f = cls.form(kwargs, instance=user)
+        if f.is_valid():
+            f.save()
+            return cls(success=True)
+        else:
+            return cls(success=False, errors=f.errors.get_json_data())

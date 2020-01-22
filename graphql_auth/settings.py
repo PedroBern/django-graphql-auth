@@ -26,7 +26,7 @@ DEFAULTS = {
     "REGISTER_MUTATION_FIELDS_OPTIONAL": [],
     # optional fields on update account, can be list of fields
     "UPDATE_MUTATION_FIELDS": {
-        "username": "String",
+        # "username": "String",
         "first_name": "String",
         "last_name": "String",
     },
@@ -58,6 +58,7 @@ DEFAULTS = {
         "status__archived": ["exact"],
         "status__verified": ["exact"],
     },
+    "ALLOW_DELETE_ACCOUNT": False,
 }
 
 

@@ -1,3 +1,6 @@
+from django.utils.translation import ugettext as _
+
+
 class GraphQLAuthError(Exception):
     default_message = None
 
@@ -9,16 +12,16 @@ class GraphQLAuthError(Exception):
 
 
 class UserAlreadyVerified(GraphQLAuthError):
-    default_message = "User already verified."
+    default_message = _("User already verified.")
 
 
 class UserNotVerified(GraphQLAuthError):
-    default_message = "User is not verified."
+    default_message = _("User is not verified.")
 
 
-# class VerificationRequired(GraphQLAuthError):
-#     default_message = "You need to verifiy your account to perform this action."
-#
-#
-# class FailPasswordConfirmation(GraphQLAuthError):
-#     default_message = "Invalid credentials."
+class WrongUsage(GraphQLAuthError):
+    """
+    internal exception
+    """
+
+    default_message = _("Wrong usage, check your code!.")
