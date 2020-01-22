@@ -71,7 +71,7 @@ class PasswordReset(
 class ObtainJSONWebToken(
     RelayMutationMixin,
     ObtainJSONWebTokenMixin,
-    graphql_jwt.JSONWebTokenMutation,
+    graphql_jwt.relay.JSONWebTokenMutation,
 ):
 
     user = graphene.Field(UserNode)
@@ -79,10 +79,14 @@ class ObtainJSONWebToken(
 
     @classmethod
     def Field(cls, *args, **kwargs):
-        cls._meta.arguments.update({"password": graphene.String(required=True)})
+        cls._meta.arguments["input"]._meta.fields.update(
+            {"password": graphene.InputField(graphene.String, required=True)}
+        )
         for field in app_settings.LOGIN_ALLOWED_FIELDS:
-            cls._meta.arguments.update({field: graphene.String()})
-        return super(graphql_jwt.JSONWebTokenMutation, cls).Field(
+            cls._meta.arguments["input"]._meta.fields.update(
+                {field: graphene.InputField(graphene.String)}
+            )
+        return super(graphql_jwt.relay.JSONWebTokenMutation, cls).Field(
             *args, **kwargs
         )
 
