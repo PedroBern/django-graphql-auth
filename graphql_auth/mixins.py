@@ -228,6 +228,7 @@ class DeleteAccountMixin(ArchiveOrDeleteMixin):
     @classmethod
     def resolve_action(cls, user, *args, **kwargs):
         if app_settings.ALLOW_DELETE_ACCOUNT:
+            revoke_user_refresh_token(user=user)
             user.delete()
         else:
             user.is_active = False
