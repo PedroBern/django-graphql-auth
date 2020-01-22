@@ -1,21 +1,17 @@
 from django.contrib.auth import get_user_model
 
 from .testCases import RelayTestCase, DefaultTestCase
+
 from graphql_auth.constants import Messages
+from graphql_auth.models import UserStatus
 
 
 class ArchiveAccountTestCaseMixin:
     def setUp(self):
-        self.user1 = get_user_model().objects.create(
-            email="foo@email.com", username="foo@email.com", is_active=True
+        self.user1 = self.register_user(email="foo@email.com", username="foo")
+        self.user2 = self.register_user(
+            email="bar@email.com", username="bar", verified=True
         )
-        self.user1.set_password("23kegbsi7g2k")
-        self.user1.save()
-        self.user2 = get_user_model().objects.create(
-            email="bar@email.com", username="bar@email.com", is_active=True
-        )
-        self.user2.set_password("23kegbsi7g2k")
-        self.user2.save()
 
     def test_not_authenticated(self):
         """
@@ -33,7 +29,7 @@ class ArchiveAccountTestCaseMixin:
             try to archive account with invalid password
         """
         query = self.make_query(password="123")
-        variables = {"user": self.user1}
+        variables = {"user": self.user2}
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], False)
         self.assertEqual(
@@ -45,12 +41,13 @@ class ArchiveAccountTestCaseMixin:
             try to archive account
         """
         query = self.make_query()
-        variables = {"user": self.user1}
-        self.assertEqual(self.user1.is_active, True)
+        variables = {"user": self.user2}
+        self.assertEqual(self.user2.status.archived, False)
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], True)
         self.assertEqual(executed["errors"], None)
-        self.assertEqual(self.user1.is_active, False)
+        self.user2.refresh_from_db()
+        self.assertEqual(self.user2.status.archived, True)
 
     def test_revoke_refresh_tokens_on_archive_account(self):
         """
@@ -58,23 +55,38 @@ class ArchiveAccountTestCaseMixin:
         """
 
         executed = self.make_request(self.get_login_query())
-        self.user1.refresh_from_db()
-        refresh_tokens = self.user1.refresh_tokens.all()
+        self.user2.refresh_from_db()
+        refresh_tokens = self.user2.refresh_tokens.all()
         for token in refresh_tokens:
             self.assertFalse(token.revoked)
 
         query = self.make_query()
-        variables = {"user": self.user1}
-        self.assertEqual(self.user1.is_active, True)
+        variables = {"user": self.user2}
+        self.assertEqual(self.user2.status.archived, False)
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], True)
         self.assertEqual(executed["errors"], None)
-        self.assertEqual(self.user1.is_active, False)
+        self.user2.refresh_from_db()
+        self.assertEqual(self.user2.status.archived, True)
 
-        self.user1.refresh_from_db()
-        refresh_tokens = self.user1.refresh_tokens.all()
+        self.user2.refresh_from_db()
+        refresh_tokens = self.user2.refresh_tokens.all()
         for token in refresh_tokens:
             self.assertTrue(token.revoked)
+
+    def test_not_verified_user(self):
+        """
+            try to archive account
+        """
+        query = self.make_query()
+        variables = {"user": self.user1}
+        self.assertEqual(self.user1.status.archived, False)
+        executed = self.make_request(query, variables)
+        self.assertEqual(executed["success"], False)
+        self.assertEqual(
+            executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
+        )
+        self.assertEqual(self.user1.status.archived, False)
 
 
 class ArchiveAccountTestCase(ArchiveAccountTestCaseMixin, DefaultTestCase):
@@ -83,13 +95,15 @@ class ArchiveAccountTestCase(ArchiveAccountTestCaseMixin, DefaultTestCase):
         mutation {
             tokenAuth(
                 email: "foo@email.com",
-                password: "23kegbsi7g2k",
+                password: "%s",
             )
             { success, errors, refreshToken }
         }
-        """
+        """ % (
+            self.default_password,
+        )
 
-    def make_query(self, password="23kegbsi7g2k"):
+    def make_query(self, password=None):
         return """
             mutation {
               archiveAccount(password: "%s") {
@@ -97,7 +111,7 @@ class ArchiveAccountTestCase(ArchiveAccountTestCaseMixin, DefaultTestCase):
               }
             }
         """ % (
-            password,
+            password or self.default_password,
         )
 
 
@@ -108,14 +122,16 @@ class ArchiveAccountRelayTestCase(ArchiveAccountTestCaseMixin, RelayTestCase):
             tokenAuth(
                 input: {
                     email: "foo@email.com",
-                    password: "23kegbsi7g2k",
+                    password: "%s",
                 }
             )
             { success, errors, refreshToken }
         }
-        """
+        """ % (
+            self.default_password,
+        )
 
-    def make_query(self, password="23kegbsi7g2k"):
+    def make_query(self, password=None):
         return """
             mutation {
               archiveAccount(input: { password: "%s"}) {
@@ -123,5 +139,5 @@ class ArchiveAccountRelayTestCase(ArchiveAccountTestCaseMixin, RelayTestCase):
               }
             }
         """ % (
-            password,
+            password or self.default_password,
         )
