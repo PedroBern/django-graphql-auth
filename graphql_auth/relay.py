@@ -132,24 +132,39 @@ class UpdateAccount(
 
 
 class VerifyToken(
-    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Verify
+    RelayMutationMixin,
+    VerifyOrRefreshOrRevokeTokenMixin,
+    graphql_jwt.relay.Verify,
 ):
     """
     Verify token mutation
     """
 
+    class Input:
+        token = graphene.String(required=True)
+
 
 class RefreshToken(
-    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Refresh
+    RelayMutationMixin,
+    VerifyOrRefreshOrRevokeTokenMixin,
+    graphql_jwt.relay.Refresh,
 ):
     """
     Refresh token mutation
     """
 
+    class Input(graphql_jwt.mixins.RefreshMixin.Fields):
+        """Refresh Input"""
+
 
 class RevokeToken(
-    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Revoke
+    RelayMutationMixin,
+    VerifyOrRefreshOrRevokeTokenMixin,
+    graphql_jwt.relay.Revoke,
 ):
     """
     Revoke token mutation
     """
+
+    class Input:
+        refresh_token = graphene.String(required=True)
