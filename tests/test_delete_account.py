@@ -2,25 +2,21 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
 from .testCases import RelayTestCase, DefaultTestCase
+
 from graphql_auth.constants import Messages
+from graphql_auth.models import UserStatus
 
-
+#
 class DeleteAccountTestCaseMixin:
     def setUp(self):
-        self.user1 = get_user_model().objects.create(
-            email="foo@email.com", username="foo@email.com", is_active=True
+        self.user1 = self.register_user(email="foo@email.com", username="foo")
+        self.user2 = self.register_user(
+            email="bar@email.com", username="bar", verified=True
         )
-        self.user1.set_password("23kebsi23t4b")
-        self.user1.save()
-        self.user2 = get_user_model().objects.create(
-            email="bar@email.com", username="bar@email.com", is_active=True
-        )
-        self.user2.set_password("23kebsi23t4b")
-        self.user2.save()
 
     def test_not_authenticated(self):
         """
-            try to delete not authenticated
+            try to archive not authenticated
         """
         query = self.make_query()
         executed = self.make_request(query)
@@ -30,11 +26,8 @@ class DeleteAccountTestCaseMixin:
         )
 
     def test_invalid_password(self):
-        """
-            try to delete account with invalid password
-        """
         query = self.make_query(password="123")
-        variables = {"user": self.user1}
+        variables = {"user": self.user2}
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], False)
         self.assertEqual(
@@ -42,20 +35,64 @@ class DeleteAccountTestCaseMixin:
         )
 
     def test_valid_password(self):
-        """
-            try to delete account
-        """
         query = self.make_query()
-        variables = {"user": self.user1}
+        variables = {"user": self.user2}
+        self.assertEqual(self.user2.is_active, True)
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], True)
         self.assertEqual(executed["errors"], None)
-        with self.assertRaises(ObjectDoesNotExist):
-            self.user1.refresh_from_db()
+        self.user2.refresh_from_db()
+        self.assertEqual(self.user2.is_active, False)
+
+    def test_revoke_refresh_tokens_on_delete_account(self):
+
+        executed = self.make_request(self.get_login_query())
+        self.user2.refresh_from_db()
+        refresh_tokens = self.user2.refresh_tokens.all()
+        for token in refresh_tokens:
+            self.assertFalse(token.revoked)
+
+        query = self.make_query()
+        variables = {"user": self.user2}
+        self.assertEqual(self.user2.is_active, True)
+        executed = self.make_request(query, variables)
+        self.assertEqual(executed["success"], True)
+        self.assertEqual(executed["errors"], None)
+        self.user2.refresh_from_db()
+        self.assertEqual(self.user2.is_active, False)
+
+        self.user2.refresh_from_db()
+        refresh_tokens = self.user2.refresh_tokens.all()
+        for token in refresh_tokens:
+            self.assertTrue(token.revoked)
+
+    def test_not_verified_user(self):
+        query = self.make_query()
+        variables = {"user": self.user1}
+        self.assertEqual(self.user1.is_active, True)
+        executed = self.make_request(query, variables)
+        self.assertEqual(executed["success"], False)
+        self.assertEqual(
+            executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
+        )
+        self.assertEqual(self.user1.is_active, True)
 
 
 class DeleteAccountTestCase(DeleteAccountTestCaseMixin, DefaultTestCase):
-    def make_query(self, password="23kebsi23t4b"):
+    def get_login_query(self):
+        return """
+        mutation {
+            tokenAuth(
+                email: "foo@email.com",
+                password: "%s",
+            )
+            { success, errors, refreshToken }
+        }
+        """ % (
+            self.default_password,
+        )
+
+    def make_query(self, password=None):
         return """
             mutation {
               deleteAccount(password: "%s") {
@@ -63,12 +100,27 @@ class DeleteAccountTestCase(DeleteAccountTestCaseMixin, DefaultTestCase):
               }
             }
         """ % (
-            password,
+            password or self.default_password,
         )
 
 
 class DeleteAccountRelayTestCase(DeleteAccountTestCaseMixin, RelayTestCase):
-    def make_query(self, password="23kebsi23t4b"):
+    def get_login_query(self):
+        return """
+        mutation {
+            tokenAuth(
+                input: {
+                    email: "foo@email.com",
+                    password: "%s",
+                }
+            )
+            { success, errors, refreshToken }
+        }
+        """ % (
+            self.default_password,
+        )
+
+    def make_query(self, password=None):
         return """
             mutation {
               deleteAccount(input: { password: "%s"}) {
@@ -76,5 +128,5 @@ class DeleteAccountRelayTestCase(DeleteAccountTestCaseMixin, RelayTestCase):
               }
             }
         """ % (
-            password,
+            password or self.default_password,
         )
