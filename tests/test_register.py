@@ -1,3 +1,6 @@
+from smtplib import SMTPException
+from unittest import mock
+
 from django.contrib.auth import get_user_model
 
 from .testCases import RelayTestCase, DefaultTestCase
@@ -31,48 +34,17 @@ class RegisterTestCaseMixin:
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["username"])
 
-    def test_register_with_email_verification(self):
-        """
-        register a user, check if is_active is False,
-        get the activation token
-        verify the account,
-        try to verify again (already used token)
-        try to verify with invalid token
-        """
-
-        # register
+    @mock.patch(
+        "graphql_auth.models.UserStatus.send_activation_email",
+        mock.MagicMock(side_effect=SMTPException),
+    )
+    def test_register_email_send_fail(self):
         executed = self.make_request(self.register_query())
-        self.assertEqual(executed["success"], True)
-        self.assertEqual(executed["errors"], None)
-
-        # retrive
-        user = get_user_model().objects.get(username="username")
-        self.assertEqual(user.is_active, False)
-
-        # activate
-        token = get_token(user, "activation")
-        payload = get_token_paylod(token, "activation")
-        verify_query = self.verify_query(token)
-        executed = self.make_request(verify_query)
-        self.assertEqual(executed["success"], True)
-        self.assertEqual(executed["errors"], None)
-        user.refresh_from_db()
-        self.assertEqual(user.is_active, True)
-
-        # try to activate again
-        executed = self.make_request(verify_query)
         self.assertEqual(executed["success"], False)
         self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.ALREADY_VERIFIED,
+            executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL
         )
-
-        # try to verify with fake token
-        verify_query = self.verify_query("fake_token")
-        executed = self.make_request(verify_query)
-        self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.INVALID_TOKEN,
-        )
+        self.assertEqual(len(get_user_model().objects.all()), 0)
 
 
 class RegisterTestCase(RegisterTestCaseMixin, DefaultTestCase):
