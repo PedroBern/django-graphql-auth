@@ -1,13 +1,15 @@
 import re
 
 from graphene.test import Client
+from graphene.types.schema import Schema
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import get_user_model
+
 
 from .schema import relay_schema, default_schema
 
-
-from graphene.types.schema import Schema
+from graphql_auth.models import UserStatus
 
 
 class TestBase(TestCase):
@@ -24,6 +26,20 @@ class TestBase(TestCase):
         `
         return client.execute["data"]["register"]
     """
+
+    default_password = "23kegbsi7g2k"
+
+    def register_user(
+        self, password=None, verified=False, archived=False, *args, **kwargs
+    ):
+        user = get_user_model().objects.create(*args, **kwargs)
+        user.set_password(password or self.default_password)
+        user.save()
+        user_status = UserStatus(
+            user=user, verified=verified, archived=archived
+        )
+        user_status.save()
+        return user
 
     def make_request(
         self, query, variables={"user": AnonymousUser()}, raw=False, client=None
