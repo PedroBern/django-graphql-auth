@@ -8,8 +8,9 @@ class Messages:
     UNAUTHENTICATED = [
         {"message": _("Unauthenticated."), "code": "unauthenticated",}
     ]
-    INVALID_TOKEN = [
-        {"message": _("Invalid or expirated token."), "code": "invalid_token",}
+    INVALID_TOKEN = [{"message": _("Invalid token."), "code": "invalid_token",}]
+    EXPIRATED_TOKEN = [
+        {"message": _("Expirated token."), "code": "expirated_token",}
     ]
     ALREADY_VERIFIED = [
         {"message": _("Account already verified."), "code": "already_verified",}

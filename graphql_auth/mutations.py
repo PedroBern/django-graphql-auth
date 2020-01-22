@@ -13,6 +13,7 @@ from .mixins import (
     DeleteAccountMixin,
     PasswordChangeMixin,
     UpdateAccountMixin,
+    VerifyOrRefreshOrRevokeTokenMixin,
 )
 from .utils import normalize_fields
 from .settings import graphql_auth_settings as app_settings
@@ -101,3 +102,27 @@ class UpdateAccount(
 ):
 
     _args = app_settings.UPDATE_MUTATION_FIELDS
+
+
+class VerifyToken(
+    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Verify
+):
+    """
+    Verify token mutation
+    """
+
+
+class RefreshToken(
+    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Refresh
+):
+    """
+    Refresh token mutation
+    """
+
+
+class RevokeToken(
+    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Revoke
+):
+    """
+    Revoke token mutation
+    """

@@ -16,6 +16,9 @@ class AuthMutation(graphene.ObjectType):
     update_account = mutations.UpdateAccount.Field()
 
     token_auth = mutations.ObtainJSONWebToken.Field()
+    verify_token = mutations.VerifyToken.Field()
+    refresh_token = mutations.RefreshToken.Field()
+    revoke_token = mutations.RevokeToken.Field()
 
 
 class Query(UserQuery, graphene.ObjectType):

@@ -1,11 +1,11 @@
 from smtplib import SMTPException
 
-from django.core.signing import BadSignature
+from django.core.signing import BadSignature, SignatureExpired
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 
-from graphql_jwt.exceptions import JSONWebTokenError
+from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
 
 from .forms import RegisterForm, EmailForm, UpdateAccountForm
 from .bases import Output
@@ -17,6 +17,7 @@ from .utils import (
     get_user_by_email,
     revoke_user_refresh_token,
     get_token_paylod,
+    get_token_field_name,
 )
 from .decorators import password_confirmation_required, verification_required
 
@@ -62,6 +63,8 @@ class VerifyAccountMixin(Output):
             return cls(success=True)
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
+        except SignatureExpired:
+            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
         except BadSignature:
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
@@ -137,6 +140,8 @@ class PasswordResetMixin(Output):
                 user = f.save()
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
+        except SignatureExpired:
+            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
         except BadSignature:
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
@@ -268,3 +273,21 @@ class UpdateAccountMixin(Output):
             return cls(success=True)
         else:
             return cls(success=False, errors=f.errors.get_json_data())
+
+
+class VerifyOrRefreshOrRevokeTokenMixin(Output):
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            return cls.parent_resolve(root, info, **kwargs)
+        except JSONWebTokenExpired:
+            message = Messages.EXPIRATED_TOKEN
+        except JSONWebTokenError:
+            message = Messages.INVALID_TOKEN
+
+        token_field_name = get_token_field_name(
+            cls._meta.arguments
+        ) or get_token_field_name(
+            cls._meta.arguments["input"]._meta.fields, "token"
+        )
+        return cls(success=False, errors={token_field_name: message})
