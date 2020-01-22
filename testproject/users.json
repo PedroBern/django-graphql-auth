@@ -1,0 +1,47 @@
+[
+  {
+      "model": "auth.user",
+      "pk": 1,
+      "fields": {
+          "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
+          "last_login": null,
+          "is_superuser": true,
+          "username": "admin",
+          "first_name": "",
+          "last_name": "",
+          "email": "admin@email.com",
+          "is_staff": true,
+          "is_active": true
+      }
+  },
+  {
+      "model": "auth.user",
+      "pk": 2,
+      "fields": {
+          "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
+          "last_login": null,
+          "is_superuser": false,
+          "username": "active_user",
+          "first_name": "",
+          "last_name": "",
+          "email": "active_user@email.com",
+          "is_staff": false,
+          "is_active": true
+      }
+  },
+  {
+      "model": "auth.user",
+      "pk": 3,
+      "fields": {
+          "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
+          "last_login": null,
+          "is_superuser": false,
+          "username": "inactive_user",
+          "first_name": "",
+          "last_name": "",
+          "email": "inactive_user@email.com",
+          "is_staff": false,
+          "is_active": false
+      }
+  }
+]
