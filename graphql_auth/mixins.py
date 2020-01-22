@@ -4,6 +4,7 @@ from django.core.signing import BadSignature, SignatureExpired
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
+from django.db import transaction
 
 from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
 
@@ -32,20 +33,21 @@ class RegisterMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
-            f = cls.form(kwargs)
-            if f.is_valid():
-                user = f.save()
-                user_status = UserStatus(user=user)
-                user_status.save()
-                send_activation = (
-                    app_settings.SEND_ACTIVATION_EMAIL == True
-                    and kwargs["email"]
-                )
-                if send_activation:
-                    user_status.send_activation_email(info)
-                return cls(success=True)
-            else:
-                return cls(success=False, errors=f.errors.get_json_data())
+            with transaction.atomic():
+                f = cls.form(kwargs)
+                if f.is_valid():
+                    user = f.save()
+                    user_status = UserStatus(user=user)
+                    user_status.save()
+                    send_activation = (
+                        app_settings.SEND_ACTIVATION_EMAIL == True
+                        and kwargs["email"]
+                    )
+                    if send_activation:
+                        user_status.send_activation_email(info)
+                    return cls(success=True)
+                else:
+                    return cls(success=False, errors=f.errors.get_json_data())
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
 
