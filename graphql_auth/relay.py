@@ -128,7 +128,7 @@ class UpdateAccount(
     graphene.ClientIDMutation,
 ):
 
-    _args = app_settings.UPDATE_MUTATION_FIELDS
+    _inputs = app_settings.UPDATE_MUTATION_FIELDS
 
 
 class VerifyToken(
