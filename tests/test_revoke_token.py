@@ -7,7 +7,6 @@ from .testCases import RelayTestCase, DefaultTestCase
 from graphql_auth.constants import Messages
 
 
-# include
 # GRAPHQL_JWT = {
 #     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 # }
@@ -15,16 +14,10 @@ from graphql_auth.constants import Messages
 
 class RevokeTokenTestCaseMixin:
     def setUp(self):
-        self.user = get_user_model().objects.create(
-            email="foo@email.com",
-            username="foo_username",
-            is_active=True,
-            last_login=timezone.now(),
+        self.user1 = self.register_user(
+            email="foo@email.com", username="foo_username",
         )
-        self.user.set_password("b23odxi2b34b")
-        self.user.save()
 
-    # @skip
     def test_revoke_token(self):
         query = self.get_login_query()
         executed = self.make_request(query)
@@ -36,7 +29,6 @@ class RevokeTokenTestCaseMixin:
         self.assertTrue(executed["revoked"])
         self.assertFalse(executed["errors"])
 
-    # @skip
     def test_invalid_token(self):
         query = self.get_revoke_query("invalid_token")
         executed = self.make_request(query)
@@ -49,10 +41,12 @@ class RevokeTokenTestCase(RevokeTokenTestCaseMixin, DefaultTestCase):
     def get_login_query(self):
         return """
         mutation {
-        tokenAuth(email: "foo@email.com", password: "b23odxi2b34b" )
+        tokenAuth(email: "foo@email.com", password: "%s" )
             { refreshToken, success, errors  }
         }
-        """
+        """ % (
+            self.default_password
+        )
 
     def get_revoke_query(self, token):
         return """
@@ -69,10 +63,12 @@ class VerifyTokenRelayTestCase(RevokeTokenTestCaseMixin, RelayTestCase):
     def get_login_query(self):
         return """
         mutation {
-        tokenAuth(input:{ email: "foo@email.com", password: "b23odxi2b34b"  })
+        tokenAuth(input:{ email: "foo@email.com", password: "%s"  })
             { refreshToken, success, errors  }
         }
-        """
+        """ % (
+            self.default_password
+        )
 
     def get_revoke_query(self, token):
         return """
