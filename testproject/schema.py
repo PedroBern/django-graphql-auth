@@ -15,6 +15,12 @@ class AuthMutation(graphene.ObjectType):
     password_change = mutations.PasswordChange.Field()
     update_account = mutations.UpdateAccount.Field()
 
+    send_secondary_email_activation = (
+        mutations.SendSecondaryEmailActivation.Field()
+    )
+    verify_secondary_email = mutations.VerifySecondaryEmail.Field()
+    swap_emails = mutations.SwapEmails.Field()
+
     token_auth = mutations.ObtainJSONWebToken.Field()
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()

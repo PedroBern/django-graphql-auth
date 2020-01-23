@@ -121,7 +121,10 @@ GRAPHQL_JWT = {
         "graphql_auth.mutations.VerifyToken",
         "graphql_auth.mutations.RefreshToken",
         "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.VerifySecondaryEmail",
     ],
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+GRAPHQL_AUTH = {}
