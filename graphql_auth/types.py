@@ -33,8 +33,8 @@ class ErrorType(graphene.Scalar):
     @staticmethod
     def serialize(errors):
         if isinstance(errors, dict):
-            if hasattr(errors, "__all__"):
-                errors["non_field_errors"] = errors.__all__
+            if errors.get("__all__", False):
+                errors["non_field_errors"] = errors.pop("__all__")
             return camelize(errors)
         elif isinstance(errors, list):
             return {"nonFieldErrors": errors}
