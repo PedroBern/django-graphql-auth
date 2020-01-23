@@ -36,6 +36,13 @@ class RegisterTestCaseMixin:
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["username"])
 
+        # try to register again
+        executed = self.make_request(
+            self.register_query(username="other_username")
+        )
+        self.assertEqual(executed["success"], False)
+        self.assertTrue(executed["errors"]["email"])
+
     @mock.patch(
         "graphql_auth.models.UserStatus.send_activation_email",
         mock.MagicMock(side_effect=SMTPException),
@@ -66,18 +73,19 @@ class RegisterTestCaseMixin:
 
 
 class RegisterTestCase(RegisterTestCaseMixin, DefaultTestCase):
-    def register_query(self, password="akssdgfbwkc"):
+    def register_query(self, password="akssdgfbwkc", username="username"):
         return """
         mutation {
             register(
                 email: "test@email.com",
-                username: "username",
+                username: "%s",
                 password1: "%s",
                 password2: "%s"
             )
             { success, errors  }
         }
         """ % (
+            username,
             password,
             password,
         )
@@ -94,16 +102,17 @@ class RegisterTestCase(RegisterTestCaseMixin, DefaultTestCase):
 
 
 class RegisterRelayTestCase(RegisterTestCaseMixin, RelayTestCase):
-    def register_query(self, password="akssdgfbwkc"):
+    def register_query(self, password="akssdgfbwkc", username="username"):
         return """
         mutation {
          register(
          input:
-            { email: "test@email.com", username: "username", password1: "%s", password2: "%s" }
+            { email: "test@email.com", username: "%s", password1: "%s", password2: "%s" }
             )
             { success, errors  }
         }
         """ % (
+            username,
             password,
             password,
         )

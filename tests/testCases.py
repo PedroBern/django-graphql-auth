@@ -30,7 +30,13 @@ class TestBase(TestCase):
     default_password = "23kegbsi7g2k"
 
     def register_user(
-        self, password=None, verified=False, archived=False, *args, **kwargs
+        self,
+        password=None,
+        verified=False,
+        archived=False,
+        secondary_email=None,
+        *args,
+        **kwargs
     ):
         if kwargs.get("username"):
             kwargs.update({"first_name": kwargs.get("username")})
@@ -38,7 +44,10 @@ class TestBase(TestCase):
         user.set_password(password or self.default_password)
         user.save()
         user_status = UserStatus(
-            user=user, verified=verified, archived=archived
+            user=user,
+            verified=verified,
+            archived=archived,
+            secondary_email=secondary_email,
         )
         user_status.save()
         return user
@@ -63,6 +72,8 @@ class TestBase(TestCase):
         except:
             print("\nInvalid query!")
             raise Exception(executed["errors"])
+        finally:
+            print(executed)
 
 
 class RelayTestCase(TestBase):

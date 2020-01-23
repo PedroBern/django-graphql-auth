@@ -22,7 +22,8 @@ class QueryTestCase(DefaultTestCase):
                 edges {
                     node {
                         archived,
-                        verified
+                        verified,
+                        secondaryEmail
                     }
                 }
             }

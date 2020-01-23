@@ -15,7 +15,10 @@ class LoginTestCaseMixin:
             email="boo@email.com", username="boo", verified=False
         )
         self.verified_user = self.register_user(
-            email="foo@email.com", username="foo", verified=True
+            email="foo@email.com",
+            username="foo",
+            verified=True,
+            secondary_email="secondary@email.com",
         )
 
     def test_archived_user_becomes_active_on_login(self):
@@ -39,6 +42,14 @@ class LoginTestCaseMixin:
 
     def test_login_email(self):
         query = self.get_query("email", self.verified_user.email)
+        executed = self.make_request(query)
+        self.assertTrue(executed["success"])
+        self.assertFalse(executed["errors"])
+        self.assertTrue(executed["token"])
+        self.assertTrue(executed["refreshToken"])
+
+    def test_login_secondary_email(self):
+        query = self.get_query("email", "secondary@email.com")
         executed = self.make_request(query)
         self.assertTrue(executed["success"])
         self.assertFalse(executed["errors"])
