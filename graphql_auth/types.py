@@ -1,6 +1,8 @@
 import graphene
 from graphene_django.utils import camelize
 
+from .exceptions import WrongUsage
+
 
 class ErrorType(graphene.Scalar):
     class Meta:
@@ -38,4 +40,4 @@ class ErrorType(graphene.Scalar):
             return camelize(errors)
         elif isinstance(errors, list):
             return {"nonFieldErrors": errors}
-        raise Exception("`errors` must be list or dict!")
+        raise WrongUsage("`errors` must be list or dict!")
