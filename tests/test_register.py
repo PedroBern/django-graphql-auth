@@ -1,6 +1,8 @@
 from smtplib import SMTPException
 from unittest import mock
 
+from pytest import mark
+
 from django.contrib.auth import get_user_model
 
 from .testCases import RelayTestCase, DefaultTestCase
@@ -45,6 +47,22 @@ class RegisterTestCaseMixin:
             executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL
         )
         self.assertEqual(len(get_user_model().objects.all()), 0)
+
+    @mark.settings_b
+    def test_register_with_dict_on_settings(self):
+        """
+        Register user, fail to register same user again
+        """
+
+        # register
+        executed = self.make_request(self.register_query())
+        self.assertEqual(executed["success"], True)
+        self.assertEqual(executed["errors"], None)
+
+        # try to register again
+        executed = self.make_request(self.register_query())
+        self.assertEqual(executed["success"], False)
+        self.assertTrue(executed["errors"]["username"])
 
 
 class RegisterTestCase(RegisterTestCaseMixin, DefaultTestCase):

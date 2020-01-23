@@ -32,6 +32,8 @@ class TestBase(TestCase):
     def register_user(
         self, password=None, verified=False, archived=False, *args, **kwargs
     ):
+        if kwargs.get("username"):
+            kwargs.update({"first_name": kwargs.get("username")})
         user = get_user_model().objects.create(*args, **kwargs)
         user.set_password(password or self.default_password)
         user.save()

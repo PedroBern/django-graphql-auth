@@ -1,4 +1,8 @@
+from pytest import mark
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 from .testCases import RelayTestCase, DefaultTestCase
 
@@ -33,16 +37,6 @@ class DeleteAccountTestCaseMixin:
             executed["errors"]["password"], Messages.INVALID_PASSWORD,
         )
 
-    def test_valid_password(self):
-        query = self.make_query()
-        variables = {"user": self.user2}
-        self.assertEqual(self.user2.is_active, True)
-        executed = self.make_request(query, variables)
-        self.assertEqual(executed["success"], True)
-        self.assertEqual(executed["errors"], None)
-        self.user2.refresh_from_db()
-        self.assertEqual(self.user2.is_active, False)
-
     def test_revoke_refresh_tokens_on_delete_account(self):
 
         executed = self.make_request(self.get_login_query())
@@ -75,6 +69,27 @@ class DeleteAccountTestCaseMixin:
             executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
         )
         self.assertEqual(self.user1.is_active, True)
+
+    def test_valid_password(self):
+        query = self.make_query()
+        variables = {"user": self.user2}
+        self.assertEqual(self.user2.is_active, True)
+        executed = self.make_request(query, variables)
+        self.assertEqual(executed["success"], True)
+        self.assertEqual(executed["errors"], None)
+        self.user2.refresh_from_db()
+        self.assertEqual(self.user2.is_active, False)
+
+    @mark.settings_b
+    def test_valid_password_permanently_delete(self):
+        query = self.make_query()
+        variables = {"user": self.user2}
+        self.assertEqual(self.user2.is_active, True)
+        executed = self.make_request(query, variables)
+        self.assertEqual(executed["success"], True)
+        self.assertEqual(executed["errors"], None)
+        with self.assertRaises(ObjectDoesNotExist):
+            self.user2.refresh_from_db()
 
     def get_login_query(self):
         return """
