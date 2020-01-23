@@ -28,8 +28,26 @@ class Messages:
     NOT_VERIFIED_PASSWORD_RESET = [
         {
             "message": _(
-                "Please verify your account before requesting the password reset."
+                "Verify your account before requesting the password reset. A new verification email was sent."
             ),
             "code": "not_verified",
         }
     ]
+    EMAIL_IN_USE = [
+        {
+            "message": _("A user with that email already exists."),
+            "code": "unique",
+        }
+    ]
+    SECONDARY_EMAIL_REQUIRED = [
+        {
+            "message": _("You need to setup a secondary email to proceed."),
+            "code": "secondary_email_required",
+        }
+    ]
+
+
+class TokenAction(object):
+    ACTIVATION = "activation"
+    PASSWORD_RESET = "password_reset"
+    ACTIVATION_SECONDARY_EMAIL = "activation_secondary_email"

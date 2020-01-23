@@ -16,12 +16,16 @@ class UserNode(DjangoObjectType):
 
     archived = graphene.Boolean()
     verified = graphene.Boolean()
+    secondary_email = graphene.String()
 
     def resolve_archived(self, info):
         return self.status.archived
 
     def resolve_verified(self, info):
         return self.status.verified
+
+    def resolve_secondary_email(self, info):
+        return self.status.secondary_email
 
 
 class UserQuery(graphene.ObjectType):

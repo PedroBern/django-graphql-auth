@@ -17,15 +17,22 @@ from .exceptions import (
     UserNotVerified,
     WrongUsage,
     TokenScopeError,
+    EmailAlreadyInUse,
 )
-from .constants import Messages
+from .constants import Messages, TokenAction
 from .utils import (
-    get_user_by_email,
     revoke_user_refresh_token,
     get_token_paylod,
     get_token_field_name,
 )
-from .decorators import password_confirmation_required, verification_required
+from .shortcuts import get_user_by_email, get_user_to_login
+from .decorators import (
+    password_confirmation_required,
+    verification_required,
+    secondary_email_required,
+)
+
+UserModel = get_user_model()
 
 
 class RegisterMixin(Output):
@@ -41,18 +48,21 @@ class RegisterMixin(Output):
             with transaction.atomic():
                 f = cls.form(kwargs)
                 if f.is_valid():
+                    email = kwargs.get("email", False)
+                    UserStatus.clean_email(email)
                     user = f.save()
                     user_status = UserStatus(user=user)
                     user_status.save()
                     send_activation = (
-                        app_settings.SEND_ACTIVATION_EMAIL == True
-                        and kwargs["email"]
+                        app_settings.SEND_ACTIVATION_EMAIL == True and email
                     )
                     if send_activation:
                         user_status.send_activation_email(info)
                     return cls(success=True)
                 else:
                     return cls(success=False, errors=f.errors.get_json_data())
+        except EmailAlreadyInUse:
+            return cls(success=False, errors={"email": Messages.EMAIL_IN_USE})
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
 
@@ -70,6 +80,25 @@ class VerifyAccountMixin(Output):
             return cls(success=True)
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
+        except SignatureExpired:
+            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
+        except (BadSignature, TokenScopeError):
+            return cls(success=False, errors=Messages.INVALID_TOKEN)
+
+
+class VerifySecondaryEmailMixin(Output):
+    """
+    verify secondary email. User is already verified.
+    """
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            token = kwargs.get("token")
+            UserStatus.verify_secondary_email(token)
+            return cls(success=True)
+        except EmailAlreadyInUse:
+            return cls(success=False, errors=Messages.EMAIL_IN_USE)
         except SignatureExpired:
             return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
         except (BadSignature, TokenScopeError):
@@ -113,7 +142,7 @@ class SendPasswordResetEmailMixin(Output):
             f = EmailForm({"email": email})
             if f.is_valid():
                 user = get_user_by_email(email)
-                user.status.send_password_reset_email(info)
+                user.status.send_password_reset_email(info, [email])
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except ObjectDoesNotExist:
@@ -121,9 +150,14 @@ class SendPasswordResetEmailMixin(Output):
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
         except UserNotVerified:
-            return cls(
-                success=False, errors=Messages.NOT_VERIFIED_PASSWORD_RESET
-            )
+            user = get_user_by_email(email)
+            try:
+                user.status.resend_activation_email(info)
+                return cls(
+                    success=False, errors=Messages.NOT_VERIFIED_PASSWORD_RESET
+                )
+            except SMTPException:
+                return cls(success=False, errors=Messages.EMAIL_FAIL)
 
 
 class PasswordResetMixin(Output):
@@ -139,10 +173,10 @@ class PasswordResetMixin(Output):
             token = kwargs.pop("token")
             payload = get_token_paylod(
                 token,
-                "password_reset",
+                TokenAction.PASSWORD_RESET,
                 app_settings.EXPIRATION_PASSWORD_RESET_TOKEN,
             )
-            user = get_user_model()._default_manager.get(**payload)
+            user = UserModel._default_manager.get(**payload)
             f = cls.form(user, kwargs)
             if f.is_valid():
                 revoke_user_refresh_token(user)
@@ -179,7 +213,7 @@ class ObtainJSONWebTokenMixin(Output):
 
         try:
             next_kwargs = None
-            USERNAME_FIELD = get_user_model().USERNAME_FIELD
+            USERNAME_FIELD = UserModel.USERNAME_FIELD
             unarchiving = False
 
             # extract USERNAME_FIELD to use in query
@@ -191,7 +225,8 @@ class ObtainJSONWebTokenMixin(Output):
                 query_field, query_value = kwargs.popitem()
                 query_kwargs = {query_field: query_value}
 
-            user = get_user_model()._default_manager.get(**query_kwargs)
+            user = get_user_to_login(**query_kwargs)
+
             if not next_kwargs:
                 next_kwargs = {
                     "password": password,
@@ -301,3 +336,39 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
             cls._meta.arguments["input"]._meta.fields, "token"
         )
         return cls(success=False, errors={token_field_name: message})
+
+
+class SendSecondaryEmailActivationMixin(Output):
+    """
+    send activation to secondary email
+    """
+
+    @classmethod
+    @verification_required
+    @password_confirmation_required
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            email = kwargs.get("email")
+            f = EmailForm({"email": email})
+            if f.is_valid():
+                user = info.context.user
+                user.status.send_secondary_email_activation(info, email)
+                return cls(success=True)
+            return cls(success=False, errors=f.errors.get_json_data())
+        except EmailAlreadyInUse:
+            return cls(success=False, errors=Messages.EMAIL_IN_USE)
+        except SMTPException:
+            return cls(success=False, errors=Messages.EMAIL_FAIL)
+
+
+class SwapEmailsMixin(Output):
+    """
+    swap between primary and secondary emails
+    """
+
+    @classmethod
+    @secondary_email_required
+    @password_confirmation_required
+    def resolve_mutation(cls, root, info, **kwargs):
+        info.context.user.status.swap_emails()
+        return cls(success=True)

@@ -14,6 +14,9 @@ from .mixins import (
     PasswordChangeMixin,
     UpdateAccountMixin,
     VerifyOrRefreshOrRevokeTokenMixin,
+    SendSecondaryEmailActivationMixin,
+    VerifySecondaryEmailMixin,
+    SwapEmailsMixin,
 )
 from .utils import normalize_fields
 from .settings import graphql_auth_settings as app_settings
@@ -51,6 +54,30 @@ class SendPasswordResetEmail(
     graphene.Mutation,
 ):
     _required_args = ["email"]
+
+
+class SendSecondaryEmailActivation(
+    MutationMixin,
+    DynamicArgsMixin,
+    SendSecondaryEmailActivationMixin,
+    graphene.Mutation,
+):
+    _required_args = ["email", "password"]
+
+
+class VerifySecondaryEmail(
+    MutationMixin,
+    DynamicArgsMixin,
+    VerifySecondaryEmailMixin,
+    graphene.Mutation,
+):
+    _required_args = ["token"]
+
+
+class SwapEmails(
+    MutationMixin, DynamicArgsMixin, SwapEmailsMixin, graphene.Mutation,
+):
+    _required_args = ["password"]
 
 
 class PasswordReset(

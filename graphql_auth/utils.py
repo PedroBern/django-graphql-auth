@@ -6,11 +6,13 @@ from django.core.signing import BadSignature
 from .exceptions import TokenScopeError
 
 
-def get_token(user, action, exp=None):
+def get_token(user, action, **kwargs):
     username = user.get_username()
     if hasattr(username, "pk"):
         username = username.pk
     payload = {user.USERNAME_FIELD: username, "action": action}
+    if kwargs:
+        payload.update(**kwargs)
     token = signing.dumps(payload)
     return token
 
@@ -21,12 +23,6 @@ def get_token_paylod(token, action, exp=None):
     if _action != action:
         raise TokenScopeError
     return payload
-
-
-def get_user_by_email(email):
-    email_field_name = get_user_model().get_email_field_name()
-    user = get_user_model()._default_manager.get(**{email_field_name: email})
-    return user
 
 
 def revoke_user_refresh_token(user):
