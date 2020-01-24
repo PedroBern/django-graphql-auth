@@ -6,6 +6,11 @@
 
 ---
 
+### v0.2.1
+- fix readme on pypi
+
+---
+
 ### v0.2.0
 - minor bug fixes
 - add user status model to track if user is archived, verified and secondary email

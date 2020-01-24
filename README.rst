@@ -13,8 +13,8 @@ It abstract all the basic logic of handling user accounts out of your app,
 so you don't need to think about it and can **get up and running faster**.
 
 No lock-in. When you are ready to implement your own code or this package
-is not up to your expectations , it's *easy to extend or switch to
-your implementation*.
+is not up to your expectations , it's easy to extend or switch to
+your implementation.
 
 
 Features
