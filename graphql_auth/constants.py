@@ -1,34 +1,53 @@
+from django.utils.translation import ugettext as _
+
+
 class Messages:
     INVALID_PASSWORD = [
-        {"message": "Invalid password.", "code": "invalid_password",}
+        {"message": _("Invalid password."), "code": "invalid_password",}
     ]
     UNAUTHENTICATED = [
-        {"message": "Unauthenticated.", "code": "unauthenticated",}
+        {"message": _("Unauthenticated."), "code": "unauthenticated",}
     ]
-    INVALID_TOKEN = [
-        {"message": "Invalid or expirated token.", "code": "invalid_token",}
+    INVALID_TOKEN = [{"message": _("Invalid token."), "code": "invalid_token",}]
+    EXPIRATED_TOKEN = [
+        {"message": _("Expirated token."), "code": "expirated_token",}
     ]
     ALREADY_VERIFIED = [
-        {"message": "Account already verified.", "code": "already_verified",}
+        {"message": _("Account already verified."), "code": "already_verified",}
     ]
-    EMAIL_FAIL = [{"message": "Failed to send email.", "code": "email_fail"}]
+    EMAIL_FAIL = [{"message": _("Failed to send email."), "code": "email_fail"}]
     INVALID_CREDENTIALS = [
         {
-            "message": "Please, enter valid credentials.",
+            "message": _("Please, enter valid credentials."),
             "code": "invalid_credentials",
         }
     ]
     NOT_VERIFIED = [
-        {"message": "Please verify your account.", "code": "not_verified",}
+        {"message": _("Please verify your account."), "code": "not_verified",}
     ]
     NOT_VERIFIED_PASSWORD_RESET = [
         {
-            "message": "Please verify your account before requesting the password reset.",
+            "message": _(
+                "Verify your account before requesting the password reset. A new verification email was sent."
+            ),
             "code": "not_verified",
+        }
+    ]
+    EMAIL_IN_USE = [
+        {
+            "message": _("A user with that email already exists."),
+            "code": "unique",
+        }
+    ]
+    SECONDARY_EMAIL_REQUIRED = [
+        {
+            "message": _("You need to setup a secondary email to proceed."),
+            "code": "secondary_email_required",
         }
     ]
 
 
-class TokenAction:
+class TokenAction(object):
     ACTIVATION = "activation"
     PASSWORD_RESET = "password_reset"
+    ACTIVATION_SECONDARY_EMAIL = "activation_secondary_email"

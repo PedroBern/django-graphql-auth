@@ -7,11 +7,9 @@ from graphql_auth.utils import get_token, get_token_paylod
 
 class PasswordChangeTestCaseMixin:
     def setUp(self):
-        self.user = get_user_model().objects.create(
-            email="gaa@email.com", username="username", is_active=True
+        self.user = self.register_user(
+            email="gaa@email.com", username="gaa", verified=True
         )
-        self.user.set_password("aksdhaksda435")
-        self.user.save()
         self.old_pass = self.user.password
 
     def test_password_change(self):
@@ -68,11 +66,13 @@ class PasswordChangeTestCase(PasswordChangeTestCaseMixin, DefaultTestCase):
         mutation {
             tokenAuth(
                 username: "username",
-                password: "aksdhaksda435",
+                password: "%s",
             )
             { success, errors, refreshToken }
         }
-        """
+        """ % (
+            self.default_password,
+        )
 
     def get_query(
         self, new_password1="new_password", new_password2="new_password"
@@ -80,13 +80,14 @@ class PasswordChangeTestCase(PasswordChangeTestCaseMixin, DefaultTestCase):
         return """
         mutation {
             passwordChange(
-                oldPassword: "aksdhaksda435",
+                oldPassword: "%s",
                 newPassword1: "%s",
                 newPassword2: "%s"
             )
             { success, errors }
         }
         """ % (
+            self.default_password,
             new_password1,
             new_password2,
         )
@@ -99,12 +100,14 @@ class PasswordChangeRelayTestCase(PasswordChangeTestCaseMixin, RelayTestCase):
             tokenAuth(
                 input: {
                     username: "username",
-                    password: "aksdhaksda435",
+                    password: "%s",
                 }
             )
             { success, errors, refreshToken }
         }
-        """
+        """ % (
+            self.default_password,
+        )
 
     def get_query(
         self, new_password1="new_password", new_password2="new_password"
@@ -113,13 +116,14 @@ class PasswordChangeRelayTestCase(PasswordChangeTestCaseMixin, RelayTestCase):
         mutation {
             passwordChange(
                 input: {
-                    oldPassword: "aksdhaksda435",
+                    oldPassword: "%s",
                     newPassword1: "%s",
                     newPassword2: "%s"
                 })
             { success, errors }
         }
         """ % (
+            self.default_password,
             new_password1,
             new_password2,
         )

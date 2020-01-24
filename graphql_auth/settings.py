@@ -20,23 +20,17 @@ from datetime import timedelta
 DEFAULTS = {
     # mutations fields options
     "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "ALLOW_LOGIN_WITH_SECONDARY_EMAIL": True,
     # required fields on register, plus password1 and password2,
     # can be a dict like UPDATE_MUTATION_FIELDS setting
     "REGISTER_MUTATION_FIELDS": ["email", "username"],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": [],
     # optional fields on update account, can be list of fields
-    "UPDATE_MUTATION_FIELDS": {
-        "username": "String",
-        "first_name": "String",
-        "last_name": "String",
-    },
-    # logout on password reset/change works only if
-    # GRAPHQL_JWT.JWT_LONG_RUNNING_REFRESH_TOKEN = True
-    "LOGOUT_ON_PASSWORD_RESET": True,
-    "LOGOUT_ON_PASSWORD_CHANGE": True,
+    "UPDATE_MUTATION_FIELDS": {"first_name": "String", "last_name": "String",},
     # tokens
     "EXPIRATION_ACTIVATION_TOKEN": timedelta(days=7),
     "EXPIRATION_PASSWORD_RESET_TOKEN": timedelta(hours=1),
+    "EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN": timedelta(hours=1),
     # email stuff
     "EMAIL_FROM": getattr(
         django_settings, "DEFAULT_FROM_EMAIL", "test@email.com"
@@ -44,14 +38,18 @@ DEFAULTS = {
     "SEND_ACTIVATION_EMAIL": True,
     # client: example.com/activate/token
     "ACTIVATION_PATH_ON_EMAIL": "activate",
+    "ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL": "activate",
     # client: example.com/password-reset/token
     "PASSWORD_RESET_PATH_ON_EMAIL": "password-reset",
-    # email templates
+    # email subjects templates
     "EMAIL_SUBJECT_ACTIVATION": "email/activation_subject.txt",
-    "EMAIL_SUBJECT_RESEND_ACTIVATION": "email/activation_subject.txt",
+    "EMAIL_SUBJECT_ACTIVATION_RESEND": "email/activation_subject.txt",
+    "EMAIL_SUBJECT_SECONDARY_EMAIL_ACTIVATION": "email/activation_subject.txt",
     "EMAIL_SUBJECT_PASSWORD_RESET": "email/password_reset_subject.txt",
+    # email templates
     "EMAIL_TEMPLATE_ACTIVATION": "email/activation_email.html",
-    "EMAIL_TEMPLATE_RESEND_ACTIVATION": "email/activation_email.html",
+    "EMAIL_TEMPLATE_ACTIVATION_RESEND": "email/activation_email.html",
+    "EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION": "email/activation_email.html",
     "EMAIL_TEMPLATE_PASSWORD_RESET": "email/password_reset_email.html",
     # query stuff
     "USER_NODE_EXCLUDE_FIELDS": ["password", "is_superuser"],
@@ -59,7 +57,12 @@ DEFAULTS = {
         "email": ["exact",],
         "username": ["exact", "icontains", "istartswith"],
         "is_active": ["exact"],
+        "status__archived": ["exact"],
+        "status__verified": ["exact"],
+        "status__secondary_email": ["exact"],
     },
+    # turn is_active to False instead
+    "ALLOW_DELETE_ACCOUNT": False,
 }
 
 

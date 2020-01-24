@@ -8,14 +8,9 @@ from graphql_auth.constants import Messages
 
 class VerifyTokenTestCaseMixin:
     def setUp(self):
-        self.user = get_user_model().objects.create(
-            email="foo@email.com",
-            username="foo_username",
-            is_active=True,
-            last_login=timezone.now(),
+        self.user = self.register_user(
+            email="foo@email.com", username="foo", verified=False
         )
-        self.user.set_password("b23odxi2b34b")
-        self.user.save()
 
     def test_verify_token(self):
         query = self.get_login_query()
@@ -40,10 +35,12 @@ class VerifyTokenTestCase(VerifyTokenTestCaseMixin, DefaultTestCase):
     def get_login_query(self):
         return """
         mutation {
-        tokenAuth(email: "foo@email.com", password: "b23odxi2b34b" )
+        tokenAuth(email: "foo@email.com", password: "%s" )
             { token, success, errors  }
         }
-        """
+        """ % (
+            self.default_password
+        )
 
     def get_verify_query(self, token):
         return """
@@ -60,10 +57,12 @@ class VerifyTokenRelayTestCase(VerifyTokenTestCaseMixin, RelayTestCase):
     def get_login_query(self):
         return """
         mutation {
-        tokenAuth(input:{ email: "foo@email.com", password: "b23odxi2b34b"  })
+        tokenAuth(input:{ email: "foo@email.com", password: "%s"  })
             { token, success, errors  }
         }
-        """
+        """ % (
+            self.default_password
+        )
 
     def get_verify_query(self, token):
         return """

@@ -1,34 +1,46 @@
+from functools import wraps
+
 from .constants import Messages
-from .utils import is_not_verified_user
+from .exceptions import WrongUsage
 
 
-def is_authenticated_and_verified(fn):
-    """
-    check if user is authenticated and verified
-    return the class with args:
-        success = False
-        errors = ["Unauthenticated."]
-    """
-
+def login_required(fn):
+    @wraps(fn)
     def wrapper(cls, root, info, **kwargs):
         user = info.context.user
         if not user.is_authenticated:
             return cls(success=False, errors=Messages.UNAUTHENTICATED)
-        elif is_not_verified_user(user):
+        return fn(cls, root, info, **kwargs)
+
+    return wrapper
+
+
+def verification_required(fn):
+    @wraps(fn)
+    @login_required
+    def wrapper(cls, root, info, **kwargs):
+        user = info.context.user
+        if not user.status.verified:
             return cls(success=False, errors=Messages.NOT_VERIFIED)
         return fn(cls, root, info, **kwargs)
 
     return wrapper
 
 
-def password_confirmation(fn,):
-    """
-    password required on inputs
-    return the class with args:
-        success = False
-        errors = ...
-    """
+def secondary_email_required(fn):
+    @wraps(fn)
+    @verification_required
+    def wrapper(cls, root, info, **kwargs):
+        user = info.context.user
+        if not user.status.secondary_email:
+            return cls(success=False, errors=Messages.SECONDARY_EMAIL_REQUIRED)
+        return fn(cls, root, info, **kwargs)
 
+    return wrapper
+
+
+def password_confirmation_required(fn):
+    @wraps(fn)
     def wrapper(cls, root, info, **kwargs):
         try:
             field_name = next(
@@ -36,10 +48,10 @@ def password_confirmation(fn,):
             )
             password = kwargs[field_name]
         except Exception:
-            raise Exception(
+            raise WrongUsage(
                 """
                 @password_confirmation is supposed to be used on
-                mutations with 'password' field required.
+                mutations with 'password' or 'old_password' field required.
                 """
             )
         user = info.context.user

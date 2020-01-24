@@ -1,16 +1,18 @@
-import re
-from collections import Mapping
-
 from django.core import signing
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+from django.conf import settings as django_settings
+from django.core.signing import BadSignature
+
+from .exceptions import TokenScopeError
 
 
-def get_token(user, action, exp=None):
+def get_token(user, action, **kwargs):
     username = user.get_username()
     if hasattr(username, "pk"):
         username = username.pk
     payload = {user.USERNAME_FIELD: username, "action": action}
+    if kwargs:
+        payload.update(**kwargs)
     token = signing.dumps(payload)
     return token
 
@@ -19,20 +21,25 @@ def get_token_paylod(token, action, exp=None):
     payload = signing.loads(token, max_age=exp)
     _action = payload.pop("action")
     if _action != action:
-        raise Exception("Invalid token.")
+        raise TokenScopeError
     return payload
 
 
-def is_archived_user(user):
-    if not user.is_active and user.last_login:
-        return True
-    return False
-
-
-def is_not_verified_user(user):
-    if not user.is_active and not user.last_login:
-        return True
-    return False
+def revoke_user_refresh_token(user):
+    if (
+        hasattr(django_settings, "GRAPHQL_JWT")
+        and django_settings.GRAPHQL_JWT.get(
+            "JWT_LONG_RUNNING_REFRESH_TOKEN", False
+        )
+        and "graphql_jwt.refresh_token.apps.RefreshTokenConfig"
+        in django_settings.INSTALLED_APPS
+    ):
+        refresh_tokens = user.refresh_tokens.all()
+        for refresh_token in refresh_tokens:
+            try:
+                refresh_token.revoke()
+            except Exception:  # JSONWebTokenError
+                pass
 
 
 def get_token_field_name(dt, default=None):
@@ -45,7 +52,11 @@ def get_token_field_name(dt, default=None):
     )
 
 
-def set_fields(dict_or_list):
+def flat_dict(dict_or_list):
+    """
+    if is dict, return list of dict keys,
+    if is list, return the list
+    """
     return (
         list(dict_or_list.keys())
         if isinstance(dict_or_list, dict)
@@ -53,7 +64,11 @@ def set_fields(dict_or_list):
     )
 
 
-def resolve_fields(dict_or_list, extra_list):
+def normalize_fields(dict_or_list, extra_list):
+    """
+    helper merge settings defined fileds and
+    other fields on mutations
+    """
     if isinstance(dict_or_list, dict):
         for i in extra_list:
             dict_or_list[i] = "String"

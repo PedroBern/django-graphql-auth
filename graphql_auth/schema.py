@@ -1,42 +1,33 @@
+from django.contrib.auth import get_user_model
+
 import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
+from graphene_django.types import DjangoObjectType
 
-from .types import UserNode
+from .settings import graphql_auth_settings as app_settings
+
+
+class UserNode(DjangoObjectType):
+    class Meta:
+        model = get_user_model()
+        filter_fields = app_settings.USER_NODE_FILTER_FIELDS
+        exclude_fields = app_settings.USER_NODE_EXCLUDE_FIELDS
+        interfaces = (graphene.relay.Node,)
+
+    archived = graphene.Boolean()
+    verified = graphene.Boolean()
+    secondary_email = graphene.String()
+
+    def resolve_archived(self, info):
+        return self.status.archived
+
+    def resolve_verified(self, info):
+        return self.status.verified
+
+    def resolve_secondary_email(self, info):
+        return self.status.secondary_email
 
 
 class UserQuery(graphene.ObjectType):
     user = graphene.relay.Node.Field(UserNode)
     users = DjangoFilterConnectionField(UserNode)
-
-
-# example schema:
-#
-# class AuthMutation(graphene.ObjectType):
-#     token_auth = mutations.ObtainJSONWebToken.Field()
-#     verify_token = mutations.VerifyToken.Field()
-#     refresh_token = mutations.RefreshToken.Field()
-#     revoke_token = mutations.RevokeToken.Field()
-#     register = mutations.Register.Field()
-#     verify_account = mutations.VerifyAccount.Field()
-#     update_account = mutations.UpdateAccount.Field()
-#     resend_activation_email = mutations.ResendActivationEmail.Field()
-#     archive_account = mutations.ArchiveAccount.Field()
-#     delete_account = mutations.DeleteAccount.Field()
-#     password_change = mutations.PasswordChange.Field()
-#     send_password_reset_email = mutations.SendPasswordResetEmail.Field()
-#     password_reset = mutations.PasswordReset.Field()
-#
-# class AuthRelayMutation(graphene.ObjectType):
-#     token_auth = relay.ObtainJSONWebToken.Field()
-#     verify_token = relay.VerifyToken.Field()
-#     refresh_token = relay.RefreshToken.Field()
-#     revoke_token = relay.RevokeToken.Field()
-#     register = relay.Register.Field()
-#     verify_account = relay.VerifyAccount.Field()
-#     update_account = relay.UpdateAccount.Field()
-#     resend_activation_email = relay.ResendActivationEmail.Field()
-#     archive_account = relay.ArchiveAccount.Field()
-#     delete_account = relay.DeleteAccount.Field()
-#     password_change = relay.PasswordChange.Field()
-#     send_password_reset_email = relay.SendPasswordResetEmail.Field()
-#     password_reset = relay.PasswordReset.Field()

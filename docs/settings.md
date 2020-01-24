@@ -159,7 +159,7 @@ You can override email templates as shown [here](/overriding-email-templates), b
 
 default: `#!python "email/activation_subject.txt"`
 
-### EMAIL_SUBJECT_RESEND_ACTIVATION
+### EMAIL_SUBJECT_ACTIVATION_RESEND
 
 default: `#!python "email/activation_subject.txt"`
 
@@ -171,7 +171,7 @@ default: `#!python "email/password_reset_subject.txt"`
 
 default: `#!python "email/activation_email.html"`
 
-### EMAIL_TEMPLATE_RESEND_ACTIVATION
+### EMAIL_TEMPLATE_ACTIVATION_RESEND
 
 default: `#!python "email/activation_email.html"`
 

@@ -1,24 +1,101 @@
 import graphene
 import graphql_jwt
 
-from .utils import resolve_fields
-from .settings import graphql_auth_settings as settings
-from .types import UserNode
+from .bases import RelayMutationMixin, DynamicInputMixin
 from .mixins import (
-    RelayMutationMixin,
-    ObtainJSONWebTokenMixin,
-    DynamicInputMixin,
     RegisterMixin,
-    UpdateAccountMixin,
-    ResendActivationEmailMixin,
     VerifyAccountMixin,
+    ResendActivationEmailMixin,
+    SendPasswordResetEmailMixin,
+    PasswordResetMixin,
+    ObtainJSONWebTokenMixin,
     ArchiveAccountMixin,
     DeleteAccountMixin,
     PasswordChangeMixin,
-    SendPasswordResetEmailMixin,
-    PasswordResetMixin,
+    UpdateAccountMixin,
     VerifyOrRefreshOrRevokeTokenMixin,
+    SendSecondaryEmailActivationMixin,
+    VerifySecondaryEmailMixin,
+    SwapEmailsMixin,
 )
+from .utils import normalize_fields
+from .settings import graphql_auth_settings as app_settings
+from .schema import UserNode
+
+
+class Register(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    RegisterMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = normalize_fields(
+        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",],
+    )
+    _inputs = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
+
+
+class VerifyAccount(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    VerifyAccountMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = ["token"]
+
+
+class ResendActivationEmail(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    ResendActivationEmailMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = ["email"]
+
+
+class SendPasswordResetEmail(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    SendPasswordResetEmailMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = ["email"]
+
+
+class SendSecondaryEmailActivation(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    SendSecondaryEmailActivationMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = ["email", "password"]
+
+
+class VerifySecondaryEmail(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    VerifySecondaryEmailMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = ["token"]
+
+
+class SwapEmails(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    SwapEmailsMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = ["password"]
+
+
+class PasswordReset(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    PasswordResetMixin,
+    graphene.ClientIDMutation,
+):
+    _required_inputs = ["token", "new_password1", "new_password2"]
 
 
 class ObtainJSONWebToken(
@@ -26,25 +103,62 @@ class ObtainJSONWebToken(
     ObtainJSONWebTokenMixin,
     graphql_jwt.relay.JSONWebTokenMutation,
 ):
-    """
-    Get token and allow access to user
-    If user is archived, make it active
-    """
 
     user = graphene.Field(UserNode)
+    unarchiving = graphene.Boolean(default_value=False)
 
     @classmethod
     def Field(cls, *args, **kwargs):
         cls._meta.arguments["input"]._meta.fields.update(
             {"password": graphene.InputField(graphene.String, required=True)}
         )
-        for field in settings.LOGIN_ALLOWED_FIELDS:
+        for field in app_settings.LOGIN_ALLOWED_FIELDS:
             cls._meta.arguments["input"]._meta.fields.update(
                 {field: graphene.InputField(graphene.String)}
             )
         return super(graphql_jwt.relay.JSONWebTokenMutation, cls).Field(
             *args, **kwargs
         )
+
+
+class ArchiveAccount(
+    RelayMutationMixin,
+    ArchiveAccountMixin,
+    DynamicInputMixin,
+    graphene.ClientIDMutation,
+):
+
+    _required_inputs = ["password"]
+
+
+class DeleteAccount(
+    RelayMutationMixin,
+    DeleteAccountMixin,
+    DynamicInputMixin,
+    graphene.ClientIDMutation,
+):
+
+    _required_inputs = ["password"]
+
+
+class PasswordChange(
+    RelayMutationMixin,
+    PasswordChangeMixin,
+    DynamicInputMixin,
+    graphene.ClientIDMutation,
+):
+
+    _required_inputs = ["old_password", "new_password1", "new_password2"]
+
+
+class UpdateAccount(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    UpdateAccountMixin,
+    graphene.ClientIDMutation,
+):
+
+    _inputs = app_settings.UPDATE_MUTATION_FIELDS
 
 
 class VerifyToken(
@@ -84,123 +198,3 @@ class RevokeToken(
 
     class Input:
         refresh_token = graphene.String(required=True)
-
-
-class Register(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    RegisterMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to register a user
-    """
-
-    _required_inputs = resolve_fields(
-        settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",]
-    )
-    _inputs = settings.REGISTER_MUTATION_FIELDS_OPTIONAL
-
-
-class UpdateAccount(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    UpdateAccountMixin,
-    graphene.ClientIDMutation,
-):
-    """
-        Update user models fields
-    """
-
-    _inputs = settings.UPDATE_MUTATION_FIELDS
-
-
-class ResendActivationEmail(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    ResendActivationEmailMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to resend an activation email
-    """
-
-    _required_inputs = ["email"]
-
-
-class VerifyAccount(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    VerifyAccountMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to verify user from email authentication
-    """
-
-    _required_inputs = ["token"]
-
-
-class ArchiveAccount(
-    RelayMutationMixin,
-    ArchiveAccountMixin,
-    DynamicInputMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to archive account
-    """
-
-    _required_inputs = ["password"]
-
-
-class DeleteAccount(
-    RelayMutationMixin,
-    DeleteAccountMixin,
-    DynamicInputMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to delete account
-    """
-
-    _required_inputs = ["password"]
-
-
-class PasswordChange(
-    RelayMutationMixin,
-    PasswordChangeMixin,
-    DynamicInputMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to delete account
-    """
-
-    _required_inputs = ["old_password", "new_password1", "new_password2"]
-
-
-class PasswordReset(
-    RelayMutationMixin,
-    PasswordResetMixin,
-    DynamicInputMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to delete account
-    """
-
-    _required_inputs = ["token", "new_password1", "new_password2"]
-
-
-class SendPasswordResetEmail(
-    RelayMutationMixin,
-    SendPasswordResetEmailMixin,
-    DynamicInputMixin,
-    graphene.ClientIDMutation,
-):
-    """
-    Mutation to send password reset email
-    """
-
-    _required_inputs = ["email"]
