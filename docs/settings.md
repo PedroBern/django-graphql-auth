@@ -31,12 +31,11 @@ Example:
 
 ```python
 
-update_fields_list = ["username", "first_name", "last_name"]
+update_fields_list = ["first_name", "last_name"]
 
 # same as:
 
 update_fields_dict = {
-    "username": "String",
     "first_name": "String",
     "last_name": "String",
 }
@@ -54,6 +53,12 @@ REGISTER_MUTATION_FIELDS = {
 
 default: `#!python ["email", "username"]`
 
+### ALLOW_LOGIN_WITH_SECONDARY_EMAIL
+
+If a user has a secondary email set, he can use to login.
+
+default: `#!python True`
+
 ### REGISTER_MUTATION_FIELDS
 
 Required fields on registration, along with `password1` and `password2`.
@@ -70,7 +75,26 @@ default: `#!python []` [\*](/settings/#basics)
 
 Optional fields on update account.
 
-default: `#!python ["username", "first_name", "last_name"]` [\*](/settings/#basics)
+default: `#!python ["first_name", "last_name"]` [\*](/settings/#basics)
+
+
+---
+
+## Other
+
+### ALLOW_LOGIN_WITH_SECONDARY_EMAIL
+
+If a user has a secondary email set, he can use to login.
+
+default: `#!python True`
+
+### ALLOW_DELETE_ACCOUNT
+
+Instead of deleting the account, make `#!python user.is_active=False`.
+
+If set to `#!python True`, will actually delete the account.
+
+default: `#!python False`
 
 ---
 
@@ -86,6 +110,9 @@ default:
     "email": ["exact",],
     "username": ["exact", "icontains", "istartswith"],
     "is_active": ["exact"],
+    "status__archived": ["exact"],
+    "status__verified": ["exact"],
+    "status__secondary_email": ["exact"],
 }
 ```
 
@@ -105,19 +132,9 @@ default: `#!python timedelta(days=7)`
 
 default: `#!python timedelta(hours=1)`
 
----
+### EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN
 
-## Logout options
-
-These settings will work only if using [long running refresh tokens](https://django-graphql-jwt.domake.io/en/latest/refresh_token.html#long-running-refresh-tokens). It allow to revoke all user tokens in the database.
-
-### LOGOUT_ON_PASSWORD_RESET
-
-default: `#!python True`
-
-### LOGOUT_ON_PASSWORD_CHANGE
-
-default: `#!python True`
+default: `#!python timedelta(hours=1)`
 
 ---
 
@@ -125,9 +142,9 @@ default: `#!python True`
 
 ### SEND_ACTIVATION_EMAIL
 
-If set to `#!python False`, user will be saved with `#!python is_active=True` on the database.
+If set to `#!python False`, no email will be sent.
 
-If `#!python True`, is saved with `#!python is_active=False` and need to to activate account via email.
+Note that users will still have an `#!python verified=False` status.
 
 default: `#!python True`
 
@@ -149,9 +166,15 @@ Path [variable](/overriding-email-templates/#email-variables) used in password r
 
 default: `#!python "password-reset"`
 
+### ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL
+
+Path [variable](/overriding-email-templates/#email-variables) used in secondary email activation email.
+
+default: `#!python "activate"`
+
 ---
 
-## Email templates
+## Email subjects templates
 
 You can override email templates as shown [here](/overriding-email-templates), but you can also change the templates names.
 
@@ -163,15 +186,31 @@ default: `#!python "email/activation_subject.txt"`
 
 default: `#!python "email/activation_subject.txt"`
 
+### EMAIL_SUBJECT_SECONDARY_EMAIL_ACTIVATION
+
+default: `#!python "email/activation_subject.txt"`
+
 ### EMAIL_SUBJECT_PASSWORD_RESET
 
 default: `#!python "email/password_reset_subject.txt"`
+
+
+---
+
+## Email templates
+
+You can override email templates as shown [here](/overriding-email-templates), but you can also change the templates names.
+
 
 ### EMAIL_TEMPLATE_ACTIVATION
 
 default: `#!python "email/activation_email.html"`
 
 ### EMAIL_TEMPLATE_ACTIVATION_RESEND
+
+default: `#!python "email/activation_email.html"`
+
+### EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION
 
 default: `#!python "email/activation_email.html"`
 
