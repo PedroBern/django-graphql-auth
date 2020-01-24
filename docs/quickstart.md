@@ -925,7 +925,7 @@ Install and come back here!
 
 ### Update Account
 
-This is the first mutation with login required that we are going to tes.
+This is the first mutation with login required that we are going to test.
 
 Add the following to the ``AuthMutation``:
 
@@ -1000,6 +1000,9 @@ mutation {
   }
 }
 ```
+
+!!! tip ""
+    If it fails because of the token (in case you took some time and it has expired), make the login again and get a new token.
 
 Check if it worked:
 

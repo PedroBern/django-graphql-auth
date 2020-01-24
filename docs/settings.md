@@ -174,7 +174,7 @@ default: `#!python "activate"`
 
 ---
 
-## Email subjects templates
+## Email subject templates
 
 You can override email templates as shown [here](/overriding-email-templates), but you can also change the templates names.
 

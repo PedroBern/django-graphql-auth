@@ -1,6 +1,6 @@
 # Installation
 
-!!! info
+!!! attention
     If you are not familiarized with
     [Graphene](https://github.com/graphql-python/graphene)
     or [GraphQL JWT](https://github.com/flavors/django-graphql-jwt), skip this
@@ -44,6 +44,10 @@ python manage.py migrate
 
 ## Minimum setup
 
+The following are the minimum steps required to get it running. It should not take more than 10 minutes.
+
+---
+
 ### 1. Email Templates
 
 !!! Note ""
@@ -60,6 +64,8 @@ TEMPLATES = [
 ]
 ```
 
+---
+
 ### 2. Email Backend
 
 The default configuration is to send activation email,
@@ -74,6 +80,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ```
 
 Now all emails are sent to the standard output, instead of an actual email.
+
+---
 
 ### 3. Schema
 
@@ -159,6 +167,8 @@ class Mutation(AuthRelayMutation, graphene.ObjectType):
 schema = graphene.Schema(query=Query, mutation=Mutation)
 ```
 
+---
+
 ### 4. Allow Any Classes
 
 On your `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting, add the following:
@@ -199,6 +209,8 @@ GRAPHQL_JWT = {
 }
 ```
 
+---
+
 ### 5. Authentication Backend <small>- optional</small>
 
 Add the following to your `#!python AUTHENTICATION_BACKENDS`:
@@ -237,7 +249,7 @@ AUTHENTICATION_BACKENDS = [
     - Use [our login_required decorator](https://github.com/PedroBern/django-graphql-auth/blob/fce93a3f6103d7194d3e3fbd28b7466602b8bf31/graphql_auth/decorators.py#L7), note that this expect your output to contain [this output](https://github.com/PedroBern/django-graphql-auth/blob/fce93a3f6103d7194d3e3fbd28b7466602b8bf31/graphql_auth/bases.py#L6).
     - Create your own login_required decorator!
 
-
+---
 
 ### 6. Refresh Token <small>- optional</small>
 
