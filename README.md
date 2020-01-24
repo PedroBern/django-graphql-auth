@@ -26,14 +26,16 @@ your implementation*.
 * [x] JWT authentication *(with [Django GraphQL JWT](https://github.com/flavors/django-graphql-jwt>))*
 * [x] User query with filters *(with [Django Filter](https://github.com/carltongibson/django-filter>) and [Graphene Django](https://github.com/graphql-python/graphene-django>))*
 * [x] User registration with email verification
+* [x] Add secondary email, with email verification too
 * [x] Resend activation email
 * [x] Retrieve/Update user
 * [x] Archive user
-* [x] Permanently delete user
+* [x] Permanently delete user or make it inactive
 * [x] Turn archived user active again on login
+* [x] Track user status (archived, verified, secondary email)
 * [x] Password change
 * [x] Password reset through email
-* [x] Revoke user tokens on account archive and password change/reset
+* [x] Revoke user refresh tokens on account archive/delete/password change/reset
 * [x] All mutations return `success` and `errors`
 * [x] Default email templates *(you will customize though)*
 * [x] Customizable, no lock-in
