@@ -36,24 +36,19 @@ Create the following folder and files structure:
       manage.py
 ```
 
-Now you can remove ``graphql_auth`` from installed apps:
+This is the minimum. Check the [email templates settings](/settings/#email-templates), you can create custom templates for:
 
-
-```diff
-    # settings.py
-
-    INSTALLED_APPS = [
-      # ...
----   "graphql_auth",
-    ]
-```
+- account activation
+- resend account activation email
+- password reset email
+- secondary email activation
 
 ## Email variables
 
 Both subject and email templates receive the following variables:
 
 - user
-- token --> activation or password reset
+- token --> account activation / password reset / secondary-email activation
 - port
 - site_name --> from [django sites framework](https://docs.djangoproject.com/en/3.0/ref/contrib/sites/) <small>(optional)</small>
 - domain --> from [django sites framework](https://docs.djangoproject.com/en/3.0/ref/contrib/sites/) <small>(optional)</small>
