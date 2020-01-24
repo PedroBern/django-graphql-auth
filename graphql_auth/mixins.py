@@ -8,6 +8,7 @@ from django.db import transaction
 
 from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
 
+from .signals import *
 from .forms import RegisterForm, EmailForm, UpdateAccountForm
 from .bases import Output
 from .models import UserStatus
@@ -48,21 +49,22 @@ class RegisterMixin(Output):
             with transaction.atomic():
                 f = cls.form(kwargs)
                 if f.is_valid():
-                    email = kwargs.get("email", False)
+                    email = kwargs.get(UserModel.EMAIL_FIELD, False)
                     UserStatus.clean_email(email)
                     user = f.save()
-                    user_status = UserStatus(user=user)
-                    user_status.save()
                     send_activation = (
                         app_settings.SEND_ACTIVATION_EMAIL == True and email
                     )
                     if send_activation:
-                        user_status.send_activation_email(info)
+                        user.status.send_activation_email(info)
                     return cls(success=True)
                 else:
                     return cls(success=False, errors=f.errors.get_json_data())
         except EmailAlreadyInUse:
-            return cls(success=False, errors={"email": Messages.EMAIL_IN_USE})
+            return cls(
+                success=False,
+                errors={UserModel.EMAIL_FIELD: Messages.EMAIL_IN_USE},
+            )
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
 

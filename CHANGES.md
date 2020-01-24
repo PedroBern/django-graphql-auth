@@ -6,6 +6,11 @@
 
 ---
 
+### v0.2.3
+- user status is created on signal
+
+---
+
 ### v0.2.2
 - fix typo in setup
 - nothing new
