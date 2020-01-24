@@ -6,8 +6,16 @@
 
 ---
 
+### v0.2.2
+- fix typo in setup
+- nothing new
+
+
+---
+
 ### v0.2.1
 - fix readme on pypi
+- nothing new
 
 ---
 

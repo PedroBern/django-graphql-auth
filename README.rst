@@ -3,8 +3,6 @@ Django GraphQL Auth
 
 |Pypi| |Build Status| |Codecov|
 
-GraphQL authentication for `Django <https://github.com/django/django>`_!
-
 
 GraphQL implementation of the `Django <https://github.com/django/django>`_
 authentication system.
@@ -43,8 +41,7 @@ Features
 Documentation
 -------------
 
-Documentation is available at # TODO 
-
+Documentation is available at # TODO
 
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/django-graphql-auth.svg
