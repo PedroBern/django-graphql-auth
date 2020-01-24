@@ -2,7 +2,19 @@
 
 ---
 
-## v0
+## v0.2
+
+---
+
+### v0.2.0
+- minor bug fixes
+- add user status model to track if user is archived, verified and secondary email
+- add new mutations to handle secondary email
+- allow login with secondary email
+
+---
+
+## v0.1
 
 ---
 
