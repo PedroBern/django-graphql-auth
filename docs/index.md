@@ -34,7 +34,7 @@ your implementation^^.
 * [x] Archive user
 * [x] Permanently delete user or make it inactive
 * [x] Turn archived user active again on login
-* [x] Track user status (archived, verified, secondary email)
+* [x] Track user status <small>(archived, verified, secondary email)</small>
 * [x] Password change
 * [x] Password reset through email
 * [x] Revoke user tokens on account archive/delete/password change/reset
