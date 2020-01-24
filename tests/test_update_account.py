@@ -2,6 +2,8 @@ from pytest import mark
 from django.contrib.auth import get_user_model
 
 from .testCases import RelayTestCase, DefaultTestCase
+from .decorators import skipif_django_21
+
 from graphql_auth.constants import Messages
 
 
@@ -62,6 +64,7 @@ class UpdateAccountTestCaseMixin:
         self.assertEqual(self.user2.first_name, "bar")
 
     @mark.settings_b
+    @skipif_django_21()
     def test_update_account_list_on_settings(self):
         variables = {"user": self.user2}
         executed = self.make_request(self.get_query(), variables)
@@ -73,6 +76,7 @@ class UpdateAccountTestCaseMixin:
         self.assertEqual(self.user2.first_name, "firstname")
 
     @mark.settings_b
+    @skipif_django_21()
     def test_update_account_non_field_errors(self):
         """
         on settings b: first and last name are unique together,

@@ -1,3 +1,4 @@
+import django
 from pytest import mark
 
 from django.contrib.auth import get_user_model
@@ -5,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
 from .testCases import RelayTestCase, DefaultTestCase
+from .decorators import skipif_django_21
 
 from graphql_auth.constants import Messages
 from graphql_auth.models import UserStatus
@@ -81,6 +83,7 @@ class DeleteAccountTestCaseMixin:
         self.assertEqual(self.user2.is_active, False)
 
     @mark.settings_b
+    @skipif_django_21()
     def test_valid_password_permanently_delete(self):
         query = self.make_query()
         variables = {"user": self.user2}
