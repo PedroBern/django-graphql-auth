@@ -34,7 +34,7 @@ class TestBase(TestCase):
         password=None,
         verified=False,
         archived=False,
-        secondary_email=None,
+        secondary_email="",
         *args,
         **kwargs
     ):
@@ -43,13 +43,13 @@ class TestBase(TestCase):
         user = get_user_model().objects.create(*args, **kwargs)
         user.set_password(password or self.default_password)
         user.save()
-        user_status = UserStatus(
-            user=user,
-            verified=verified,
-            archived=archived,
-            secondary_email=secondary_email,
-        )
+        user_status = UserStatus._default_manager.get(user=user)
+        user_status.verified = verified
+        user_status.archived = archived
+        user_status.secondary_email = secondary_email
         user_status.save()
+        user_status.refresh_from_db()
+        user.refresh_from_db()
         return user
 
     def make_request(
