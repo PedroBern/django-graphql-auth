@@ -9,7 +9,7 @@
 
 ---
 
-## Start a new Django Project <small>- optional</small>
+## Start a new Django Project
 
 !!! info ""
     It's recommended to use [virtual env wrapper](https://virtualenvwrapper.readthedocs.io/en/latest/index.html) or [virtualenv](https://virtualenv.pypa.io/en/latest/) to create
@@ -93,11 +93,8 @@ INSTALLED_APPS = [
     'graphene_django'
 
 
-    # refresh tokens are optional, but recommended
-    # to allow to revoke user tokens when password change/reset
-    # or account is archived.
+    # refresh tokens are optional
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-
     ''
 ]
 
@@ -122,7 +119,7 @@ AUTHENTICATION_BACKENDS = [
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
 
-    # optional, explained in the INSTALLED_APPS
+    # optional
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }
 ```
@@ -146,12 +143,21 @@ pip install django-graphql-auth
 
 INSTALLED_APPS = [
    # ...
-
-   # just to load default email templates
-   # when we override the templates, this can be removed
    "graphql_auth",
 ]
+
+AUTHENTICATION_BACKENDS = [
+    # remove this
+    # "graphql_jwt.backends.JSONWebTokenBackend",
+
+    # add this
+    "graphql_auth.backends.GraphQLAuthBackend",
+
+    # ...
+]
 ```
+
+[Here](http://localhost:7000/installation/#5-authentication-backend-optional) is an explanation why we are adding this backend.
 
 And make sure your templates configuration has the following:
 
@@ -163,6 +169,13 @@ TEMPLATES = [
     },
 ]
 ```
+
+Run:
+
+```bash
+python manage.py migrate
+```
+
 
 ---
 
@@ -201,8 +214,7 @@ INSTALLED_APPS = [
 
 ### Load fixtures
 
-Before starting to query, let's load some users on the database. Create a new file
-called ``users.json`` in the same directory as ``manage.py`` with the following:
+Before starting to query, let's load some users on the database. Create a new file called ``users.json`` in the same directory as ``manage.py`` with the following:
 
 ```json
 [
@@ -212,13 +224,23 @@ called ``users.json`` in the same directory as ``manage.py`` with the following:
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
           "last_login": null,
-          "is_superuser": true,
-          "username": "admin",
+          "is_superuser": false,
+          "username": "user1",
           "first_name": "",
           "last_name": "",
-          "email": "admin@email.com",
-          "is_staff": true,
+          "email": "user1@email.com",
+          "is_staff": false,
           "is_active": true
+      }
+  },
+  {
+      "model": "graphql_auth.userstatus",
+      "pk": 1,
+      "fields": {
+          "user": 1,
+          "verified": false,
+          "archived": false,
+          "secondary_email": null
       }
   },
   {
@@ -228,12 +250,22 @@ called ``users.json`` in the same directory as ``manage.py`` with the following:
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
           "last_login": null,
           "is_superuser": false,
-          "username": "active_user",
+          "username": "user2",
           "first_name": "",
           "last_name": "",
-          "email": "active_user@email.com",
+          "email": "user2@email.com",
           "is_staff": false,
           "is_active": true
+      }
+  },
+  {
+      "model": "graphql_auth.userstatus",
+      "pk": 2,
+      "fields": {
+          "user": 2,
+          "verified": true,
+          "archived": false,
+          "secondary_email": null
       }
   },
   {
@@ -243,15 +275,51 @@ called ``users.json`` in the same directory as ``manage.py`` with the following:
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
           "last_login": null,
           "is_superuser": false,
-          "username": "inactive_user",
+          "username": "user3",
           "first_name": "",
           "last_name": "",
-          "email": "inactive_user@email.com",
+          "email": "user3@email.com",
           "is_staff": false,
-          "is_active": false
+          "is_active": true
+      }
+  },
+  {
+      "model": "graphql_auth.userstatus",
+      "pk": 3,
+      "fields": {
+          "user": 3,
+          "verified": true,
+          "archived": true,
+          "secondary_email": null
+      }
+  },
+  {
+      "model": "auth.user",
+      "pk": 4,
+      "fields": {
+          "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
+          "last_login": null,
+          "is_superuser": false,
+          "username": "user4",
+          "first_name": "",
+          "last_name": "",
+          "email": "user4@email.com",
+          "is_staff": false,
+          "is_active": true
+      }
+  },
+  {
+      "model": "graphql_auth.userstatus",
+      "pk": 4,
+      "fields": {
+          "user": 4,
+          "verified": true,
+          "archived": false,
+          "secondary_email": "user4_secondary@email.com"
       }
   }
 ]
+
 ```
 
 run:
@@ -285,7 +353,11 @@ query {
   users {
     edges {
       node {
-        username
+        username,
+        archived,
+        verified,
+        email,
+        secondaryEmail,
       }
     }
   }
@@ -299,17 +371,38 @@ query {
       "edges": [
         {
           "node": {
-            "username": "admin"
+            "username": "user1",
+            "archived": false,
+            "verified": false,
+            "email": "user1@email.com",
+            "secondaryEmail": null
           }
         },
         {
           "node": {
-            "username": "active_user"
+            "username": "user2",
+            "archived": false,
+            "verified": true,
+            "email": "user2@email.com",
+            "secondaryEmail": null
           }
         },
         {
           "node": {
-            "username": "inactive_user"
+            "username": "user3",
+            "archived": true,
+            "verified": true,
+            "email": "user3@email.com",
+            "secondaryEmail": null
+          }
+        },
+        {
+          "node": {
+            "username": "user4",
+            "archived": false,
+            "verified": true,
+            "email": "user4@email.com",
+            "secondaryEmail": "user4_secondary@email.com"
           }
         }
       ]
@@ -328,12 +421,11 @@ The ``UserQuery`` comes with some default filters:
 
 ```tab="query"
 query {
-  users (isActive: true, username_Icontains: "user") {
+  users(status_Archived: true){
     edges {
       node {
-        id,
         username,
-        isActive
+        verified,
       }
     }
   }
@@ -347,9 +439,8 @@ query {
       "edges": [
         {
           "node": {
-            "id": "VXNlck5vZGU6Mg==",
-            "username": "active_user",
-            "isActive": true
+            "username": "user3",
+            "archived": true
           }
         }
       ]
@@ -383,8 +474,7 @@ are ready to continue this guide.
 
 ## Mutations
 
-Now let's add some mutations to our schema, starting with the registration. On
-the ``schema.py`` add the following:
+Now let's add some mutations to our schema, starting with the registration. On the ``schema.py`` add the following:
 
 ### Register
 
@@ -429,6 +519,26 @@ schema = graphene.Schema(query=Query, mutation=Mutation)
 ```
 
 Take a minute to explore the schema on the documentation tab again.
+
+On your `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting, add the following:
+
+```python tab="GraphQL"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+    ],
+}
+```
+
+```python tab="Relay"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.relay.Register",
+    ],
+}
+```
 
 Let's try to register a new user:
 
@@ -543,7 +653,11 @@ query {
       node {
         id,
         username,
-        isActive
+        email,
+        isActive,
+        archived,
+        verified,
+        secondaryEmail
       }
     }
   }
@@ -557,9 +671,13 @@ query {
       "edges": [
         {
           "node": {
-            "id": "VXNlck5vZGU6NA==",
+            "id": "VXNlck5vZGU6NQ==",
             "username": "new_user",
-            "isActive": false
+            "email": "new_user@email.com",
+            "isActive": true,
+            "archived": false,
+            "verified": false,
+            "secondaryEmail": null
           }
         }
       ]
@@ -568,18 +686,19 @@ query {
 }
 ```
 
-There is actually a new user, but it is not active yet. We still need to activate the account.
+There is actually a new user, but it is not verified yet.
 
 Save the ``id`` of the new user, so we can query it later.
 
-Go to your console and note the email that has been sent. Should be two outputs,
-html and plain text formats.
+Go to your console and note the email that has been sent. Should be two outputs, html and plain text formats.
 
 Save the token from the url, something like this:
 
 ```bash
 eyJ1c2VybmFtZSI6Im5ld191c2VyIiwiYWN0aW9uIjoiYWN0aXZhdGlvbiJ9:1isoSr:CDwK_fjBSxWj3adC-X16wqzv-Mw
 ```
+
+---
 
 ### Account Verification
 
@@ -603,7 +722,29 @@ class AuthMutation(graphene.ObjectType):
 
 Take a minute again to see the changes on your schema.
 
-Run the follow on your browser:
+On your `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting, add the following:
+
+```python tab="GraphQL" hl_lines="5"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+    ],
+}
+```
+
+```python tab="Relay" hl_lines="5"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.relay.Register",
+        "graphql_auth.relay.VerifyAccount",
+    ],
+}
+```
+
+Let's try to verify the account:
 
 ```python tab="graphql"
 mutation {
@@ -639,13 +780,13 @@ mutation {
 }
 ```
 
-Check if the user is active now, using the id that you saved early:
+Check if the user is verified using the id that you have saved early:
 
 ```tab="query"
 query {
-  user (id: "VXNlck5vZGU6NA=="){
+  user (id: "VXNlck5vZGU6NQ=="){
     username,
-    isActive
+    verified
   }
 }
 ```
@@ -655,7 +796,228 @@ query {
   "data": {
     "user": {
       "username": "new_user",
-      "isActive": true
+      "verified": true
+    }
+  }
+}
+```
+
+---
+
+### Login
+
+Add the following to the ``AuthMutation``:
+
+```python tab="graphql" hl_lines="6"
+# schema.py
+
+class AuthMutation(graphene.ObjectType):
+    register = mutations.Register.Field()
+    verify_account = mutations.VerifyAccount.Field()
+    token_auth = mutations.ObtainJSONWebToken.Field()
+```
+
+```python tab="relay" hl_lines="6"
+# schema.py
+
+class AuthMutation(graphene.ObjectType):
+    register = relay.Register.Field()
+    verify_account = relay.VerifyAccount.Field()
+    token_auth = relay.ObtainJSONWebToken.Field()
+```
+
+And again, on your `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting, add the following:
+
+```python tab="GraphQL" hl_lines="6"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+    ],
+}
+```
+
+```python tab="Relay" hl_lines="6"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.relay.Register",
+        "graphql_auth.relay.VerifyAccount",
+        "graphql_auth.relay.ObtainJSONWebToken",
+    ],
+}
+```
+
+Let's try to login:
+
+```python tab="graphql"
+mutation {
+  tokenAuth(username: "new_user", password: "supersecretpassword") {
+    success,
+    errors,
+    unarchiving,
+    token,
+    refreshToken,
+    unarchiving,
+    user {
+      id,
+      username,
+    }
+  }
+}
+```
+
+```python tab="response"
+{
+  "data": {
+    "tokenAuth": {
+      "success": true,
+      "errors": null,
+      "unarchiving": false,
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5ld191c2VyIiwiZXhwIjoxNTc5ODk2Njc0LCJvcmlnSWF0IjoxNTc5ODk2Mzc0fQ.pNOkAWPyIanQWrKwvntQqf6asa8pkLuldW12N9nbfOo",
+      "refreshToken": "fc1cf50178b7e7923e9580ff73920a04cfeaa9e7",
+      "user": {
+        "id": "VXNlck5vZGU6NQ==",
+        "username": "new_user"
+      }
+    }
+  }
+}
+```
+
+```python tab="relay" hl_lines="3 6"
+mutation {
+  tokenAuth(
+    input: {
+      username: "new_user",
+      password: "supersecretpassword"
+    }
+  ) {
+    success,
+    errors,
+    unarchiving,
+    token,
+    refreshToken,
+    unarchiving,
+    user {
+      id,
+      username,
+    }
+  }
+}
+```
+
+Save this `token`, we are going to use it to do some protected actions.
+
+The GraphiQL interface that comes with Graphene is great! But to try all features, we need to send this token on the header and the GraphiQL do not support this.
+
+---
+
+### Insomnia API client
+
+We are going to use [insomnia API client](https://insomnia.rest/) to send request with authorization header. It is really easy to setup, simple follow the instructions on the site.
+
+Install and come back here!
+
+---
+
+### Update Account
+
+This is the first mutation with login required that we are going to tes.
+
+Add the following to the ``AuthMutation``:
+
+```python tab="graphql" hl_lines="7"
+# schema.py
+
+class AuthMutation(graphene.ObjectType):
+    register = mutations.Register.Field()
+    verify_account = mutations.VerifyAccount.Field()
+    token_auth = mutations.ObtainJSONWebToken.Field()
+    update_account = mutations.UpdateAccount.Field()
+```
+
+```python tab="relay" hl_lines="7"
+# schema.py
+
+class AuthMutation(graphene.ObjectType):
+    register = relay.Register.Field()
+    verify_account = relay.VerifyAccount.Field()
+    token_auth = relay.ObtainJSONWebToken.Field()
+    update_account = relay.UpdateAccount.Field()
+```
+
+On the insomnia, create a new request and call it `updateAccount`. Select the method `POST`.
+
+On the top of the window, add your graphql url:
+
+```bash
+http://127.0.0.1:8000/graphql
+```
+
+For the body, select `GraphQL Query`. Now it works exaclty as the graphiQL.
+
+On the headers pane, create a new header:
+
+- name: `Authorization`
+- value: `JWT <TOKEN FROM THE LOGIN>`
+
+Make the query:
+
+```python tab="graphql"
+mutation {
+  updateAccount(
+    firstName: "Joe"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```python tab="response"
+{
+  "data": {
+    "updateAccount": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```python tab="relay" hl_lines="3 5"
+mutation {
+  updateAccount(
+    input: {
+      firstName: "Joe"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+Check if it worked:
+
+```python tab="graphql"
+query {
+  user (id: "VXNlck5vZGU6NQ=="){
+    username,
+    firstName
+  }
+}
+```
+
+```python tab="response"
+{
+  "data": {
+    "user": {
+      "username": "new_user",
+      "firstName": "Joe"
     }
   }
 }
@@ -674,17 +1036,20 @@ query {
 
 ### Full schema
 
-```python tab="GraphQL" hl_lines="4 5 6 7 8 9 10 14 15 16 17"
+```python tab="GraphQL"
 class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
     verify_account = mutations.VerifyAccount.Field()
-    update_account = mutations.UpdateAccount.Field()
     resend_activation_email = mutations.ResendActivationEmail.Field()
-    archive_account = mutations.ArchiveAccount.Field()
-    delete_account = mutations.DeleteAccount.Field()
-    password_change = mutations.PasswordChange.Field()
     send_password_reset_email = mutations.SendPasswordResetEmail.Field()
     password_reset = mutations.PasswordReset.Field()
+    password_change = mutations.PasswordChange.Field()
+    archive_account = mutations.ArchiveAccount.Field()
+    delete_account = mutations.DeleteAccount.Field()
+    update_account = mutations.UpdateAccount.Field()
+    send_secondary_email_activation =  mutations.SendSecondaryEmailActivation.Field()
+    verify_secondary_email = mutations.VerifySecondaryEmail.Field()
+    swap_emails = mutations.SwapEmails.Field()
 
     # django-graphql-jwt authentication
     # with some extra features
@@ -694,17 +1059,20 @@ class AuthMutation(graphene.ObjectType):
     revoke_token = mutations.RevokeToken.Field()
 ```
 
-```python tab="Relay" hl_lines="4 5 6 7 8 9 10 14 15 16 17"
-class AuthRelayMutation(graphene.ObjectType):
+```python tab="Relay"
+class AuthMutation(graphene.ObjectType):
     register = relay.Register.Field()
     verify_account = relay.VerifyAccount.Field()
-    update_account = relay.UpdateAccount.Field()
     resend_activation_email = relay.ResendActivationEmail.Field()
-    archive_account = relay.ArchiveAccount.Field()
-    delete_account = relay.DeleteAccount.Field()
-    password_change = relay.PasswordChange.Field()
     send_password_reset_email = relay.SendPasswordResetEmail.Field()
     password_reset = relay.PasswordReset.Field()
+    password_change = relay.PasswordChange.Field()
+    archive_account = relay.ArchiveAccount.Field()
+    delete_account = relay.DeleteAccount.Field()
+    update_account = relay.UpdateAccount.Field()
+    send_secondary_email_activation =  relay.SendSecondaryEmailActivation.Field()
+    verify_secondary_email = relay.VerifySecondaryEmail.Field()
+    swap_emails = relay.SwapEmails.Field()
 
     # django-graphql-jwt authentication
     # with some extra features
@@ -712,4 +1080,42 @@ class AuthRelayMutation(graphene.ObjectType):
     verify_token = relay.VerifyToken.Field()
     refresh_token = relay.RefreshToken.Field()
     revoke_token = relay.RevokeToken.Field()
+```
+
+### Full Allow Any Classes
+
+```python tab="GraphQL"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ResendActivationEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.VerifySecondaryEmail",
+    ],
+}
+```
+
+```python tab="Relay"
+GRAPHQL_JWT = {
+    #...
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.relay.Register",
+        "graphql_auth.relay.VerifyAccount",
+        "graphql_auth.relay.ResendActivationEmail",
+        "graphql_auth.relay.SendPasswordResetEmail",
+        "graphql_auth.relay.PasswordReset",
+        "graphql_auth.relay.ObtainJSONWebToken",
+        "graphql_auth.relay.VerifyToken",
+        "graphql_auth.relay.RefreshToken",
+        "graphql_auth.relay.RevokeToken",
+        "graphql_auth.relay.VerifySecondaryEmail",
+    ],
+}
 ```
