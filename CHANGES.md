@@ -6,6 +6,11 @@
 
 ---
 
+### v0.2.4
+- add mutation to remove secondary email
+
+---
+
 ### v0.2.3
 - user status is created on signal
 

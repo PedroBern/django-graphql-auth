@@ -17,6 +17,7 @@ from .mixins import (
     SendSecondaryEmailActivationMixin,
     VerifySecondaryEmailMixin,
     SwapEmailsMixin,
+    RemoveSecondaryEmailMixin,
 )
 from .utils import normalize_fields
 from .settings import graphql_auth_settings as app_settings
@@ -29,6 +30,9 @@ class Register(
     RegisterMixin,
     graphene.ClientIDMutation,
 ):
+
+    __doc__ = RegisterMixin.__doc__
+
     _required_inputs = normalize_fields(
         app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",],
     )
@@ -41,6 +45,7 @@ class VerifyAccount(
     VerifyAccountMixin,
     graphene.ClientIDMutation,
 ):
+    __doc__ = VerifyAccountMixin.__doc__
     _required_inputs = ["token"]
 
 
@@ -50,6 +55,7 @@ class ResendActivationEmail(
     ResendActivationEmailMixin,
     graphene.ClientIDMutation,
 ):
+    __doc__ = ResendActivationEmailMixin.__doc__
     _required_inputs = ["email"]
 
 
@@ -59,6 +65,7 @@ class SendPasswordResetEmail(
     SendPasswordResetEmailMixin,
     graphene.ClientIDMutation,
 ):
+    __doc__ = SendPasswordResetEmailMixin.__doc__
     _required_inputs = ["email"]
 
 
@@ -68,6 +75,7 @@ class SendSecondaryEmailActivation(
     SendSecondaryEmailActivationMixin,
     graphene.ClientIDMutation,
 ):
+    __doc__ = SendSecondaryEmailActivationMixin.__doc__
     _required_inputs = ["email", "password"]
 
 
@@ -77,6 +85,7 @@ class VerifySecondaryEmail(
     VerifySecondaryEmailMixin,
     graphene.ClientIDMutation,
 ):
+    __doc__ = VerifySecondaryEmailMixin.__doc__
     _required_inputs = ["token"]
 
 
@@ -86,6 +95,17 @@ class SwapEmails(
     SwapEmailsMixin,
     graphene.ClientIDMutation,
 ):
+    __doc__ = SwapEmailsMixin.__doc__
+    _required_inputs = ["password"]
+
+
+class RemoveSecondaryEmail(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    RemoveSecondaryEmailMixin,
+    graphene.ClientIDMutation,
+):
+    __doc__ = RemoveSecondaryEmailMixin.__doc__
     _required_inputs = ["password"]
 
 
@@ -95,6 +115,7 @@ class PasswordReset(
     PasswordResetMixin,
     graphene.ClientIDMutation,
 ):
+    __doc__ = PasswordResetMixin.__doc__
     _required_inputs = ["token", "new_password1", "new_password2"]
 
 
@@ -103,7 +124,7 @@ class ObtainJSONWebToken(
     ObtainJSONWebTokenMixin,
     graphql_jwt.relay.JSONWebTokenMutation,
 ):
-
+    __doc__ = ObtainJSONWebTokenMixin.__doc__
     user = graphene.Field(UserNode)
     unarchiving = graphene.Boolean(default_value=False)
 
@@ -127,7 +148,7 @@ class ArchiveAccount(
     DynamicInputMixin,
     graphene.ClientIDMutation,
 ):
-
+    __doc__ = ArchiveAccountMixin.__doc__
     _required_inputs = ["password"]
 
 
@@ -137,7 +158,7 @@ class DeleteAccount(
     DynamicInputMixin,
     graphene.ClientIDMutation,
 ):
-
+    __doc__ = DeleteAccountMixin.__doc__
     _required_inputs = ["password"]
 
 
@@ -147,7 +168,7 @@ class PasswordChange(
     DynamicInputMixin,
     graphene.ClientIDMutation,
 ):
-
+    __doc__ = PasswordChangeMixin.__doc__
     _required_inputs = ["old_password", "new_password1", "new_password2"]
 
 
@@ -157,7 +178,7 @@ class UpdateAccount(
     UpdateAccountMixin,
     graphene.ClientIDMutation,
 ):
-
+    __doc__ = UpdateAccountMixin.__doc__
     _inputs = app_settings.UPDATE_MUTATION_FIELDS
 
 
@@ -166,9 +187,7 @@ class VerifyToken(
     VerifyOrRefreshOrRevokeTokenMixin,
     graphql_jwt.relay.Verify,
 ):
-    """
-    Verify token mutation
-    """
+    __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
     class Input:
         token = graphene.String(required=True)
@@ -179,9 +198,7 @@ class RefreshToken(
     VerifyOrRefreshOrRevokeTokenMixin,
     graphql_jwt.relay.Refresh,
 ):
-    """
-    Refresh token mutation
-    """
+    __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
     class Input(graphql_jwt.mixins.RefreshMixin.Fields):
         """Refresh Input"""
@@ -192,9 +209,7 @@ class RevokeToken(
     VerifyOrRefreshOrRevokeTokenMixin,
     graphql_jwt.relay.Revoke,
 ):
-    """
-    Revoke token mutation
-    """
+    __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
     class Input:
         refresh_token = graphene.String(required=True)

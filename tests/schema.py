@@ -23,6 +23,7 @@ class AuthMutation(graphene.ObjectType):
     password_reset = mutations.PasswordReset.Field()
     verify_secondary_email = mutations.VerifySecondaryEmail.Field()
     swap_emails = mutations.SwapEmails.Field()
+    remove_secondary_email = mutations.RemoveSecondaryEmail.Field()
     send_secondary_email_activation = (
         mutations.SendSecondaryEmailActivation.Field()
     )
@@ -44,6 +45,7 @@ class AuthRelayMutation(graphene.ObjectType):
     password_reset = relay.PasswordReset.Field()
     verify_secondary_email = relay.VerifySecondaryEmail.Field()
     swap_emails = relay.SwapEmails.Field()
+    remove_secondary_email = relay.RemoveSecondaryEmail.Field()
     send_secondary_email_activation = relay.SendSecondaryEmailActivation.Field()
 
 

@@ -38,7 +38,22 @@ UserModel = get_user_model()
 
 class RegisterMixin(Output):
     """
-    register user with fields defined in settings
+    Register user with fields defined in the settings.
+
+    If the email field of the user model is part of the
+    registration fields (default), check if there is
+    no user with that email or as a secondary email.
+
+    If it exists, it does not register the user,
+    even if the email field is not defined as unique
+    (default of the default django user model).
+
+    When creating the user, it also creates a UserStatus
+    related to that user, making it possible to track
+    if the user is archived, verified and has a secondary
+    email.
+
+    Send account verification email.
     """
 
     form = RegisterForm
@@ -71,7 +86,11 @@ class RegisterMixin(Output):
 
 class VerifyAccountMixin(Output):
     """
-    verify user with token sent by email
+    Verify user account.
+
+    Receive the token that was sent by email.
+    If the token is valid, make the user verified
+    by making the `user.status.verified` field true.
     """
 
     @classmethod
@@ -90,7 +109,18 @@ class VerifyAccountMixin(Output):
 
 class VerifySecondaryEmailMixin(Output):
     """
-    verify secondary email. User is already verified.
+    Verify user secondary email.
+
+    Receive the token that was sent by email.
+    User is already verified when using this mutation.
+
+    If the token is valid, add the secondary email
+    to `user.status.secondary_email` field.
+
+    Note that until the secondary email is verified,
+    it has not been saved anywhere beyond the token,
+    so it can still be used to create a new account.
+    After being verified, it will no longer be available.
     """
 
     @classmethod
@@ -109,7 +139,14 @@ class VerifySecondaryEmailMixin(Output):
 
 class ResendActivationEmailMixin(Output):
     """
-    resend an activation email
+    Sends activation email.
+
+    It is called resend because theoretically
+    the first activation email was sent when
+    the user registered.
+
+    If there is no user with the requested email,
+    a successful response is returned.
     """
 
     @classmethod
@@ -134,7 +171,13 @@ class ResendActivationEmailMixin(Output):
 
 class SendPasswordResetEmailMixin(Output):
     """
-    send password reset email
+    Send password reset email.
+
+    For non verified users, send an activation
+    email instead.
+
+    If there is no user with the requested email,
+    a successful response is returned.
     """
 
     @classmethod
@@ -164,7 +207,13 @@ class SendPasswordResetEmailMixin(Output):
 
 class PasswordResetMixin(Output):
     """
-    reset password
+    Change user password without old password.
+
+    Receive the token that was sent by email.
+
+    If token and new passwords are valid, update
+    user password and in case of using refresh
+    tokens, revoke all of them.
     """
 
     form = SetPasswordForm
@@ -193,11 +242,14 @@ class PasswordResetMixin(Output):
 
 class ObtainJSONWebTokenMixin(Output):
     """
-    Perform login.
-    If user is archived, make it unarchived again.
+    Obtain JSON web token for given user.
 
-    Allow login with different fields than USERNAME_FIELD
-    deffined in settings.LOGIN_ALLOWED_FIELDS
+    Allow to perform login with different fields,
+    and secondary email if set. The fields are
+    defined on settings.
+
+    If user is archived, make it unarchive and
+    return `unarchiving=True` on output.
     """
 
     @classmethod
@@ -256,7 +308,9 @@ class ArchiveOrDeleteMixin(Output):
 
 class ArchiveAccountMixin(ArchiveOrDeleteMixin):
     """
-    Archive account and revoke refresh tokens
+    Archive account and revoke refresh tokens.
+
+    User must be verified and confirm password.
     """
 
     @classmethod
@@ -267,8 +321,12 @@ class ArchiveAccountMixin(ArchiveOrDeleteMixin):
 
 class DeleteAccountMixin(ArchiveOrDeleteMixin):
     """
-    Delete account or turn is_active to False
-    and revoke tokens. Based on settings
+    Delete account permanently or make `user.is_active=False`.
+
+    The behavior is defined on settings.
+    Anyway user refresh tokens are revoked.
+
+    User must be verified and confirm password.
     """
 
     @classmethod
@@ -284,7 +342,9 @@ class DeleteAccountMixin(ArchiveOrDeleteMixin):
 
 class PasswordChangeMixin(Output):
     """
-    Change account password when user remenbers the old password
+    Change account password when user knows the old password.
+
+    User must be verified.
     """
 
     form = PasswordChangeForm
@@ -305,7 +365,9 @@ class PasswordChangeMixin(Output):
 
 class UpdateAccountMixin(Output):
     """
-    Update user models fields
+    Update user model fields, defined on settings.
+
+    User must be verified.
     """
 
     form = UpdateAccountForm
@@ -323,6 +385,10 @@ class UpdateAccountMixin(Output):
 
 
 class VerifyOrRefreshOrRevokeTokenMixin(Output):
+    """
+    Same as `grapgql_jwt` implementation, with standard output.
+    """
+
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
@@ -342,7 +408,9 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
 
 class SendSecondaryEmailActivationMixin(Output):
     """
-    send activation to secondary email
+    Send activation to secondary email.
+
+    User must be verified and confirm password.
     """
 
     @classmethod
@@ -365,7 +433,9 @@ class SendSecondaryEmailActivationMixin(Output):
 
 class SwapEmailsMixin(Output):
     """
-    swap between primary and secondary emails
+    Swap between primary and secondary emails.
+
+    Require password confirmation.
     """
 
     @classmethod
@@ -373,4 +443,19 @@ class SwapEmailsMixin(Output):
     @password_confirmation_required
     def resolve_mutation(cls, root, info, **kwargs):
         info.context.user.status.swap_emails()
+        return cls(success=True)
+
+
+class RemoveSecondaryEmailMixin(Output):
+    """
+    Remove user secondary email.
+
+    Require password confirmation.
+    """
+
+    @classmethod
+    @secondary_email_required
+    @password_confirmation_required
+    def resolve_mutation(cls, root, info, **kwargs):
+        info.context.user.status.remove_secondary_email()
         return cls(success=True)

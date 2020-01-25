@@ -114,7 +114,9 @@ class UserStatus(models.Model):
     @classmethod
     def email_is_free(cls, email):
         try:
-            user = UserModel._default_manager.get(email=email)
+            user = UserModel._default_manager.get(
+                **{UserModel.EMAIL_FIELD: email}
+            )
             return False
         except Exception:
             pass
@@ -184,4 +186,11 @@ class UserStatus(models.Model):
             setattr(self.user, EMAIL_FIELD, self.secondary_email)
             self.secondary_email = primary
             self.user.save(update_fields=[EMAIL_FIELD])
+            self.save(update_fields=["secondary_email"])
+
+    def remove_secondary_email(self):
+        if not self.secondary_email:
+            raise WrongUsage
+        with transaction.atomic():
+            self.secondary_email = None
             self.save(update_fields=["secondary_email"])

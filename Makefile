@@ -13,14 +13,16 @@ install-local:
 p ?= 37
 d ?= 30
 
-test-local:
+test:
 	tox -e py${p}-django${d} -- --cov-report term-missing --cov-report html
 
-test-local-file:
+test-file:
 	tox -e py${p}-django${d} -- tests/test_${f}.py --cov-report html --cov-append
 
 serve:
+	python pre_docs_script.py
 	mkdocs serve
 
 build-docs:
+	python pre_docs_script.py
 	mkdocs build
