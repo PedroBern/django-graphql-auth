@@ -8,7 +8,6 @@ from django.db import transaction
 
 from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
 
-from .signals import *
 from .forms import RegisterForm, EmailForm, UpdateAccountForm
 from .bases import Output
 from .models import UserStatus
@@ -48,7 +47,7 @@ class RegisterMixin(Output):
     even if the email field is not defined as unique
     (default of the default django user model).
 
-    When creating the user, it also creates a UserStatus
+    When creating the user, it also creates a `UserStatus`
     related to that user, making it possible to track
     if the user is archived, verified and has a secondary
     email.
@@ -175,6 +174,8 @@ class SendPasswordResetEmailMixin(Output):
 
     For non verified users, send an activation
     email instead.
+
+    Accepts both primary and secondary email.
 
     If there is no user with the requested email,
     a successful response is returned.

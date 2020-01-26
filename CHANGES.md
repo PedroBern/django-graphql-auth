@@ -6,6 +6,12 @@
 
 ---
 
+### v0.2.5
+- update apps config
+- nothing new
+
+---
+
 ### v0.2.4
 - add mutation to remove secondary email
 

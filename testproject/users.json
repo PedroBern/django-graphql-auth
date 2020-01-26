@@ -15,16 +15,6 @@
       }
   },
   {
-      "model": "graphql_auth.userstatus",
-      "pk": 1,
-      "fields": {
-          "user": 1,
-          "verified": false,
-          "archived": false,
-          "secondary_email": null
-      }
-  },
-  {
       "model": "auth.user",
       "pk": 2,
       "fields": {

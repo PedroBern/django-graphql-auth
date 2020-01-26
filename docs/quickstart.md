@@ -157,7 +157,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 ```
 
-[Here](http://localhost:7000/installation/#5-authentication-backend-optional) is an explanation why we are adding this backend.
+[Here](http://localhost:7000/installation/#3-authentication-backend-optional) is an explanation why we are adding this backend.
 
 And make sure your templates configuration has the following:
 
@@ -216,6 +216,21 @@ INSTALLED_APPS = [
 
 Before starting to query, let's load some users on the database. Create a new file called ``users.json`` in the same directory as ``manage.py`` with the following:
 
+!!! info ""
+    Have a look on the fixtures, note that we are creating 4 users and 3 `UserStatus`. When creating a user, we create a relating `UserStatus` by default on `post_save` signal with the following fields:
+
+    ```python
+    verified=False
+    archived=False
+    secondary_email=None
+    ```
+
+    You can access it on any user:
+
+    ```bash
+    user.status.[verified | archived | secondary_email]
+    ```
+
 ```json
 [
   {
@@ -231,16 +246,6 @@ Before starting to query, let's load some users on the database. Create a new fi
           "email": "user1@email.com",
           "is_staff": false,
           "is_active": true
-      }
-  },
-  {
-      "model": "graphql_auth.userstatus",
-      "pk": 1,
-      "fields": {
-          "user": 1,
-          "verified": false,
-          "archived": false,
-          "secondary_email": null
       }
   },
   {
