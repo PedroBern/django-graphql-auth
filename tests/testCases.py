@@ -15,9 +15,10 @@ from graphql_auth.models import UserStatus
 
 class TestBase(TestCase):
     """
-    provide make_request helper to easily make a WSGIRequest
-    with context variables.
-    Return a shortcut of the client.execute["data"]["query name"].
+    provide make_request helper to easily make
+    requests with context variables.
+
+    Return a shortcut of the client.execute["data"]["<query name>"].
 
     example:
         query = `
