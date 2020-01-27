@@ -42,48 +42,13 @@ python manage.py migrate
 
 ---
 
-## Minimum setup
+## Setup
 
 The following are the minimum steps required to get it running. It should not take more than 10 minutes.
 
 ---
 
-### 1. Email Templates
-
-!!! Note ""
-    Overriding email templates is covered [here](/overriding-email-templates).
-
-This package comes with some default email templates, if you plan to use it, make sure your templates configuration has the following:
-
-```python
-TEMPLATES = [
-    {
-        # ...
-        'APP_DIRS': True,
-    },
-]
-```
-
----
-
-### 2. Email Backend
-
-The default configuration is to send activation email,
-you can set it to ``False`` on your [settings](/settings),
-but you still need an Email Backend
-to password reset.
-
-The quickest way for development is to setup a [Console Email Backend](https://docs.djangoproject.com/en/3.0/topics/email/#console-backend), simply add the following to your ```settings.py```.
-
-```python
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-```
-
-Now all emails are sent to the standard output, instead of an actual email.
-
----
-
-### 3. Schema
+### 1. Schema
 
 In your schema, add the following:
 
@@ -101,12 +66,13 @@ class AuthMutation(graphene.ObjectType):
     send_password_reset_email = mutations.SendPasswordResetEmail.Field()
     password_reset = mutations.PasswordReset.Field()
     password_change = mutations.PasswordChange.Field()
+    update_account = mutations.UpdateAccount.Field()
     archive_account = mutations.ArchiveAccount.Field()
     delete_account = mutations.DeleteAccount.Field()
-    update_account = mutations.UpdateAccount.Field()
     send_secondary_email_activation =  mutations.SendSecondaryEmailActivation.Field()
     verify_secondary_email = mutations.VerifySecondaryEmail.Field()
     swap_emails = mutations.SwapEmails.Field()
+    remove_secondary_email = mutations.RemoveSecondaryEmail.Field()
 
     # django-graphql-jwt authentication
     # with some extra features
@@ -141,12 +107,13 @@ class AuthRelayMutation(graphene.ObjectType):
     send_password_reset_email = relay.SendPasswordResetEmail.Field()
     password_reset = relay.PasswordReset.Field()
     password_change = relay.PasswordChange.Field()
+    update_account = relay.UpdateAccount.Field()
     archive_account = relay.ArchiveAccount.Field()
     delete_account = relay.DeleteAccount.Field()
-    update_account = relay.UpdateAccount.Field()
     send_secondary_email_activation =  relay.SendSecondaryEmailActivation.Field()
     verify_secondary_email = relay.VerifySecondaryEmail.Field()
     swap_emails = relay.SwapEmails.Field()
+    remove_secondary_email = mutations.RemoveSecondaryEmail.Field()
 
     # django-graphql-jwt authentication
     # with some extra features
@@ -169,7 +136,7 @@ schema = graphene.Schema(query=Query, mutation=Mutation)
 
 ---
 
-### 4. Allow Any Classes
+### 2. Allow Any Classes
 
 On your `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting, add the following:
 
@@ -211,7 +178,7 @@ GRAPHQL_JWT = {
 
 ---
 
-### 5. Authentication Backend <small>- optional</small>
+### 3. Authentication Backend <small>- optional</small>
 
 Add the following to your `#!python AUTHENTICATION_BACKENDS`:
 
@@ -251,7 +218,7 @@ AUTHENTICATION_BACKENDS = [
 
 ---
 
-### 6. Refresh Token <small>- optional</small>
+### 4. Refresh Token <small>- optional</small>
 
 Refresh tokens are optional and this package will work with the default token
 from [Django GraphQL JWT](https://github.com/flavors/django-graphql-jwt).
@@ -276,3 +243,40 @@ And remenber to migrate:
 ```bash
 python manage.py migrate
 ```
+
+---
+
+### 5. Email Templates
+
+!!! Note ""
+    Overriding email templates is covered [here](/overriding-email-templates).
+
+This package comes with some default email templates, if you plan to use it, make sure your templates configuration has the following:
+
+```python
+TEMPLATES = [
+    {
+        # ...
+        'APP_DIRS': True,
+    },
+]
+```
+
+---
+
+### 6. Email Backend
+
+The default configuration is to send activation email,
+you can set it to ``False`` on your [settings](/settings),
+but you still need an Email Backend
+to password reset.
+
+The quickest way for development is to setup a [Console Email Backend](https://docs.djangoproject.com/en/3.0/topics/email/#console-backend), simply add the following to your ```settings.py```.
+
+```python
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+```
+
+Now all emails are sent to the standard output, instead of an actual email.
+
+---

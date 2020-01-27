@@ -60,16 +60,20 @@ Both subject and email templates receive the following variables:
 
 Write your templates like this:
 
+{% raw %}
+
 ```html
 <!-- activation_email.html -->
 
 <h3>{{ site_name }}</h3>
 
-<p>Hello {{ user.username }}!</p>
+<p>Hello \{{ user.username }}!</p>
 
 <p>Please activate your account on the link:</p>
 
 <p>{{ protocol }}://{{ domain }}/{{ path }}/{{ token }}</p>
 ```
+
+{% endraw %}
 
 Provide only the `html` template. It will be converted to `text` later.

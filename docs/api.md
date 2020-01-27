@@ -2,13 +2,146 @@
 
 ---
 
+## Query
+
+GraphQL Auth provides a single query with some useful filters.
+
+```
+from graphql_auth.schema import UserQuery
+```
+
+The easiest way to explore it is using the [graphiQL](https://docs.graphene-python.org/projects/django/en/latest/tutorial-plain/#creating-graphql-and-graphiql-views).
+
+Examples from the [quickstart](/quickstart):
+
+```tab="query1"
+query {
+  users {
+    edges {
+      node {
+        username,
+        archived,
+        verified,
+        email,
+        secondaryEmail,
+      }
+    }
+  }
+}
+```
+
+```tab="response1"
+{
+  "data": {
+    "users": {
+      "edges": [
+        {
+          "node": {
+            "username": "user1",
+            "archived": false,
+            "verified": false,
+            "email": "user1@email.com",
+            "secondaryEmail": null
+          }
+        },
+        {
+          "node": {
+            "username": "user2",
+            "archived": false,
+            "verified": true,
+            "email": "user2@email.com",
+            "secondaryEmail": null
+          }
+        },
+        {
+          "node": {
+            "username": "user3",
+            "archived": true,
+            "verified": true,
+            "email": "user3@email.com",
+            "secondaryEmail": null
+          }
+        },
+        {
+          "node": {
+            "username": "user4",
+            "archived": false,
+            "verified": true,
+            "email": "user4@email.com",
+            "secondaryEmail": "user4_secondary@email.com"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+```tab="query2"
+query {
+  users (last: 1){
+    edges {
+      node {
+        id,
+        username,
+        email,
+        isActive,
+        archived,
+        verified,
+        secondaryEmail
+      }
+    }
+  }
+}
+```
+
+```tab="response2"
+{
+  "data": {
+    "users": {
+      "edges": [
+        {
+          "node": {
+            "id": "VXNlck5vZGU6NQ==",
+            "username": "new_user",
+            "email": "new_user@email.com",
+            "isActive": true,
+            "archived": false,
+            "verified": false,
+            "secondaryEmail": null
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+```tab="query3"
+query {
+  user (id: "VXNlck5vZGU6NQ=="){
+    username,
+    verified
+  }
+}
+```
+
+```tab="response3"
+{
+  "data": {
+    "user": {
+      "username": "new_user",
+      "verified": true
+    }
+  }
+}
+```
+
+---
+
 ## Mutations
 
-### Basics
-
-#### Import
-
-All of the following can be imported like this:
+All mutations can be imported like this:
 
 ```python tab="mutations"
 from graphql_auth import mutations
@@ -24,9 +157,9 @@ from graphql_auth import relay
 register = use relay.Register
 ```
 
-#### Standard response
+### Standard response
 
-All mutations will return a standard response containing `#!python errors` and `#!python success`.
+All mutations return a standard response containing `#!python errors` and `#!python success`.
 
 - Example:
 
@@ -88,11 +221,275 @@ mutation {
 
 ---
 
-### Register
+### Public
 
-Register account with [optional](/settings/#register_mutation_fields_optional) and [required](/settings/#register_mutation_fields) fields defined in settings.
+Public mutations don't require user to be logged in. You should add all of them in `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting, check [how it looks like](/installation/#2-allow-any-classes).
 
-- Success example
+---
+
+#### ObtainJSONWebToken
+
+{{ api.ObtainJSONWebToken }}
+
+```bash tab="graphql"
+mutation {
+  tokenAuth(
+    # username or email
+    email: "skywalker@email.com"
+    password: "123456super"
+  ) {
+    success,
+    errors,
+    token,
+    refreshToken,
+    unarchiving,
+    user {
+      id,
+      username
+    }
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "tokenAuth": {
+      "success": true,
+      "errors": null,
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImV4cCI6MTU3OTQ1ODI2Niwib3JpZ0lhdCI6MTU3OTQ1Nzk2Nn0.BKz4ohxQCGtJWnyd5tIbYFD2kpGYDiAVzWTDO2ZyUYY",
+      "refreshToken": "5f5fad67cd043437952ddde2750be20201f1017b",
+      "unarchiving": false,
+      "user": {
+        "id": "VXNlck5vZGU6MQ==",
+        "username": "skywalker"
+      }
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  tokenAuth(
+    input: {
+      email: "skywalker@email.com"
+      password: "123456super"
+    }
+  ) {
+    success,
+    errors,
+    token,
+    refreshToken,
+    user {
+      id,
+      username
+    }
+  }
+}
+```
+
+```bash tab="Invalid credentials"
+{
+  "data": {
+    "tokenAuth": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Please, enter valid credentials.",
+            "code": "invalid_credentials"
+          }
+        ]
+      },
+      "token": null,
+      "refreshToken": null,
+      "unarchiving": false,
+      "user": null
+    }
+  }
+}
+```
+
+---
+
+#### PasswordReset
+
+{{ api.PasswordReset }}
+
+```bash tab="graphql"
+mutation {
+  passwordReset(
+    token: "1eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImFjdGlvbiI6InBhc3N3b3JkX3Jlc2V0In0:1itExL:op0roJi-ZbO9cszNEQMs5mX3c6s",
+    newPassword1: "supersecretpassword",
+    newPassword2: "supersecretpassword"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "register": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  passwordReset(
+    input: {
+      token: "1eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImFjdGlvbiI6InBhc3N3b3JkX3Jlc2V0In0:1itExL:op0roJi-ZbO9cszNEQMs5mX3c6s",
+      newPassword1: "supersecretpassword",
+      newPassword2: "supersecretpassword"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="Invalid token"
+{
+  "data": {
+    "passwordReset": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Invalid token.",
+            "code": "invalid_token"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Password mismatch"
+{
+  "data": {
+    "passwordReset": {
+      "success": false,
+      "errors": {
+        "newPassword2": [
+          {
+            "message": "The two password fields didn’t match.",
+            "code": "password_mismatch"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Password validators"
+{
+  "data": {
+    "passwordReset": {
+      "success": false,
+      "errors": {
+        "newPassword2": [
+          {
+            "message": "This password is too short. It must contain at least 8 characters.",
+            "code": "password_too_short"
+          },
+          {
+            "message": "This password is too common.",
+            "code": "password_too_common"
+          },
+          {
+            "message": "This password is entirely numeric.",
+            "code": "password_entirely_numeric"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### RefreshToken
+
+{{ api.VerifyOrRefreshOrRevokeToken }}
+
+
+```bash tab="graphql"
+mutation {
+  revokeToken(
+    refreshToken: "d9b58dce41cf14549030873e3fab3be864f76ce44"
+  ) {
+    success,
+    errors,
+    revoked
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "revokeToken": {
+      "success": true,
+      "errors": null,
+      "revoked": 1579458880
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  revokeToken(
+    input: {
+      refreshToken: "d9b58dce41cf14549030873e3fab3be864f76ce44"
+    }
+  ) {
+    success,
+    errors,
+    revoked
+  }
+}
+```
+
+
+```bash tab="Invalid token"
+{
+  "data": {
+    "revokeToken": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Invalid token.",
+            "code": "invalid_token"
+          }
+        ]
+      },
+      "revoked": null
+    }
+  }
+}
+```
+
+
+---
+
+#### Register
+
+{{ api.Register }}
+
 
 ```bash tab="graphql"
 mutation {
@@ -102,12 +499,13 @@ mutation {
     password1: "qlr4nq3f3",
     password2:"qlr4nq3f3"
   ) {
-    success, errors
+    success,
+    errors
   }
 }
 ```
 
-```bash tab="response"
+```bash tab="success"
 {
   "data": {
     "register": {
@@ -128,12 +526,12 @@ mutation {
       password2:"qlr4nq3f3"
     }
   ) {
-    success, errors
+    success,
+    errors
   }
 }
 ```
 
-- Fail examples
 
 ```bash tab="unique"
 {
@@ -217,20 +615,10 @@ mutation {
 
 ---
 
-### UpdateAccount
+#### ResendActivationEmail
 
-Update account with fields defined in [settings](/settings/#update_mutation_fields).
+{{ api.ResendActivationEmail }}
 
-
----
-
-### ResendActivationEmail
-
-Send a new activation email.
-
-Note that will return `#!python success=True` even if email does not exist, but return `#!python success=False` if user with the email exist and the server can't send the email.
-
-- Success example
 
 ```bash tab="graphql"
 mutation {
@@ -244,7 +632,7 @@ mutation {
 }
 ```
 
-```bash tab="response"
+```bash tab="success"
 {
   "data": {
     "register": {
@@ -269,7 +657,6 @@ mutation {
 }
 ```
 
-- Fail examples
 
 ```bash tab="Already verified"
 {
@@ -315,13 +702,11 @@ mutation {
     "resendActivationEmail": {
       "success": false,
       "errors": {
-        "email": [
-          [
+        "nonFieldErrors": [
             {
               "message": "Failed to send email.",
               "code": "email_fail"
             }
-          ]
         ]
       }
     }
@@ -331,11 +716,168 @@ mutation {
 
 ---
 
-### VerifyAccount
+#### RevokeToken
 
-Try to verify account.
+{{ api.VerifyOrRefreshOrRevokeToken }}
 
-- Success example
+
+```bash tab="graphql"
+mutation {
+  revokeToken(
+    refreshToken: "a64f732b4e00432f2ff1b47537a11458be13fc82"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "revokeToken": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  revokeToken(
+    input: {
+      refreshToken: "a64f732b4e00432f2ff1b47537a11458be13fc82"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+
+```bash tab="Invalid token"
+{
+  "data": {
+    "revokeToken": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Invalid token.",
+            "code": "invalid_token"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### SendPasswordResetEmail
+
+{{ api.SendPasswordResetEmail }}
+
+
+```bash tab="graphql"
+mutation {
+  sendPasswordResetEmail(
+    email: "skywalker@email.com"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "register": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  sendPasswordResetEmail(
+    input: {
+      email: "skywalker@email.com"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+
+```bash tab="Invalid email"
+{
+  "data": {
+    "sendPasswordResetEmail": {
+      "success": false,
+      "errors": {
+        "email": [
+          {
+            "message": "Enter a valid email address.",
+            "code": "invalid"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Email fail"
+{
+  "data": {
+    "sendPasswordResetEmail": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+            {
+              "message": "Failed to send email.",
+              "code": "email_fail"
+            }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Email not verified"
+{
+  "data": {
+    "sendPasswordResetEmail": {
+      "success": false,
+      "errors": {
+        "email": [
+          {
+            "message": "Verify your account. A new verification email was sent.",
+            "code": "not_verified"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### VerifyAccount
+
+{{ api.VerifyAccount }}
+
 
 ```bash tab="graphql"
 mutation {
@@ -347,7 +889,7 @@ mutation {
 }
 ```
 
-```bash tab="response"
+```bash tab="success"
 {
   "data": {
     "register": {
@@ -370,7 +912,6 @@ mutation {
 }
 ```
 
-- Fail examples
 
 ```bash tab="Invalid token"
 {
@@ -380,7 +921,7 @@ mutation {
       "errors": {
         "nonFieldErrors": [
           {
-            "message": "Invalid or expirated token.",
+            "message": "Invalid token.",
             "code": "invalid_token"
           }
         ]
@@ -408,32 +949,26 @@ mutation {
 }
 ```
 
-
 ---
 
-### ArchiveAccount
+#### VerifySecondaryEmail
 
-Archive account. User must be logged-in and confirm the password. It will make
-`#!python user.is_active=False` and revoke all user tokens on the database (if
-  using [long running refresh tokens](https://django-graphql-jwt.domake.io/en/latest/refresh_token.html#long-running-refresh-tokens)).
-
-- Success example
+{{ api.VerifySecondaryEmail }}
 
 ```bash tab="graphql"
 mutation {
-  archiveAccount(
-    password: "supersecretpassword",
-  ) {
-    success,
-    errors
+  verifySecondaryEmail(
+    token: "eyJ1c2VybmFtZSI6Im5ld191c2VyMSIsImFjdGlvbiI6ImFjdGl2YXRpb25fc2Vjb25kYXJ5X2VtYWlsIiwic2Vjb25kYXJ5X2VtYWlsIjoibXlfc2Vjb25kYXJ5X2VtYWlsQGVtYWlsLmNvbSJ9:1ivhfJ:CYZswRKV3avWA8cb41KqZ1-zdVo"
+    ) {
+    success, errors
   }
 }
 ```
 
-```bash tab="response"
+```bash tab="success"
 {
   "data": {
-    "register": {
+    "verifySecondaryEmail": {
       "success": true,
       "errors": null
     }
@@ -443,175 +978,25 @@ mutation {
 
 ```bash tab="relay"
 mutation {
-  archiveAccount(
+  verifySecondaryEmail(
     input: {
-      password: "supersecretpassword",
+      token: "eyJ1c2VybmFtZSI6Im5ld191c2VyMSIsImFjdGlvbiI6ImFjdGl2YXRpb25fc2Vjb25kYXJ5X2VtYWlsIiwic2Vjb25kYXJ5X2VtYWlsIjoibXlfc2Vjb25kYXJ5X2VtYWlsQGVtYWlsLmNvbSJ9:1ivhfJ:CYZswRKV3avWA8cb41KqZ1-zdVo"
     }
   ) {
-    success,
-    errors
+    success, errors
   }
 }
 ```
-
-- Fail examples
-
-```bash tab="Unauthenticated"
-{
-  "data": {
-    "archiveAccount": {
-      "success": false,
-      "errors": {
-        "nonFieldErrors": [
-          {
-            "message": "Unauthenticated.",
-            "code": "unauthenticated"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
----
-
-### DeleteAccount
-
-Delete account permanently. User must be logged-in and confirm the password.
-
-- Success example
-
-```bash tab="graphql"
-mutation {
-  deleteAccount(
-    password: "supersecretpassword",
-  ) {
-    success,
-    errors
-  }
-}
-```
-
-```bash tab="response"
-{
-  "data": {
-    "register": {
-      "success": true,
-      "errors": null
-    }
-  }
-}
-```
-
-```bash tab="relay"
-mutation {
-  deleteAccount(
-    input: {
-      password: "supersecretpassword",
-    }
-  ) {
-    success,
-    errors
-  }
-}
-```
-
-- Fail examples
-
-```bash tab="Unauthenticated"
-{
-  "data": {
-    "deleteAccount": {
-      "success": false,
-      "errors": {
-        "nonFieldErrors": [
-          {
-            "message": "Unauthenticated.",
-            "code": "unauthenticated"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
----
-
-### PasswordChange
-
-Change user password. User must be logged-in and confirm the password. It will
-revoke all user tokens on the database (if
-  using [long running refresh tokens](https://django-graphql-jwt.domake.io/en/latest/refresh_token.html#long-running-refresh-tokens)).
-
-Return `#!python success=False` if:
-
-- User is not logged in
-- Fail to confirm password
-- Fail on password validators
-
----
-
-### PasswordReset
-
-Reset user password. It will
-revoke all user tokens on the database (if
-  using [long running refresh tokens](https://django-graphql-jwt.domake.io/en/latest/refresh_token.html#long-running-refresh-tokens)).
-
-- Success example
-
-```bash tab="graphql"
-mutation {
-  passwordReset(
-    token: "1eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImFjdGlvbiI6InBhc3N3b3JkX3Jlc2V0In0:1itExL:op0roJi-ZbO9cszNEQMs5mX3c6s",
-    newPassword1: "supersecretpassword",
-    newPassword2: "supersecretpassword"
-  ) {
-    success,
-    errors
-  }
-}
-```
-
-```bash tab="response"
-{
-  "data": {
-    "register": {
-      "success": true,
-      "errors": null
-    }
-  }
-}
-```
-
-```bash tab="relay"
-mutation {
-  passwordReset(
-    input: {
-      token: "1eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImFjdGlvbiI6InBhc3N3b3JkX3Jlc2V0In0:1itExL:op0roJi-ZbO9cszNEQMs5mX3c6s",
-      newPassword1: "supersecretpassword",
-      newPassword2: "supersecretpassword"
-    }
-  ) {
-    success,
-    errors
-  }
-}
-```
-
-
-- Fail examples
 
 ```bash tab="Invalid token"
 {
   "data": {
-    "passwordReset": {
+    "verifySecondaryEmail": {
       "success": false,
       "errors": {
         "nonFieldErrors": [
           {
-            "message": "Invalid or expirated token.",
+            "message": "Invalid token.",
             "code": "invalid_token"
           }
         ]
@@ -621,265 +1006,31 @@ mutation {
 }
 ```
 
-```bash tab="Password mismatch"
+```bash tab="Expirated token"
 {
   "data": {
-    "passwordReset": {
-      "success": false,
-      "errors": {
-        "newPassword2": [
-          {
-            "message": "The two password fields didn’t match.",
-            "code": "password_mismatch"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
-```bash tab="Password validators"
-{
-  "data": {
-    "passwordReset": {
-      "success": false,
-      "errors": {
-        "newPassword2": [
-          {
-            "message": "This password is too short. It must contain at least 8 characters.",
-            "code": "password_too_short"
-          },
-          {
-            "message": "This password is too common.",
-            "code": "password_too_common"
-          },
-          {
-            "message": "This password is entirely numeric.",
-            "code": "password_entirely_numeric"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
----
-
-### SendPasswordResetEmail
-
-Send password reset email.
-
-Note that will return `#!python success=True` even if email does not exist, but return `#!python success=False` if user with the email exist and the server can't send the email.
-
-- Success example
-
-```bash tab="graphql"
-mutation {
-  sendPasswordResetEmail(
-    email: "skywalker@email.com"
-  ) {
-    success,
-    errors
-  }
-}
-```
-
-```bash tab="response"
-{
-  "data": {
-    "register": {
-      "success": true,
-      "errors": null
-    }
-  }
-}
-```
-
-```bash tab="relay"
-mutation {
-  sendPasswordResetEmail(
-    input: {
-      email: "skywalker@email.com"
-    }
-  ) {
-    success,
-    errors
-  }
-}
-```
-
-- Fail examples
-
-```bash tab="Invalid email"
-{
-  "data": {
-    "sendPasswordResetEmail": {
-      "success": false,
-      "errors": {
-        "email": [
-          {
-            "message": "Enter a valid email address.",
-            "code": "invalid"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
-```bash tab="Email fail"
-{
-  "data": {
-    "sendPasswordResetEmail": {
-      "success": false,
-      "errors": {
-        "email": [
-          [
-            {
-              "message": "Failed to send email.",
-              "code": "email_fail"
-            }
-          ]
-        ]
-      }
-    }
-  }
-}
-```
-
----
-
-### Authentication
-
-These mutations are built with [GraphQL JWT](https://github.com/flavors/django-graphql-jwt/).
-
-Most cases we are simply wrapping the original class to return the [standard response](/api/#standard-response).
-
----
-
-#### ObtainJSONWebToken
-
-If user is archived, it means:
-
-```python
-archived = user.is_active == False and user.last_login
-```
-
-Then, the user becomes active again on login.
-
-If try to send more than one field deffined in [LOGIN_ALLOWED_FIELDS](/settings/#login_allowed_fields), will raise.
-
-- Success example
-
-```bash tab="graphql"
-mutation {
-  tokenAuth(
-    # user username or email
-    email: "skywalker@email.com"
-    password: "123456super"
-  ) {
-    success,
-    errors,
-    token,
-    refreshToken,
-    user {
-      id,
-      username
-    }
-  }
-}
-```
-
-```bash tab="response"
-{
-  "data": {
-    "tokenAuth": {
-      "success": true,
-      "errors": null,
-      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImV4cCI6MTU3OTQ1ODI2Niwib3JpZ0lhdCI6MTU3OTQ1Nzk2Nn0.BKz4ohxQCGtJWnyd5tIbYFD2kpGYDiAVzWTDO2ZyUYY",
-      "refreshToken": "5f5fad67cd043437952ddde2750be20201f1017b",
-      "user": {
-        "id": "VXNlck5vZGU6MQ==",
-        "username": "skywalker"
-      }
-    }
-  }
-}
-```
-
-```bash tab="relay"
-mutation {
-  tokenAuth(
-    input: {
-      email: "skywalker@email.com"
-      password: "123456super"
-    }
-  ) {
-    success,
-    errors,
-    token,
-    refreshToken,
-    user {
-      id,
-      username
-    }
-  }
-}
-```
-
-- Fail examples
-
-```bash tab="Invalid credentials"
-{
-  "data": {
-    "tokenAuth": {
+    "verifySecondaryEmail": {
       "success": false,
       "errors": {
         "nonFieldErrors": [
           {
-            "message": "Please, enter valid credentials.",
-            "code": "invalid_credentials"
+            "message": "Expirated token.",
+            "code": "expirated_token"
           }
         ]
-      },
-      "token": null,
-      "refreshToken": null,
-      "user": null
+      }
     }
   }
 }
 ```
 
-```bash tab="Wrong usage"
-{
-  "errors": [
-    {
-      "message": "Must login with password and one of the following fields ['email', 'username'].",
-      "locations": [
-        {
-          "line": 2,
-          "column": 3
-        }
-      ],
-      "path": [
-        "tokenAuth"
-      ]
-    }
-  ],
-  "data": {
-    "tokenAuth": null
-  }
-}
-```
 
 ---
 
 #### VerifyToken
 
-- Success example
+{{ api.VerifyOrRefreshOrRevokeToken }}
+
 
 ```bash tab="graphql"
 mutation {
@@ -893,7 +1044,7 @@ mutation {
 }
 ```
 
-```bash tab="response"
+```bash tab="success"
 {
   "data": {
     "verifyToken": {
@@ -923,7 +1074,6 @@ mutation {
 }
 ```
 
-- Fail examples
 
 ```bash tab="Invalid token"
 {
@@ -931,9 +1081,9 @@ mutation {
     "verifyToken": {
       "success": false,
       "errors": {
-        "token": [
+        "nonFieldErrors": [
           {
-            "message": "Invalid or expirated token.",
+            "message": "Invalid token.",
             "code": "invalid_token"
           }
         ]
@@ -944,78 +1094,19 @@ mutation {
 }
 ```
 
----
-
-#### RefreshToken
-
-- Success example
-
-```bash tab="graphql"
-mutation {
-  refreshToken(
-    refreshToken: "ab6e297efddda056f3a6207ee12303329c577349"
-  ) {
-    success,
-    errors,
-    payload
-    token,
-    refreshToken,
-  }
-}
-```
-
-```bash tab="response"
+```bash tab="Expirated token"
 {
   "data": {
-    "refreshToken": {
-      "success": true,
-      "errors": null,
-      "payload": {
-        "username": "skywalker",
-        "exp": 1579459012,
-        "origIat": 1579458712
-      },
-      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImV4cCI6MTU3OTQ1OTAxMiwib3JpZ0lhdCI6MTU3OTQ1ODcxMn0.61kbfSxATCV1WcLN_DCE6hSHfnRyR_hIHl0HbZR65B8",
-      "refreshToken": "d9b58dce41cf14549030873e3fab3be864f76ce4"
-    }
-  }
-}
-```
-
-```bash tab="relay"
-mutation {
-  refreshToken(
-    input: {
-      refreshToken: "ab6e297efddda056f3a6207ee12303329c577349"
-    }
-  ) {
-    success,
-    errors,
-    payload
-    token,
-    refreshToken,
-  }
-}
-```
-
-- Fail examples
-
-```bash tab="Invalid token"
-{
-  "data": {
-    "refreshToken": {
+    "verifyToken": {
       "success": false,
       "errors": {
-        "refreshToken": [
+        "nonFieldErrors": [
           {
-            "message": "Invalid or expirated token.",
-            "code": "invalid_token"
+            "message": "Expirated token.",
+            "code": "expirated_token"
           }
         ]
-      },
-      "payload": null,
-      "token": null,
-      "refreshToken": null
+      }
     }
   }
 }
@@ -1023,29 +1114,41 @@ mutation {
 
 ---
 
-#### RevokeToken
+### Protected
 
-- Success example
+Protected mutations require the http Authorization header.
+
+If you send a request **without** the http Authorization header, or a **bad token**:
+
+- If using `graphql_jwt.backends.JSONWebTokenBackend`, it will raise.
+- If using `graphql_auth.backends.GraphQLAuthBackend`, it will return a standard response, with `success=False` and `errors`.
+
+As explained on the [installation guide](/installation/#5-authentication-backend-optional)
+
+---
+
+#### ArchiveAccount
+
+{{ api.ArchiveAccount }}
+
 
 ```bash tab="graphql"
 mutation {
-  revokeToken(
-    refreshToken: "d9b58dce41cf14549030873e3fab3be864f76ce44"
+  archiveAccount(
+    password: "supersecretpassword",
   ) {
     success,
-    errors,
-    revoked
+    errors
   }
 }
 ```
 
-```bash tab="response"
+```bash tab="success"
 {
   "data": {
-    "revokeToken": {
+    "register": {
       "success": true,
-      "errors": null,
-      "revoked": 1579458880
+      "errors": null
     }
   }
 }
@@ -1053,34 +1156,620 @@ mutation {
 
 ```bash tab="relay"
 mutation {
-  revokeToken(
+  archiveAccount(
     input: {
-      refreshToken: "d9b58dce41cf14549030873e3fab3be864f76ce44"
+      password: "supersecretpassword",
     }
   ) {
     success,
-    errors,
-    revoked
+    errors
   }
 }
 ```
 
-- Fail examples
 
-```bash tab="Invalid token"
+```bash tab="Unauthenticated"
 {
   "data": {
-    "revokeToken": {
+    "archiveAccount": {
       "success": false,
       "errors": {
-        "refreshToken": [
+        "nonFieldErrors": [
           {
-            "message": "Invalid or expirated token.",
-            "code": "invalid_token"
+            "message": "Unauthenticated.",
+            "code": "unauthenticated"
           }
         ]
-      },
-      "revoked": null
+      }
+    }
+  }
+}
+```
+
+```bash tab="Invalid password"
+{
+  "data": {
+    "archiveAccount": {
+      "success": false,
+      "errors": {
+        "password": [
+          {
+            "message": "Invalid password.",
+            "code": "invalid_password"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Not verified"
+{
+  "data": {
+    "archiveAccount": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Please verify your account."
+            "code": "not_verified"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### DeleteAccount
+
+{{ api.DeleteAccount }}
+
+
+```bash tab="graphql"
+mutation {
+  deleteAccount(
+    password: "supersecretpassword",
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "deleteAccount": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  deleteAccount(
+    input: {
+      password: "supersecretpassword",
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+
+```bash tab="Unauthenticated"
+{
+  "data": {
+    "deleteAccount": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Unauthenticated.",
+            "code": "unauthenticated"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Invalid password"
+{
+  "data": {
+    "deleteAccount": {
+      "success": false,
+      "errors": {
+        "password": [
+          {
+            "message": "Invalid password.",
+            "code": "invalid_password"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Not verified"
+{
+  "data": {
+    "deleteAccount": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Please verify your account."
+            "code": "not_verified"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### PasswordChange
+
+{{ api.PasswordChange }}
+
+```bash tab="graphql"
+mutation {
+ passwordChange(
+    oldPassword: "supersecretpassword",
+    newPassword1: "123456super",
+     newPassword2: "123456super"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "passwordChange": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+ passwordChange(
+   input: {
+      oldPassword: "supersecretpassword",
+      newPassword1: "123456super",
+       newPassword2: "123456super"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+
+```bash tab="Unauthenticated"
+{
+  "data": {
+    "passwordChange": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Unauthenticated.",
+            "code": "unauthenticated"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Not verified"
+{
+  "data": {
+    "passwordChange": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Please verify your account."
+            "code": "not_verified"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Password validation"
+{
+  "data": {
+    "passwordChange": {
+      "success": false,
+      "errors": {
+        "newPassword2": [
+          {
+            "message": "This password is too short. It must contain at least 8 characters.",
+            "code": "password_too_short"
+          },
+          {
+            "message": "This password is too common.",
+            "code": "password_too_common"
+          },
+          {
+            "message": "This password is entirely numeric.",
+            "code": "password_entirely_numeric"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Password mismatch"
+{
+  "data": {
+    "passwordChange": {
+      "success": false,
+      "errors": {
+        "newPassword2": [
+          {
+            "message": "The two password fields didn’t match.",
+            "code": "password_mismatch"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Invalid password"
+{
+  "data": {
+    "passwordChange": {
+      "success": false,
+      "errors": {
+        "oldPassword": [
+          {
+            "message": "Invalid password.",
+            "code": "invalid_password"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### RemoveSecondaryEmail
+
+{{ api.RemoveSecondaryEmail }}
+
+```bash tab="graphql"
+mutation {
+  removeSecondaryEmail(
+    password: "supersecretpassword"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "removeSecondaryEmail": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  removeSecondaryEmail(
+    input: {
+      password: "supersecretpassword"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="Invalid password"
+{
+  "data": {
+    "removeSecondaryEmail": {
+      "success": false,
+      "errors": {
+        "password": [
+          {
+            "message": "Invalid password.",
+            "code": "invalid_password"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### SendSecondaryEmailActivation
+
+{{ api.SendSecondaryEmailActivation }}
+
+```bash tab="graphql"
+mutation {
+  sendSecondaryEmailActivation(
+    email: "my_secondary_email@email.com"
+    password: "supersecretpassword",
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "sendSecondaryEmailActivation": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  sendSecondaryEmailActivation(
+    input: {
+      email: "my_secondary_email@email.com"
+      password: "supersecretpassword",
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+
+```bash tab="Unauthenticated"
+{
+  "data": {
+    "sendSecondaryEmailActivation": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Unauthenticated.",
+            "code": "unauthenticated"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Invalid email"
+{
+  "data": {
+    "sendSecondaryEmailActivation": {
+      "success": false,
+      "errors": {
+        "email": [
+          {
+            "message": "Enter a valid email address.",
+            "code": "invalid"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Invalid password"
+{
+  "data": {
+    "sendSecondaryEmailActivation": {
+      "success": false,
+      "errors": {
+        "password": [
+          {
+            "message": "Invalid password.",
+            "code": "invalid_password"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Not verified"
+{
+  "data": {
+    "sendSecondaryEmailActivation": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Please verify your account."
+            "code": "not_verified"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### SwapEmails
+
+{{ api.SwapEmails }}
+
+```bash tab="graphql"
+mutation {
+  swapEmails(
+    password: "supersecretpassword"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "swapEmails": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  swapEmails(
+    input: {
+      password: "supersecretpassword"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="Invalid password"
+{
+  "data": {
+    "swapEmails": {
+      "success": false,
+      "errors": {
+        "password": [
+          {
+            "message": "Invalid password.",
+            "code": "invalid_password"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
+
+#### UpdateAccount
+
+{{ api.UpdateAccount }}
+
+```bash tab="graphql"
+mutation {
+  updateAccount(
+    firstName: "Luke"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "updateAccount": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  updateAccount(
+    input: {
+      firstName: "Luke"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+
+```bash tab="Unauthenticated"
+{
+  "data": {
+    "updateAccount": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Unauthenticated.",
+            "code": "unauthenticated"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Not verified"
+{
+  "data": {
+    "updateAccount": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Please verify your account."
+            "code": "not_verified"
+          }
+        ]
+      }
     }
   }
 }
