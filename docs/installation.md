@@ -249,7 +249,7 @@ python manage.py migrate
 ### 5. Email Templates
 
 !!! Note ""
-    Overriding email templates is covered [here](/overriding-email-templates).
+    Overriding email templates is covered [here](overriding-email-templates.md).
 
 This package comes with some default email templates, if you plan to use it, make sure your templates configuration has the following:
 
@@ -267,7 +267,7 @@ TEMPLATES = [
 ### 6. Email Backend
 
 The default configuration is to send activation email,
-you can set it to ``False`` on your [settings](/settings),
+you can set it to ``False`` on your [settings](settings.md),
 but you still need an Email Backend
 to password reset.
 

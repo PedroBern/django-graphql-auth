@@ -17,6 +17,39 @@ GRAPHQL_AUTH = {
 
 ---
 
+## Boolean Flags
+
+
+### ALLOW_LOGIN_NOT_VERIFIED
+
+Determines whether the user can log in without being verified. If it is true, the registring returns `token` and `refresh token` on the output.
+
+default: `#!python True`
+
+### ALLOW_LOGIN_WITH_SECONDARY_EMAIL
+
+If a user has a secondary email set, he can use to login.
+
+default: `#!python True`
+
+### ALLOW_DELETE_ACCOUNT
+
+Instead of deleting the account, make `#!python user.is_active=False`.
+
+If set to `#!python True`, will actually delete the account.
+
+default: `#!python False`
+
+### SEND_ACTIVATION_EMAIL
+
+If set to `#!python False`, no email will be sent.
+
+Note that users will still have an `#!python verified=False` status.
+
+default: `#!python True`
+
+---
+
 ## Dynamic Fields
 
 Fields that you can choose.
@@ -53,54 +86,23 @@ REGISTER_MUTATION_FIELDS = {
 
 default: `#!python ["email", "username"]`
 
-### ALLOW_LOGIN_WITH_SECONDARY_EMAIL
-
-If a user has a secondary email set, he can use to login.
-
-default: `#!python True`
-
 ### REGISTER_MUTATION_FIELDS
 
 Required fields on registration, along with `password1` and `password2`.
 
-default: `#!python ["email", "username"]` [\*](/settings/#basics)
+default: `#!python ["email", "username"]` [\*](settings.md/#basics)
 
 ### REGISTER_MUTATION_FIELDS_OPTIONAL
 
 Optional fields on registration.
 
-default: `#!python []` [\*](/settings/#basics)
+default: `#!python []` [\*](settings.md/#basics)
 
 ### UPDATE_MUTATION_FIELDS
 
 Optional fields on update account.
 
-default: `#!python ["first_name", "last_name"]` [\*](/settings/#basics)
-
-
----
-
-## Other
-
-### ALLOW_LOGIN_NOT_VERIFIED
-
-Determines whether the user can log in without being verified. If it is true, the registring returns `token` and `refresh token` on the output.
-
-default: `#!python True`
-
-### ALLOW_LOGIN_WITH_SECONDARY_EMAIL
-
-If a user has a secondary email set, he can use to login.
-
-default: `#!python True`
-
-### ALLOW_DELETE_ACCOUNT
-
-Instead of deleting the account, make `#!python user.is_active=False`.
-
-If set to `#!python True`, will actually delete the account.
-
-default: `#!python False`
+default: `#!python ["first_name", "last_name"]` [\*](settings.md/#basics)
 
 ---
 
@@ -146,14 +148,6 @@ default: `#!python timedelta(hours=1)`
 
 ## Email
 
-### SEND_ACTIVATION_EMAIL
-
-If set to `#!python False`, no email will be sent.
-
-Note that users will still have an `#!python verified=False` status.
-
-default: `#!python True`
-
 ### EMAIL_FROM
 
 It will get the default value from your settings, but you can provide a specific email.
@@ -162,19 +156,19 @@ default: `#!python getattr(django_settings, "DEFAULT_FROM_EMAIL", "test@email.co
 
 ### ACTIVATION_PATH_ON_EMAIL
 
-Path [variable](/overriding-email-templates/#email-variables) used in activation email.
+Path [variable](overriding-email-templates.md/#email-variables) used in activation email.
 
 default: `#!python "activate"`
 
 ### PASSWORD_RESET_PATH_ON_EMAIL
 
-Path [variable](/overriding-email-templates/#email-variables) used in password reset email.
+Path [variable](overriding-email-templates.md/#email-variables) used in password reset email.
 
 default: `#!python "password-reset"`
 
 ### ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL
 
-Path [variable](/overriding-email-templates/#email-variables) used in secondary email activation email.
+Path [variable](overriding-email-templates.md/#email-variables) used in secondary email activation email.
 
 default: `#!python "activate"`
 
@@ -182,7 +176,7 @@ default: `#!python "activate"`
 
 ## Email subject templates
 
-You can override email templates as shown [here](/overriding-email-templates), but you can also change the templates names.
+You can override email templates as shown [here](overriding-email-templates.md), but you can also change the templates names.
 
 ### EMAIL_SUBJECT_ACTIVATION
 
@@ -205,7 +199,7 @@ default: `#!python "email/password_reset_subject.txt"`
 
 ## Email templates
 
-You can override email templates as shown [here](/overriding-email-templates), but you can also change the templates names.
+You can override email templates as shown [here](overriding-email-templates.md), but you can also change the templates names.
 
 
 ### EMAIL_TEMPLATE_ACTIVATION

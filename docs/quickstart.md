@@ -457,7 +457,7 @@ corner under docs tab.
 ## Setup Email Backend
 
 The default configuration is to send activation email when registring users,
-you can set it to ``False`` on your [settings](/settings),
+you can set it to ``False`` on your [settings](settings.md),
 but you still need an Email Backend
 to password reset.
 
@@ -698,7 +698,7 @@ query {
 }
 ```
 
-There is actually a new user and it is possible to log in (you can change it on the [settings](/settings)),
+There is actually a new user and it is possible to log in (you can change it on the [settings](settings.md)),
 but it is not verified yet.
 
 Save the ``id`` of the new user, so we can query it later.
@@ -1043,12 +1043,12 @@ query {
 
 ## Next steps
 
-- Add [all mutations](/quickstart/#full-schema) to your schema!
+- Add [all mutations](quickstart.md/#full-schema) to your schema!
 - Navigate through the GraphiQL Documentation Explorer.
-- Change the [settings](/settings).
-- Explore the [api](/api).
-- [Override email templates](/overriding-email-templates).
-- Explore [these useful links](/community).
+- Change the [settings](settings.md).
+- Explore the [api](api.md).
+- [Override email templates](overriding-email-templates.md).
+- Explore [these useful links](community.md).
 
 ### Full schema
 

@@ -36,7 +36,7 @@ Create the following folder and files structure:
       manage.py
 ```
 
-This is the minimum. Check the [email templates settings](/settings/#email-templates), you can create custom templates for:
+This is the minimum. Check the [email templates settings](settings.md/#email-templates), you can create custom templates for:
 
 - account activation
 - resend account activation email
@@ -53,7 +53,7 @@ Both subject and email templates receive the following variables:
 - site_name --> from [django sites framework](https://docs.djangoproject.com/en/3.0/ref/contrib/sites/) <small>(optional)</small>
 - domain --> from [django sites framework](https://docs.djangoproject.com/en/3.0/ref/contrib/sites/) <small>(optional)</small>
 - protocol
-- path --> defined in [settings](/settings) <small>(some frontend path)</small>
+- path --> defined in [settings](settings.md) <small>(some frontend path)</small>
 
 
 ## Writing the templates

@@ -92,4 +92,4 @@ u.status.verified
 # True
 ```
 
-Check the [installation guide](/installation) or jump to the [quickstart](/quickstart). Or if you prefer, browse the [api](/api).
+Check the [installation guide](installation.md) or jump to the [quickstart](quickstart.md). Or if you prefer, browse the [api](api.md).

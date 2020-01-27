@@ -3,14 +3,18 @@
 
 ## v0.2
 
+
 ### v0.2.8
 - return new token and refreshToken on password change.
+
 
 ### v0.2.7
 - allow login on register, returning token and refresh token.
 
+
 ### v0.2.6
 - review error fields in some mutations.
+
 
 ### v0.2.5
 - update apps config.
@@ -30,7 +34,6 @@
 - nothing new.
 
 
-
 ### v0.2.1
 - fix readme on pypi.
 - nothing new.
@@ -43,8 +46,8 @@
 - allow login with secondary email.
 
 
-## v0.1
 
+## v0.1
 
 ### 0.1.11
 - Fix minor bugs.
