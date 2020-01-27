@@ -18,6 +18,12 @@ your implementation*.
 
 ---
 
+## Documentation
+
+Documentation is available at \# TODO
+
+---
+
 ## Features
 
 * [x] Awesome docs :tada:
@@ -42,6 +48,50 @@ your implementation*.
 
 ---
 
-## Documentation
+## Preview
 
-Documentation is available at \# TODO
+Handling user accounts becomes super easy.
+
+```python
+mutation {
+  register(
+    email: "new_user@email.com",
+    username: "new_user",
+    password1: "123456super",
+    password2: "123456super",
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+Check the status of the new user:
+
+```python
+u = UserModel.objects.last()
+u.status.verified
+# False
+```
+
+During the registration, an email with a verification link was sent to the user.
+
+```python
+mutation {
+  verifyAccount(
+    token:"<TOKEN ON EMAIL LINK>",
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+Now user is verified.
+
+```python
+u.status.verified
+# True
+```
+
+Check the [installation guide]() or jump to the [quickstart]().

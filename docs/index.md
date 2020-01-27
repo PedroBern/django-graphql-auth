@@ -24,7 +24,7 @@ your implementation^^.
 
 * [x] Awesome docs :tada:
 * [x] Fully compatible with [Relay](https://github.com/facebook/relay>)
-* [x] Works with default/custom user model
+* [x] Works with ==default or custom== user model
 * [x] JWT authentication <small>(with [Django GraphQL JWT](https://github.com/flavors/django-graphql-jwt>))</small>
 * [x] User query with filters <small>(with [Django Filter](https://github.com/carltongibson/django-filter>) and [Graphene Django](https://github.com/graphql-python/graphene-django>))</small>
 * [x] User registration with email verification
@@ -41,3 +41,53 @@ your implementation^^.
 * [x] All mutations return `success` and `errors`
 * [x] Default email templates <small>(you will customize though)</small>
 * [x] Customizable, no lock-in
+
+---
+
+## Preview
+
+Handling user accounts becomes super easy.
+
+```python
+mutation {
+  register(
+    email: "new_user@email.com",
+    username: "new_user",
+    password1: "123456super",
+    password2: "123456super",
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+Check the status of the new user:
+
+```python
+u = UserModel.objects.last()
+u.status.verified
+# False
+```
+
+During the registration, an email with a verification link was sent to the user.
+
+```python
+mutation {
+  verifyAccount(
+    token:"<TOKEN ON EMAIL LINK>",
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+Now user is verified.
+
+```python
+u.status.verified
+# True
+```
+
+Check the [installation guide](/installation) or jump to the [quickstart](/quickstart).
