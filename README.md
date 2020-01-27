@@ -4,7 +4,6 @@
 [![Build Status](https://travis-ci.com/pedrobern/django-graphql-auth.svg?branch=master)](https://travis-ci.com/pedrobern/django-graphql-auth)
 [![Pypi](https://img.shields.io/pypi/v/django-graphql-auth.svg)](https://pypi.org/project/django-graphql-auth/)
 
----
 
 GraphQL implementation of the [Django](https://github.com/django/django)
 authentication system.
@@ -16,13 +15,11 @@ No lock-in. When you are ready to implement your own code or this package
 is not up to your expectations , it's *easy to extend or switch to
 your implementation*.
 
----
 
 ## Documentation
 
 Documentation is available at \# TODO
 
----
 
 ## Features
 
@@ -45,8 +42,6 @@ Documentation is available at \# TODO
 * [x] All mutations return `success` and `errors`
 * [x] Default email templates *(you will customize though)*
 * [x] Customizable, no lock-in
-
----
 
 ## Preview
 
