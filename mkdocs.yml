@@ -1,5 +1,6 @@
 site_name: Django GraphQL Auth
 site_description: GraphQL authentication for Django
+site_url: https://django-graphql-auth.readthedocs.io/en/latest
 site_author: pedrobern
 repo_name: pedrobern/django-graphql-auth
 repo_url: https://github.com/pedrobern/django-graphql-auth
