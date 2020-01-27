@@ -15,6 +15,10 @@ class UserAlreadyVerified(GraphQLAuthError):
     default_message = _("User already verified.")
 
 
+class InvalidCredentials(GraphQLAuthError):
+    default_message = _("Invalid credentials.")
+
+
 class UserNotVerified(GraphQLAuthError):
     default_message = _("User is not verified.")
 

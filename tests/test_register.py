@@ -32,11 +32,15 @@ class RegisterTestCaseMixin:
         executed = self.make_request(self.register_query())
         self.assertEqual(executed["success"], True)
         self.assertEqual(executed["errors"], None)
+        self.assertTrue(executed["token"])
+        self.assertTrue(executed["refreshToken"])
 
         # try to register again
         executed = self.make_request(self.register_query())
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["username"])
+        self.assertFalse(executed["token"])
+        self.assertFalse(executed["refreshToken"])
 
         # try to register again
         executed = self.make_request(
@@ -44,6 +48,33 @@ class RegisterTestCaseMixin:
         )
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["email"])
+        self.assertFalse(executed["token"])
+        self.assertFalse(executed["refreshToken"])
+
+    def test_register_duplicate_unique_email(self):
+
+        user = self.register_user(
+            email="foo@email.com",
+            username="foo",
+            verified=True,
+            secondary_email="test@email.com",
+        )
+
+        executed = self.make_request(self.register_query())
+        self.assertEqual(executed["success"], False)
+        self.assertTrue(executed["errors"]["email"])
+        self.assertFalse(executed["token"])
+        self.assertFalse(executed["refreshToken"])
+
+    def test_register_duplicate_unique_email_2(self):
+
+        user = self.register_user(email="test@email.com", username="foo",)
+
+        executed = self.make_request(self.register_query())
+        self.assertEqual(executed["success"], False)
+        self.assertTrue(executed["errors"]["email"])
+        self.assertFalse(executed["token"])
+        self.assertFalse(executed["refreshToken"])
 
     @mock.patch(
         "graphql_auth.models.UserStatus.send_activation_email",
@@ -59,24 +90,36 @@ class RegisterTestCaseMixin:
 
     @mark.settings_b
     @skipif_django_21()
-    def test_register_with_dict_on_settings(self):
+    def test_register_with_different_settings(self):
         """
         Register user, fail to register same user again
         """
 
         # register
-        executed = self.make_request(self.register_query())
+        executed = self.make_request(self.register_query_b())
         self.assertEqual(executed["success"], True)
         self.assertEqual(executed["errors"], None)
-
-        # try to register again
-        executed = self.make_request(self.register_query())
-        self.assertEqual(executed["success"], False)
-        self.assertTrue(executed["errors"]["username"])
 
 
 class RegisterTestCase(RegisterTestCaseMixin, DefaultTestCase):
     def register_query(self, password="akssdgfbwkc", username="username"):
+        return """
+        mutation {
+            register(
+                email: "test@email.com",
+                username: "%s",
+                password1: "%s",
+                password2: "%s"
+            )
+            { success, errors, token, refreshToken  }
+        }
+        """ % (
+            username,
+            password,
+            password,
+        )
+
+    def register_query_b(self, password="akssdgfbwkc", username="username"):
         return """
         mutation {
             register(
@@ -106,6 +149,21 @@ class RegisterTestCase(RegisterTestCaseMixin, DefaultTestCase):
 
 class RegisterRelayTestCase(RegisterTestCaseMixin, RelayTestCase):
     def register_query(self, password="akssdgfbwkc", username="username"):
+        return """
+        mutation {
+         register(
+         input:
+            { email: "test@email.com", username: "%s", password1: "%s", password2: "%s" }
+            )
+            { success, errors, token, refreshToken  }
+        }
+        """ % (
+            username,
+            password,
+            password,
+        )
+
+    def register_query_b(self, password="akssdgfbwkc", username="username"):
         return """
         mutation {
          register(

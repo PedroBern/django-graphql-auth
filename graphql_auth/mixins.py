@@ -6,7 +6,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.db import transaction
 
+import graphene
+
 from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
+from graphql_jwt.decorators import token_auth
 
 from .forms import RegisterForm, EmailForm, UpdateAccountForm
 from .bases import Output
@@ -18,11 +21,13 @@ from .exceptions import (
     WrongUsage,
     TokenScopeError,
     EmailAlreadyInUse,
+    InvalidCredentials,
 )
 from .constants import Messages, TokenAction
 from .utils import (
     revoke_user_refresh_token,
     get_token_paylod,
+    using_refresh_tokens,
 )
 from .shortcuts import get_user_by_email, get_user_to_login
 from .decorators import (
@@ -52,9 +57,26 @@ class RegisterMixin(Output):
     email.
 
     Send account verification email.
+
+    If allowed to not verified users login, return token.
     """
 
     form = RegisterForm
+
+    @classmethod
+    def Field(cls, *args, **kwargs):
+        if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
+            if using_refresh_tokens():
+                cls._meta.fields["refresh_token"] = graphene.Field(
+                    graphene.String
+                )
+            cls._meta.fields["token"] = graphene.Field(graphene.String)
+        return super().Field(*args, **kwargs)
+
+    @classmethod
+    @token_auth
+    def login_on_register(cls, root, info, **kwargs):
+        return cls()
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -70,6 +92,17 @@ class RegisterMixin(Output):
                     )
                     if send_activation:
                         user.status.send_activation_email(info)
+                    if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
+                        payload = cls.login_on_register(
+                            root,
+                            info,
+                            password=kwargs.get("password1"),
+                            **kwargs
+                        )
+                        return_value = {}
+                        for field in cls._meta.fields:
+                            return_value[field] = getattr(payload, field)
+                        return cls(**return_value)
                     return cls(success=True)
                 else:
                     return cls(success=False, errors=f.errors.get_json_data())
@@ -255,6 +288,9 @@ class ObtainJSONWebTokenMixin(Output):
     and secondary email if set. The fields are
     defined on settings.
 
+    Not verified users can login by default. This
+    can be changes on settings.
+
     If user is archived, make it unarchive and
     return `unarchiving=True` on output.
     """
@@ -281,6 +317,7 @@ class ObtainJSONWebTokenMixin(Output):
             if USERNAME_FIELD in kwargs:
                 query_kwargs = {USERNAME_FIELD: kwargs[USERNAME_FIELD]}
                 next_kwargs = kwargs
+                password = kwargs.get("password")
             else:  # use what is left to query
                 password = kwargs.pop("password")
                 query_field, query_value = kwargs.popitem()
@@ -296,11 +333,18 @@ class ObtainJSONWebTokenMixin(Output):
             if user.status.archived == True:  # unarchive on login
                 UserStatus.unarchive(user)
                 unarchiving = True
-            return cls.parent_resolve(
-                root, info, unarchiving=unarchiving, **next_kwargs
-            )
-        except (JSONWebTokenError, ObjectDoesNotExist):
+
+            if user.status.verified or app_settings.ALLOW_LOGIN_NOT_VERIFIED:
+                return cls.parent_resolve(
+                    root, info, unarchiving=unarchiving, **next_kwargs
+                )
+            if user.check_password(password):
+                raise UserNotVerified
+            raise InvalidCredentials
+        except (JSONWebTokenError, ObjectDoesNotExist, InvalidCredentials):
             return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
+        except UserNotVerified:
+            return cls(success=False, errors=Messages.NOT_VERIFIED)
 
 
 class ArchiveOrDeleteMixin(Output):

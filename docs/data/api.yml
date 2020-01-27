@@ -17,6 +17,8 @@ Register: |
     email.
 
     Send account verification email.
+
+    If allowed to not verified users login, return token.
     
 VerifyAccount: |
     Verify user account.
@@ -75,6 +77,9 @@ ObtainJSONWebToken: |
     Allow to perform login with different fields,
     and secondary email if set. The fields are
     defined on settings.
+
+    Not verified users can login by default. This
+    can be changes on settings.
 
     If user is archived, make it unarchive and
     return `unarchiving=True` on output.

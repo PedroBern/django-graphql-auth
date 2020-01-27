@@ -57,7 +57,9 @@ mutation {
     password2: "123456super",
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```

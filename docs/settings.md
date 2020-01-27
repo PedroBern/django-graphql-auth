@@ -82,6 +82,12 @@ default: `#!python ["first_name", "last_name"]` [\*](/settings/#basics)
 
 ## Other
 
+### ALLOW_LOGIN_NOT_VERIFIED
+
+Determines whether the user can log in without being verified. If it is true, the registring returns `token` and `refresh token` on the output.
+
+default: `#!python True`
+
 ### ALLOW_LOGIN_WITH_SECONDARY_EMAIL
 
 If a user has a secondary email set, he can use to login.

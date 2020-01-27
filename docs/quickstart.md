@@ -556,7 +556,9 @@ mutation {
     password2: "123456",
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -581,7 +583,9 @@ mutation {
             "code": "password_entirely_numeric"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -598,7 +602,9 @@ mutation {
     }
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -617,7 +623,9 @@ mutation {
     password2: "supersecretpassword",
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -627,7 +635,9 @@ mutation {
   "data": {
     "register": {
       "success": true,
-      "errors": null
+      "errors": null,
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5ld191c2VyMjIiLCJleHAiOjE1ODAxMzUyMTQsIm9yaWdJYXQiOjE1ODAxMzQ5MTR9.lzMjYo_1LO-TMDotySi1VHoC5yLyKr5PWC2l-hdzQ20",
+      "refreshToken": "8db1c55b8dbc1f4a24eabe6f5d44dc091a8ca0f7"
     }
   }
 }
@@ -644,7 +654,9 @@ mutation {
     }
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -691,7 +703,8 @@ query {
 }
 ```
 
-There is actually a new user, but it is not verified yet.
+There is actually a new user and it is possible to log in (you can change it on the [settings](/settings)),
+but it is not verified yet.
 
 Save the ``id`` of the new user, so we can query it later.
 

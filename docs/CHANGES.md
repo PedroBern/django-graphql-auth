@@ -3,6 +3,9 @@
 
 ## v0.2
 
+### v0.2.7
+- allow login on register, returning token and refresh token.
+
 ### v0.2.6
 - review error fields in some mutations
 

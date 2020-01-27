@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
-
-from django.utils import timezone
-
+from pytest import mark
+from .decorators import skipif_django_21
 from .testCases import RelayTestCase, DefaultTestCase
 from graphql_auth.constants import Messages
 
@@ -40,6 +39,13 @@ class LoginTestCaseMixin:
         self.assertTrue(executed["token"])
         self.assertTrue(executed["refreshToken"])
 
+        query = self.get_query("username", self.not_verified_user.username)
+        executed = self.make_request(query)
+        self.assertTrue(executed["success"])
+        self.assertFalse(executed["errors"])
+        self.assertTrue(executed["token"])
+        self.assertTrue(executed["refreshToken"])
+
     def test_login_email(self):
         query = self.get_query("email", self.verified_user.email)
         executed = self.make_request(query)
@@ -71,6 +77,32 @@ class LoginTestCaseMixin:
         executed = self.make_request(query)
         self.assertFalse(executed["success"])
         self.assertTrue(executed["errors"])
+        self.assertFalse(executed["token"])
+        self.assertFalse(executed["refreshToken"])
+
+    @mark.settings_b
+    @skipif_django_21()
+    def test_not_verified_login_on_different_settings(self):
+        query = self.get_query("username", self.not_verified_user.username)
+        executed = self.make_request(query)
+        self.assertFalse(executed["success"])
+        self.assertEqual(
+            executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
+        )
+        self.assertFalse(executed["token"])
+        self.assertFalse(executed["refreshToken"])
+
+    @mark.settings_b
+    @skipif_django_21()
+    def test_not_verified_login_on_different_settings_wrong_pass(self):
+        query = self.get_query(
+            "username", self.not_verified_user.username, "wrongpass"
+        )
+        executed = self.make_request(query)
+        self.assertFalse(executed["success"])
+        self.assertEqual(
+            executed["errors"]["nonFieldErrors"], Messages.INVALID_CREDENTIALS
+        )
         self.assertFalse(executed["token"])
         self.assertFalse(executed["refreshToken"])
 

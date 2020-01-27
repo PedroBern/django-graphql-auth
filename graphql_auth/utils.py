@@ -25,7 +25,7 @@ def get_token_paylod(token, action, exp=None):
     return payload
 
 
-def revoke_user_refresh_token(user):
+def using_refresh_tokens():
     if (
         hasattr(django_settings, "GRAPHQL_JWT")
         and django_settings.GRAPHQL_JWT.get(
@@ -34,6 +34,12 @@ def revoke_user_refresh_token(user):
         and "graphql_jwt.refresh_token.apps.RefreshTokenConfig"
         in django_settings.INSTALLED_APPS
     ):
+        return True
+    return False
+
+
+def revoke_user_refresh_token(user):
+    if using_refresh_tokens():
         refresh_tokens = user.refresh_tokens.all()
         for refresh_token in refresh_tokens:
             try:
