@@ -28,7 +28,7 @@ class Messages:
     NOT_VERIFIED_PASSWORD_RESET = [
         {
             "message": _(
-                "Verify your account before requesting the password reset. A new verification email was sent."
+                "Verify your account. A new verification email was sent."
             ),
             "code": "not_verified",
         }

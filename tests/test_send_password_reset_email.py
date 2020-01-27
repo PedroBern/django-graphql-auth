@@ -40,8 +40,7 @@ class SendPasswordResetEmailTestCaseMixin:
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
         self.assertEqual(
-            executed["errors"]["nonFieldErrors"],
-            Messages.NOT_VERIFIED_PASSWORD_RESET,
+            executed["errors"]["email"], Messages.NOT_VERIFIED_PASSWORD_RESET,
         )
 
     @mock.patch(

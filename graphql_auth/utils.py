@@ -42,16 +42,6 @@ def revoke_user_refresh_token(user):
                 pass
 
 
-def get_token_field_name(dt, default=None):
-    """
-    return the token field name, can be
-    'token', 'refresh_token',
-    """
-    return next(
-        (i for i in dt.keys() if i in ["token", "refresh_token"]), default,
-    )
-
-
 def flat_dict(dict_or_list):
     """
     if is dict, return list of dict keys,

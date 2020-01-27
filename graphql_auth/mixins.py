@@ -23,7 +23,6 @@ from .constants import Messages, TokenAction
 from .utils import (
     revoke_user_refresh_token,
     get_token_paylod,
-    get_token_field_name,
 )
 from .shortcuts import get_user_by_email, get_user_to_login
 from .decorators import (
@@ -77,6 +76,9 @@ class RegisterMixin(Output):
         except EmailAlreadyInUse:
             return cls(
                 success=False,
+                # while the token was sent and the user haven't verified,
+                # the email was free. If other account was created with it
+                # it is already in use
                 errors={UserModel.EMAIL_FIELD: Messages.EMAIL_IN_USE},
             )
         except SMTPException:
@@ -129,6 +131,9 @@ class VerifySecondaryEmailMixin(Output):
             UserStatus.verify_secondary_email(token)
             return cls(success=True)
         except EmailAlreadyInUse:
+            # while the token was sent and the user haven't
+            # verified, the email was free. If other account
+            # was created with it, it is already in use.
             return cls(success=False, errors=Messages.EMAIL_IN_USE)
         except SignatureExpired:
             return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
@@ -200,7 +205,8 @@ class SendPasswordResetEmailMixin(Output):
             try:
                 user.status.resend_activation_email(info)
                 return cls(
-                    success=False, errors=Messages.NOT_VERIFIED_PASSWORD_RESET
+                    success=False,
+                    errors={"email": Messages.NOT_VERIFIED_PASSWORD_RESET},
                 )
             except SMTPException:
                 return cls(success=False, errors=Messages.EMAIL_FAIL)
@@ -395,16 +401,9 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
         try:
             return cls.parent_resolve(root, info, **kwargs)
         except JSONWebTokenExpired:
-            message = Messages.EXPIRATED_TOKEN
+            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
         except JSONWebTokenError:
-            message = Messages.INVALID_TOKEN
-
-        token_field_name = get_token_field_name(
-            cls._meta.arguments
-        ) or get_token_field_name(
-            cls._meta.arguments["input"]._meta.fields, "token"
-        )
-        return cls(success=False, errors={token_field_name: message})
+            return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
 class SendSecondaryEmailActivationMixin(Output):
@@ -427,7 +426,10 @@ class SendSecondaryEmailActivationMixin(Output):
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except EmailAlreadyInUse:
-            return cls(success=False, errors=Messages.EMAIL_IN_USE)
+            # while the token was sent and the user haven't verified,
+            # the email was free. If other account was created with it
+            # it is already in use
+            return cls(success=False, errors={"email": Messages.EMAIL_IN_USE})
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
 
