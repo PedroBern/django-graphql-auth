@@ -77,7 +77,9 @@ mutation {
     token:"<TOKEN ON EMAIL LINK>",
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
