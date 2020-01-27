@@ -3,7 +3,7 @@
 
 ## v0.2
 
-### v0.2.7
+### v0.2.8
 - return new token and refreshToken on password change.
 
 ### v0.2.7
