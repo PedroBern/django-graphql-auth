@@ -70,7 +70,7 @@ u.status.verified
 # False
 ```
 
-During the registration, an email with a verification link was sent to the user.
+During the registration, an email with a verification link was sent.
 
 ```python
 mutation {
