@@ -100,7 +100,7 @@ DeleteAccount: |
 PasswordChange: |
     Change account password when user knows the old password.
 
-    User must be verified.
+    A new token and refresh token are sent. User must be verified.
     
 UpdateAccount: |
     Update user model fields, defined on settings.

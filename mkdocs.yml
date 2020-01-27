@@ -7,9 +7,11 @@ repo_url: https://github.com/pedrobern/django-graphql-auth
 theme:
   name: "material"
   language: en
-  # palette:
-  #   primary: 'black'
-  #   accent: 'purple'
+  palette:
+    primary: 'black'
+    accent: 'purple'
+  logo: 'images/graphql_logo.svg'
+  favicon: 'images/favicon.ico'
 
 extra:
   social:

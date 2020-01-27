@@ -6,6 +6,9 @@
 
 - Fully functional API to handle user account
 - Both graphQL and Relay versions
+- 20 to 30 minutes
+
+[Final code on github](https://github.com/PedroBern/django-graphql-auth/tree/master/quickstart).
 
 ---
 
@@ -32,15 +35,9 @@ pip install django
 Then, create the new project:
 
 ```bash
-django-admin startproject project
-cd project
+django-admin startproject quickstart
+cd quickstart
 python manage.py migrate
-```
-
-Open the new folder on you favorite text editor, I like [Atom](https://atom.io/).
-
-```bash
-atom .
 ```
 
 ---
@@ -69,7 +66,7 @@ pip install graphene-django django-graphql-jwt
 ### Add the url
 
 ```python
-# project.urls.py
+# quickstart.urls.py
 
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
@@ -85,17 +82,15 @@ urlpatterns = [
 ### Edit your settings
 
 ```python
-# project.settings.py
+# quickstart.settings.py
 
 INSTALLED_APPS = [
     # ...
     'django.contrib.staticfiles', # Required for GraphiQL
-    'graphene_django'
-
+    'graphene_django',
 
     # refresh tokens are optional
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    ''
 ]
 
 MIDDLEWARE = [
@@ -105,7 +100,7 @@ MIDDLEWARE = [
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'project.schema.schema', # this file doesn't exist yet
+    'SCHEMA': 'quickstart.schema.schema', # this file doesn't exist yet
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
@@ -187,7 +182,7 @@ python manage.py migrate
 Create a file called ``schema.py`` next to your ``settings.py`` with the following:
 
 ```python
-# project.schema.py
+# quickstart.schema.py
 
 import graphene
 
@@ -430,7 +425,7 @@ query {
     edges {
       node {
         username,
-        verified,
+        archived,
       }
     }
   }
@@ -484,7 +479,7 @@ Now let's add some mutations to our schema, starting with the registration. On t
 ### Register
 
 ```python tab="mutations" hl_lines="6 8 9 14 15 17"
-# project.schema.py
+# quickstart.schema.py
 
 import graphene
 
@@ -504,7 +499,7 @@ schema = graphene.Schema(query=Query, mutation=Mutation)
 ```
 
 ```python tab="relay" hl_lines="6 8 9 14 15 17"
-# project.schema.py
+# quickstart.schema.py
 
 import graphene
 
@@ -788,7 +783,7 @@ mutation {
 mutation {
   verifyAccount(
     input: {
-      token: "YOUR TOKEN HERE"
+      token: "<YOUR TOKEN HERE>"
     }
   )
   {
@@ -802,7 +797,7 @@ Check if the user is verified using the id that you have saved early:
 
 ```tab="query"
 query {
-  user (id: "VXNlck5vZGU6NQ=="){
+  user (id: "<USER ID>"){
     username,
     verified
   }
@@ -1026,7 +1021,7 @@ Check if it worked:
 
 ```python tab="graphql"
 query {
-  user (id: "VXNlck5vZGU6NQ=="){
+  user (id: "<USER ID>"){
     username,
     firstName
   }
@@ -1048,7 +1043,7 @@ query {
 
 ## Next steps
 
-- Add all mutations to your schema!
+- Add [all mutations](/quickstart/#full-schema) to your schema!
 - Navigate through the GraphiQL Documentation Explorer.
 - Change the [settings](/settings).
 - Explore the [api](/api).
