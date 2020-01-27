@@ -54,5 +54,5 @@ nav:
   - Settings: settings.md
   - API: api.md
   - Community: community.md
-  - Changelog: CHANGES.md
-  - Contributors: CONTRIBUTORS.md
+  - Changelog: changelog.md
+  - Contributors: contributors.md

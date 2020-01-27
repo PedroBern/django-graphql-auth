@@ -4,7 +4,7 @@
     If you are not familiarized with
     [Graphene](https://github.com/graphql-python/graphene)
     or [GraphQL JWT](https://github.com/flavors/django-graphql-jwt), skip this
-    installation section and go to the [quickstart](/quickstart) guide.
+    installation section and go to the [quickstart]({{ site_url }}/quickstart) guide.
 
 ---
 

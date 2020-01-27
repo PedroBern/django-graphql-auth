@@ -39,5 +39,8 @@ with open(destination, "w") as file:
 
 # copy contributors and changes files to docs dir
 files = ["CONTRIBUTORS.md", "CHANGES.md"]
-for file in files:
-    shutil.copyfile(current_dir + "/" + file, current_dir + "/docs/" + file)
+dest = ["contributors.md", "changelog.md"]
+for index, file in enumerate(files):
+    shutil.copyfile(
+        current_dir + "/" + file, current_dir + "/docs/" + dest[index]
+    )
