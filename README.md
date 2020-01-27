@@ -56,7 +56,9 @@ mutation {
     password2: "123456super",
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -77,9 +79,7 @@ mutation {
     token:"<TOKEN ON EMAIL LINK>",
   ) {
     success,
-    errors,
-    token,
-    refreshToken
+    errors
   }
 }
 ```
