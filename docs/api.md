@@ -172,7 +172,9 @@ mutation {
     password2: "123456",
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -197,7 +199,9 @@ mutation {
             "code": "password_entirely_numeric"
           }
         ]
-      }
+      },
+      "token": null
+      "refreshToken": null
     }
   }
 }
@@ -214,7 +218,9 @@ mutation {
     }
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -333,7 +339,7 @@ mutation {
 ```bash tab="success"
 {
   "data": {
-    "register": {
+    "passwordReset": {
       "success": true,
       "errors": null
     }
@@ -500,7 +506,9 @@ mutation {
     password2:"qlr4nq3f3"
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -510,7 +518,9 @@ mutation {
   "data": {
     "register": {
       "success": true,
-      "errors": null
+      "errors": null,
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImpvZWpvZSIsImV4cCI6MTU4MDE0MjE0MCwib3JpZ0lhdCI6MTU4MDE0MTg0MH0.BGUSGKUUd7IuHnWKy8V6MU3slJ-DHsyAdAjGrGb_9fw",
+     "refreshToken":
     }
   }
 }
@@ -527,7 +537,9 @@ mutation {
     }
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -545,7 +557,9 @@ mutation {
             "code": "unique"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -563,7 +577,9 @@ mutation {
             "code": "password_mismatch"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -589,7 +605,9 @@ mutation {
             "code": "password_entirely_numeric"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -607,7 +625,9 @@ mutation {
             "code": "invalid"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -1333,7 +1353,9 @@ mutation {
      newPassword2: "123456super"
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -1343,7 +1365,9 @@ mutation {
   "data": {
     "passwordChange": {
       "success": true,
-      "errors": null
+      "errors": null,
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImpvZWpvZSIsImV4cCI6MTU4MDE0MjE0MCwib3JpZ0lhdCI6MTU4MDE0MTg0MH0.BGUSGKUUd7IuHnWKy8V6MU3slJ-DHsyAdAjGrGb_9fw",
+      "refreshToken": "67eb63ba9d279876d3e9ae4d39c311e845e728fc"
     }
   }
 }
@@ -1359,7 +1383,9 @@ mutation {
     }
   ) {
     success,
-    errors
+    errors,
+    token,
+    refreshToken
   }
 }
 ```
@@ -1377,7 +1403,9 @@ mutation {
             "code": "unauthenticated"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -1395,7 +1423,9 @@ mutation {
             "code": "not_verified"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -1421,7 +1451,9 @@ mutation {
             "code": "password_entirely_numeric"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -1439,7 +1471,9 @@ mutation {
             "code": "password_mismatch"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }
@@ -1457,7 +1491,9 @@ mutation {
             "code": "invalid_password"
           }
         ]
-      }
+      },
+      "token": null,
+      "refreshToken": null
     }
   }
 }

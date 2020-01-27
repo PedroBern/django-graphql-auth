@@ -395,10 +395,22 @@ class PasswordChangeMixin(Output):
     """
     Change account password when user knows the old password.
 
-    User must be verified.
+    A new token and refresh token are sent. User must be verified.
     """
 
     form = PasswordChangeForm
+
+    @classmethod
+    def Field(cls, *args, **kwargs):
+        if using_refresh_tokens():
+            cls._meta.fields["refresh_token"] = graphene.Field(graphene.String)
+        cls._meta.fields["token"] = graphene.Field(graphene.String)
+        return super().Field(*args, **kwargs)
+
+    @classmethod
+    @token_auth
+    def login_on_password_change(cls, root, info, **kwargs):
+        return cls()
 
     @classmethod
     @verification_required
@@ -409,7 +421,16 @@ class PasswordChangeMixin(Output):
         if f.is_valid():
             revoke_user_refresh_token(user)
             user = f.save()
-            return cls(success=True)
+            payload = cls.login_on_password_change(
+                root,
+                info,
+                password=kwargs.get("new_password1"),
+                username=getattr(user, user.USERNAME_FIELD),
+            )
+            return_value = {}
+            for field in cls._meta.fields:
+                return_value[field] = getattr(payload, field)
+            return cls(**return_value)
         else:
             return cls(success=False, errors=f.errors.get_json_data())
 

@@ -1,4 +1,5 @@
 import re
+import pprint
 
 from graphene.test import Client
 from graphene.types.schema import Schema
@@ -73,7 +74,7 @@ class TestBase(TestCase):
             print("\nInvalid query!")
             raise Exception(executed["errors"])
         finally:
-            print(executed)
+            pprint.pprint(executed)
 
 
 class RelayTestCase(TestBase):
