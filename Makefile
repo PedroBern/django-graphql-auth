@@ -20,11 +20,11 @@ test-file:
 	tox -e py${p}-django${d} -- tests/test_${f}.py --cov-report html --cov-append
 
 serve:
-	python pre_docs_script.py
+	python docs/pre_build.py
 	mkdocs serve
 
 build-docs:
-	python docs/conf.py
+	python docs/pre_build.py
 	mkdocs build
 
 format:
