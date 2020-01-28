@@ -24,7 +24,7 @@ serve:
 	mkdocs serve
 
 build-docs:
-	python pre_docs_script.py
+	python docs/conf.py
 	mkdocs build
 
 format:
