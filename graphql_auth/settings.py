@@ -29,15 +29,13 @@ DEFAULTS = {
     "REGISTER_MUTATION_FIELDS": ["email", "username"],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": [],
     # optional fields on update account, can be list of fields
-    "UPDATE_MUTATION_FIELDS": {"first_name": "String", "last_name": "String",},
+    "UPDATE_MUTATION_FIELDS": {"first_name": "String", "last_name": "String"},
     # tokens
     "EXPIRATION_ACTIVATION_TOKEN": timedelta(days=7),
     "EXPIRATION_PASSWORD_RESET_TOKEN": timedelta(hours=1),
     "EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN": timedelta(hours=1),
     # email stuff
-    "EMAIL_FROM": getattr(
-        django_settings, "DEFAULT_FROM_EMAIL", "test@email.com"
-    ),
+    "EMAIL_FROM": getattr(django_settings, "DEFAULT_FROM_EMAIL", "test@email.com"),
     "SEND_ACTIVATION_EMAIL": True,
     # client: example.com/activate/token
     "ACTIVATION_PATH_ON_EMAIL": "activate",
@@ -57,7 +55,7 @@ DEFAULTS = {
     # query stuff
     "USER_NODE_EXCLUDE_FIELDS": ["password", "is_superuser"],
     "USER_NODE_FILTER_FIELDS": {
-        "email": ["exact",],
+        "email": ["exact"],
         "username": ["exact", "icontains", "istartswith"],
         "is_active": ["exact"],
         "status__archived": ["exact"],

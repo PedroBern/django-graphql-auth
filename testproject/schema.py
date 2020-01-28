@@ -14,9 +14,7 @@ class AuthMutation(graphene.ObjectType):
     delete_account = mutations.DeleteAccount.Field()
     password_change = mutations.PasswordChange.Field()
     update_account = mutations.UpdateAccount.Field()
-    send_secondary_email_activation = (
-        mutations.SendSecondaryEmailActivation.Field()
-    )
+    send_secondary_email_activation = mutations.SendSecondaryEmailActivation.Field()
     verify_secondary_email = mutations.VerifySecondaryEmail.Field()
     swap_emails = mutations.SwapEmails.Field()
     remove_secondary_email = mutations.RemoveSecondaryEmail.Field()

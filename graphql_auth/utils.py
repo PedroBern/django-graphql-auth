@@ -28,9 +28,7 @@ def get_token_paylod(token, action, exp=None):
 def using_refresh_tokens():
     if (
         hasattr(django_settings, "GRAPHQL_JWT")
-        and django_settings.GRAPHQL_JWT.get(
-            "JWT_LONG_RUNNING_REFRESH_TOKEN", False
-        )
+        and django_settings.GRAPHQL_JWT.get("JWT_LONG_RUNNING_REFRESH_TOKEN", False)
         and "graphql_jwt.refresh_token.apps.RefreshTokenConfig"
         in django_settings.INSTALLED_APPS
     ):
@@ -53,11 +51,7 @@ def flat_dict(dict_or_list):
     if is dict, return list of dict keys,
     if is list, return the list
     """
-    return (
-        list(dict_or_list.keys())
-        if isinstance(dict_or_list, dict)
-        else dict_or_list
-    )
+    return list(dict_or_list.keys()) if isinstance(dict_or_list, dict) else dict_or_list
 
 
 def normalize_fields(dict_or_list, extra_list):

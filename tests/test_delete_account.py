@@ -67,9 +67,7 @@ class DeleteAccountTestCaseMixin:
         self.assertEqual(self.user1.is_active, True)
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED)
         self.assertEqual(self.user1.is_active, True)
 
     def test_valid_password(self):

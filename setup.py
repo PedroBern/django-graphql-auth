@@ -21,6 +21,8 @@ tests_require = [
     "coveralls",
 ]
 
+dev_requires = ["black==19.3b0", "flake8==3.7.7"] + tests_require
+
 setup(
     name="django-graphql-auth",
     version=get_version("graphql_auth"),
@@ -62,5 +64,5 @@ setup(
     keywords="api graphql rest relay graphene auth",
     zip_safe=False,
     include_package_data=True,
-    extras_require={"test": tests_require, "dev": tests_require,},
+    extras_require={"test": tests_require, "dev": dev_requires,},
 )

@@ -33,9 +33,7 @@ class SendSecondaryEmailActivationTestCaseMixin:
 
     def test_valid_email(self):
         variables = {"user": self.user2}
-        executed = self.make_request(
-            self.get_query("new_email@email.com"), variables
-        )
+        executed = self.make_request(self.get_query("new_email@email.com"), variables)
         self.assertEqual(executed["success"], True)
         self.assertFalse(executed["errors"])
 
@@ -45,9 +43,7 @@ class SendSecondaryEmailActivationTestCaseMixin:
     )
     def test_resend_email_fail_to_send_email(self):
         variables = {"user": self.user2}
-        executed = self.make_request(
-            self.get_query("new_email@email.com"), variables
-        )
+        executed = self.make_request(self.get_query("new_email@email.com"), variables)
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"])
 

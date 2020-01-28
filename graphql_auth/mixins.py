@@ -67,9 +67,7 @@ class RegisterMixin(Output):
     def Field(cls, *args, **kwargs):
         if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
             if using_refresh_tokens():
-                cls._meta.fields["refresh_token"] = graphene.Field(
-                    graphene.String
-                )
+                cls._meta.fields["refresh_token"] = graphene.Field(graphene.String)
             cls._meta.fields["token"] = graphene.Field(graphene.String)
         return super().Field(*args, **kwargs)
 
@@ -88,16 +86,13 @@ class RegisterMixin(Output):
                     UserStatus.clean_email(email)
                     user = f.save()
                     send_activation = (
-                        app_settings.SEND_ACTIVATION_EMAIL == True and email
+                        app_settings.SEND_ACTIVATION_EMAIL is True and email
                     )
                     if send_activation:
                         user.status.send_activation_email(info)
                     if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
                         payload = cls.login_on_register(
-                            root,
-                            info,
-                            password=kwargs.get("password1"),
-                            **kwargs
+                            root, info, password=kwargs.get("password1"), **kwargs
                         )
                         return_value = {}
                         for field in cls._meta.fields:
@@ -201,9 +196,7 @@ class ResendActivationEmailMixin(Output):
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
         except UserAlreadyVerified:
-            return cls(
-                success=False, errors={"email": Messages.ALREADY_VERIFIED}
-            )
+            return cls(success=False, errors={"email": Messages.ALREADY_VERIFIED})
 
 
 class SendPasswordResetEmailMixin(Output):
@@ -330,7 +323,7 @@ class ObtainJSONWebTokenMixin(Output):
                     "password": password,
                     USERNAME_FIELD: getattr(user, USERNAME_FIELD),
                 }
-            if user.status.archived == True:  # unarchive on login
+            if user.status.archived is True:  # unarchive on login
                 UserStatus.unarchive(user)
                 unarchiving = True
 

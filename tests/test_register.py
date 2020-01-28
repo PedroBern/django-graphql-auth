@@ -43,9 +43,7 @@ class RegisterTestCaseMixin:
         self.assertFalse(executed["refreshToken"])
 
         # try to register again
-        executed = self.make_request(
-            self.register_query(username="other_username")
-        )
+        executed = self.make_request(self.register_query(username="other_username"))
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["email"])
         self.assertFalse(executed["token"])
@@ -83,9 +81,7 @@ class RegisterTestCaseMixin:
     def test_register_email_send_fail(self):
         executed = self.make_request(self.register_query())
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL)
         self.assertEqual(len(get_user_model().objects.all()), 0)
 
     @mark.settings_b

@@ -89,9 +89,7 @@ class PasswordChangeTestCase(PasswordChangeTestCaseMixin, DefaultTestCase):
             self.default_password,
         )
 
-    def get_query(
-        self, new_password1="new_password", new_password2="new_password"
-    ):
+    def get_query(self, new_password1="new_password", new_password2="new_password"):
         return """
         mutation {
             passwordChange(
@@ -124,9 +122,7 @@ class PasswordChangeRelayTestCase(PasswordChangeTestCaseMixin, RelayTestCase):
             self.default_password,
         )
 
-    def get_query(
-        self, new_password1="new_password", new_password2="new_password"
-    ):
+    def get_query(self, new_password1="new_password", new_password2="new_password"):
         return """
         mutation {
             passwordChange(

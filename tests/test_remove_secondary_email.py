@@ -35,9 +35,7 @@ class RemoveSecondaryEmailCase(RemoveSecondaryEmailCaseMixin, DefaultTestCase):
         )
 
 
-class RemoveSecondaryEmailRelayTestCase(
-    RemoveSecondaryEmailCaseMixin, RelayTestCase
-):
+class RemoveSecondaryEmailRelayTestCase(RemoveSecondaryEmailCaseMixin, RelayTestCase):
     def query(self, password=None):
         return """
         mutation {

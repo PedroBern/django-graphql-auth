@@ -71,9 +71,7 @@ class LoginTestCaseMixin:
         self.assertFalse(executed["refreshToken"])
 
     def test_login_wrong_credentials_2(self):
-        query = self.get_query(
-            "username", self.verified_user.username, "wrongpass"
-        )
+        query = self.get_query("username", self.verified_user.username, "wrongpass")
         executed = self.make_request(query)
         self.assertFalse(executed["success"])
         self.assertTrue(executed["errors"])
@@ -86,18 +84,14 @@ class LoginTestCaseMixin:
         query = self.get_query("username", self.not_verified_user.username)
         executed = self.make_request(query)
         self.assertFalse(executed["success"])
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED)
         self.assertFalse(executed["token"])
         self.assertFalse(executed["refreshToken"])
 
     @mark.settings_b
     @skipif_django_21()
     def test_not_verified_login_on_different_settings_wrong_pass(self):
-        query = self.get_query(
-            "username", self.not_verified_user.username, "wrongpass"
-        )
+        query = self.get_query("username", self.not_verified_user.username, "wrongpass")
         executed = self.make_request(query)
         self.assertFalse(executed["success"])
         self.assertEqual(

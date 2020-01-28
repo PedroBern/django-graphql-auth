@@ -32,9 +32,7 @@ class VerifySecondaryEmailCaseMixin:
 
     def test_email_in_use(self):
         token = get_token(
-            self.user,
-            "activation_secondary_email",
-            secondary_email="foo@email.com",
+            self.user, "activation_secondary_email", secondary_email="foo@email.com",
         )
         executed = self.make_request(self.verify_query(token))
         self.assertEqual(executed["success"], False)
@@ -53,9 +51,7 @@ class VerifySecondaryEmailCase(VerifySecondaryEmailCaseMixin, DefaultTestCase):
         )
 
 
-class VerifySecondaryEmailRelayTestCase(
-    VerifySecondaryEmailCaseMixin, RelayTestCase
-):
+class VerifySecondaryEmailRelayTestCase(VerifySecondaryEmailCaseMixin, RelayTestCase):
     def verify_query(self, token):
         return """
         mutation {

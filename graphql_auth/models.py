@@ -48,8 +48,9 @@ class UserStatus(models.Model):
             from_email=app_settings.EMAIL_FROM,
             message=message,
             html_message=html_message,
-            recipient_list=recipient_list
-            or [getattr(self.user, UserModel.EMAIL_FIELD)],
+            recipient_list=(
+                recipient_list or [getattr(self.user, UserModel.EMAIL_FIELD)]
+            ),
             fail_silently=False,
         )
 
@@ -75,7 +76,7 @@ class UserStatus(models.Model):
         return self.send(subject, template, email_context, *args, **kwargs)
 
     def resend_activation_email(self, info, *args, **kwargs):
-        if self.verified == True:
+        if self.verified is True:
             raise UserAlreadyVerified
         email_context = self.get_email_context(
             info, app_settings.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
@@ -85,12 +86,10 @@ class UserStatus(models.Model):
         return self.send(subject, template, email_context, *args, **kwargs)
 
     def send_password_reset_email(self, info, *args, **kwargs):
-        if self.verified == False:
+        if self.verified is False:
             raise UserNotVerified
         email_context = self.get_email_context(
-            info,
-            app_settings.PASSWORD_RESET_PATH_ON_EMAIL,
-            TokenAction.PASSWORD_RESET,
+            info, app_settings.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET,
         )
         template = app_settings.EMAIL_TEMPLATE_PASSWORD_RESET
         subject = app_settings.EMAIL_SUBJECT_PASSWORD_RESET
@@ -107,21 +106,17 @@ class UserStatus(models.Model):
         )
         template = app_settings.EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION
         subject = app_settings.EMAIL_SUBJECT_SECONDARY_EMAIL_ACTIVATION
-        return self.send(
-            subject, template, email_context, recipient_list=[email]
-        )
+        return self.send(subject, template, email_context, recipient_list=[email])
 
     @classmethod
     def email_is_free(cls, email):
         try:
-            user = UserModel._default_manager.get(
-                **{UserModel.EMAIL_FIELD: email}
-            )
+            UserModel._default_manager.get(**{UserModel.EMAIL_FIELD: email})
             return False
         except Exception:
             pass
         try:
-            user_email = UserStatus._default_manager.get(secondary_email=email)
+            UserStatus._default_manager.get(secondary_email=email)
             return False
         except Exception:
             pass
@@ -130,19 +125,17 @@ class UserStatus(models.Model):
     @classmethod
     def clean_email(cls, email=False):
         if email:
-            if cls.email_is_free(email) == False:
+            if cls.email_is_free(email) is False:
                 raise EmailAlreadyInUse
 
     @classmethod
     def verify(cls, token):
         payload = get_token_paylod(
-            token,
-            TokenAction.ACTIVATION,
-            app_settings.EXPIRATION_ACTIVATION_TOKEN,
+            token, TokenAction.ACTIVATION, app_settings.EXPIRATION_ACTIVATION_TOKEN,
         )
         user = UserModel._default_manager.get(**payload)
         user_status = cls.objects.get(user=user)
-        if user_status.verified == False:
+        if user_status.verified is False:
             user_status.verified = True
             user_status.save(update_fields=["verified"])
         else:
@@ -166,14 +159,14 @@ class UserStatus(models.Model):
     @classmethod
     def unarchive(cls, user):
         user_status = cls.objects.get(user=user)
-        if user_status.archived == True:
+        if user_status.archived is True:
             user_status.archived = False
             user_status.save(update_fields=["archived"])
 
     @classmethod
     def archive(cls, user):
         user_status = cls.objects.get(user=user)
-        if user_status.archived == False:
+        if user_status.archived is False:
             user_status.archived = True
             user_status.save(update_fields=["archived"])
 

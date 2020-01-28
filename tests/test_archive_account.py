@@ -83,9 +83,7 @@ class ArchiveAccountTestCaseMixin:
         self.assertEqual(self.user1.status.archived, False)
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED)
         self.assertEqual(self.user1.status.archived, False)
 
 

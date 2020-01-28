@@ -1,4 +1,4 @@
-.PHONY : test-local test-local-file serve build-docs check-readme install-local
+.PHONY : test-local test-local-file serve build-docs check-readme install-local lint format
 
 check-readme:
 	rm -rf dist build django_graphql_auth.egg-info
@@ -26,3 +26,9 @@ serve:
 build-docs:
 	python pre_docs_script.py
 	mkdocs build
+
+format:
+	black graphql_auth testproject setup.py quickstart tests
+
+lint:
+	flake8 graphql_auth

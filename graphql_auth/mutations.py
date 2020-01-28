@@ -30,7 +30,7 @@ class Register(
 
     __doc__ = RegisterMixin.__doc__
     _required_args = normalize_fields(
-        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",],
+        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2"],
     )
     _args = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
@@ -43,20 +43,14 @@ class VerifyAccount(
 
 
 class ResendActivationEmail(
-    MutationMixin,
-    DynamicArgsMixin,
-    ResendActivationEmailMixin,
-    graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, ResendActivationEmailMixin, graphene.Mutation,
 ):
     __doc__ = ResendActivationEmailMixin.__doc__
     _required_args = ["email"]
 
 
 class SendPasswordResetEmail(
-    MutationMixin,
-    DynamicArgsMixin,
-    SendPasswordResetEmailMixin,
-    graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, SendPasswordResetEmailMixin, graphene.Mutation,
 ):
     __doc__ = SendPasswordResetEmailMixin.__doc__
     _required_args = ["email"]
@@ -73,10 +67,7 @@ class SendSecondaryEmailActivation(
 
 
 class VerifySecondaryEmail(
-    MutationMixin,
-    DynamicArgsMixin,
-    VerifySecondaryEmailMixin,
-    graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, VerifySecondaryEmailMixin, graphene.Mutation,
 ):
     __doc__ = VerifySecondaryEmailMixin.__doc__
     _required_args = ["token"]
@@ -90,10 +81,7 @@ class SwapEmails(
 
 
 class RemoveSecondaryEmail(
-    MutationMixin,
-    DynamicArgsMixin,
-    RemoveSecondaryEmailMixin,
-    graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, RemoveSecondaryEmailMixin, graphene.Mutation,
 ):
     __doc__ = RemoveSecondaryEmailMixin.__doc__
     _required_args = ["password"]
@@ -118,9 +106,7 @@ class ObtainJSONWebToken(
         cls._meta.arguments.update({"password": graphene.String(required=True)})
         for field in app_settings.LOGIN_ALLOWED_FIELDS:
             cls._meta.arguments.update({field: graphene.String()})
-        return super(graphql_jwt.JSONWebTokenMutation, cls).Field(
-            *args, **kwargs
-        )
+        return super(graphql_jwt.JSONWebTokenMutation, cls).Field(*args, **kwargs)
 
 
 class ArchiveAccount(
@@ -151,9 +137,7 @@ class UpdateAccount(
     _args = app_settings.UPDATE_MUTATION_FIELDS
 
 
-class VerifyToken(
-    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Verify
-):
+class VerifyToken(MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Verify):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
 
@@ -163,7 +147,5 @@ class RefreshToken(
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
 
-class RevokeToken(
-    MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Revoke
-):
+class RevokeToken(MutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.Revoke):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__

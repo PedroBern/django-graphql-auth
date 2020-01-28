@@ -32,17 +32,13 @@ class VerifyAccountCaseMixin:
     def test_invalid_token(self):
         executed = self.make_request(self.verify_query("faketoken"))
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.INVALID_TOKEN
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.INVALID_TOKEN)
 
     def test_other_token(self):
         token = get_token(self.user2, "password_reset")
         executed = self.make_request(self.verify_query(token))
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.INVALID_TOKEN
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.INVALID_TOKEN)
 
 
 class VerifyAccountCase(VerifyAccountCaseMixin, DefaultTestCase):

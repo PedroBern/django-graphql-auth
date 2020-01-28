@@ -10,6 +10,4 @@ class AppSettingsTestCase(TestCase):
         settings.reload_graphql_auth_settings(
             setting="GRAPHQL_AUTH", value=user_settings
         )
-        self.assertFalse(
-            settings.graphql_auth_settings.ALLOW_LOGIN_NOT_VERIFIED
-        )
+        self.assertFalse(settings.graphql_auth_settings.ALLOW_LOGIN_NOT_VERIFIED)

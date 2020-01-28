@@ -25,16 +25,13 @@ from .schema import UserNode
 
 
 class Register(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    RegisterMixin,
-    graphene.ClientIDMutation,
+    RelayMutationMixin, DynamicInputMixin, RegisterMixin, graphene.ClientIDMutation,
 ):
 
     __doc__ = RegisterMixin.__doc__
 
     _required_inputs = normalize_fields(
-        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2",],
+        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2"]
     )
     _inputs = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
@@ -90,10 +87,7 @@ class VerifySecondaryEmail(
 
 
 class SwapEmails(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    SwapEmailsMixin,
-    graphene.ClientIDMutation,
+    RelayMutationMixin, DynamicInputMixin, SwapEmailsMixin, graphene.ClientIDMutation,
 ):
     __doc__ = SwapEmailsMixin.__doc__
     _required_inputs = ["password"]
@@ -120,9 +114,7 @@ class PasswordReset(
 
 
 class ObtainJSONWebToken(
-    RelayMutationMixin,
-    ObtainJSONWebTokenMixin,
-    graphql_jwt.relay.JSONWebTokenMutation,
+    RelayMutationMixin, ObtainJSONWebTokenMixin, graphql_jwt.relay.JSONWebTokenMutation,
 ):
     __doc__ = ObtainJSONWebTokenMixin.__doc__
     user = graphene.Field(UserNode)
@@ -137,9 +129,7 @@ class ObtainJSONWebToken(
             cls._meta.arguments["input"]._meta.fields.update(
                 {field: graphene.InputField(graphene.String)}
             )
-        return super(graphql_jwt.relay.JSONWebTokenMutation, cls).Field(
-            *args, **kwargs
-        )
+        return super(graphql_jwt.relay.JSONWebTokenMutation, cls).Field(*args, **kwargs)
 
 
 class ArchiveAccount(
@@ -183,9 +173,7 @@ class UpdateAccount(
 
 
 class VerifyToken(
-    RelayMutationMixin,
-    VerifyOrRefreshOrRevokeTokenMixin,
-    graphql_jwt.relay.Verify,
+    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Verify,
 ):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
@@ -194,9 +182,7 @@ class VerifyToken(
 
 
 class RefreshToken(
-    RelayMutationMixin,
-    VerifyOrRefreshOrRevokeTokenMixin,
-    graphql_jwt.relay.Refresh,
+    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Refresh,
 ):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
@@ -205,9 +191,7 @@ class RefreshToken(
 
 
 class RevokeToken(
-    RelayMutationMixin,
-    VerifyOrRefreshOrRevokeTokenMixin,
-    graphql_jwt.relay.Revoke,
+    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Revoke,
 ):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
