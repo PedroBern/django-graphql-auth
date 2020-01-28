@@ -34,9 +34,10 @@ setup(
     author_email="pedrobermoreira@gmail.com",
     maintainer="pedrobern",
     url="https://github.com/PedroBern/django-graphql-auth",
-    project_urls=OrderedDict(
-        (("Issues", "https://github.com/PedroBern/django-graphql-auth/issues"),)
-    ),
+    project_urls=OrderedDict((
+        ('Documentation', 'https://django-graphql-auth.readthedocs.io/en/latest/'),
+        ("Issues", "https://github.com/PedroBern/django-graphql-auth/issues"),
+    )),
     packages=find_packages(exclude=["tests*"]),
     install_requires=[
         "Django>=2.1.0",
@@ -47,7 +48,7 @@ setup(
     ],
     tests_require=tests_require,
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        'Development Status :: 4 - Beta',,
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
