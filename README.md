@@ -18,12 +18,12 @@ your implementation*.
 
 ## Documentation
 
-Documentation is available at \# TODO
+Documentation is available at [read the docs](https://django-graphql-auth.readthedocs.io/en/latest/).
 
 
 ## Features
 
-* [x] Awesome docs :tada:
+* [x] [Awesome docs](https://django-graphql-auth.readthedocs.io/en/latest/) :tada:
 * [x] Fully compatible with [Relay](https://github.com/facebook/relay>)
 * [x] Works with **default or custom** user model
 * [x] JWT authentication *(with [Django GraphQL JWT](https://github.com/flavors/django-graphql-jwt>))*
@@ -91,4 +91,4 @@ u.status.verified
 # True
 ```
 
-Check the [installation guide]() or jump to the [quickstart]().
+Check the [installation guide](https://django-graphql-auth.readthedocs.io/en/latest/installation/) or jump to the [quickstart](https://django-graphql-auth.readthedocs.io/en/latest/quickstart/). Or if you prefer, browse the [api](https://django-graphql-auth.readthedocs.io/en/latest/api/).

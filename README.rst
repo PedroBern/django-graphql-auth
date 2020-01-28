@@ -15,10 +15,15 @@ is not up to your expectations , it's easy to extend or switch to
 your implementation.
 
 
+Documentation
+-------------
+
+Documentation is available at `read the docs <https://django-graphql-auth.readthedocs.io/en/latest/>`_.
+
 Features
 --------
 
-* Awesome docs
+* `Awesome docs <https://django-graphql-auth.readthedocs.io/en/latest/>`_
 * Fully compatible with `Relay <https://github.com/facebook/relay>`_
 * Works with default/custom user model
 * JWT authentication (with `Django GraphQL JWT <https://github.com/flavors/django-graphql-jwt>`_)
@@ -38,11 +43,59 @@ Features
 * Default email templates *(you will customize though)*
 * Customizable, no lock-in
 
-Documentation
--------------
 
-Documentation is available at # TODO
+Preview
+-------
 
+Handling user accounts becomes super easy.
+
+.. code:: bash
+
+  mutation {
+    register(
+      email: "new_user@email.com",
+      username: "new_user",
+      password1: "123456super",
+      password2: "123456super",
+    ) {
+      success,
+      errors,
+      token,
+      refreshToken
+    }
+  }
+
+Check the status of the new user:
+
+.. code:: python
+
+  u = UserModel.objects.last()
+  u.status.verified
+  # False
+
+
+During the registration, an email with a verification link was sent.
+
+.. code:: bash
+
+  mutation {
+    verifyAccount(
+      token:"<TOKEN ON EMAIL LINK>",
+    ) {
+      success,
+      errors
+    }
+  }
+
+Now user is verified.
+
+.. code:: python
+
+  u.status.verified
+  # True
+
+
+Check the `installation guide <https://django-graphql-auth.readthedocs.io/en/latest/installation/>`_ or jump to the `quickstart <https://django-graphql-auth.readthedocs.io/en/latest/quickstart/>`_. Or if you prefer, browse the `api <https://django-graphql-auth.readthedocs.io/en/latest/api/>`_.
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/django-graphql-auth.svg
    :target: https://pypi.org/project/django-graphql-auth/
