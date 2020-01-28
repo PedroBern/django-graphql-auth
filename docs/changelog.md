@@ -1,8 +1,14 @@
 # Changelog
 
 
-## v0.2
+## v0.3
 
+### v0.3.0
+
+- release beta
+
+
+## v0.2
 
 ### v0.2.8
 - return new token and refreshToken on password change.
