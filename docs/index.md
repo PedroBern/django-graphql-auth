@@ -10,8 +10,7 @@
 
 ## About
 
-GraphQL implementation of the [Django](https://github.com/django/django)
-authentication system.
+[Django](https://github.com/django/django) registration and authentication with GraphQL
 
 It abstract all the basic logic of handling user accounts out of your app,
 so you don't need to think about it and can ==get up and running faster==.
