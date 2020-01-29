@@ -7,7 +7,7 @@
 
 
 
-[Django](https://github.com/django/django) registration and authentication with GraphQL
+[Django](https://github.com/django/django) registration and authentication with GraphQL.
 
 It abstract all the basic logic of handling user accounts out of your app,
 so you don't need to think about it and can **get up and running faster**.
