@@ -19,6 +19,10 @@ extra:
     - type: github-alt
       link: https://github.com/pedrobern
 
+google_analytics:
+  - 'UA-152567868-2'
+  - 'auto'
+
 markdown_extensions:
   - admonition
   - codehilite
