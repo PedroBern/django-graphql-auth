@@ -49,7 +49,7 @@ your implementation^^.
 
 ---
 
-## Preview
+## Example
 
 Handling user accounts becomes super easy.
 
