@@ -1,5 +1,7 @@
 # Django GraphQL Auth
 
+[Django](https://github.com/django/django) registration and authentication with GraphQL.
+
 [![Codecov Coverage](https://img.shields.io/codecov/c/github/pedrobern/django-graphql-auth/master.svg?style=flat-square)](https://codecov.io/gh/pedrobern/django-graphql-auth/)
 [![Build Status](https://travis-ci.com/pedrobern/django-graphql-auth.svg?branch=master)](https://travis-ci.com/pedrobern/django-graphql-auth)
 [![Pypi](https://img.shields.io/pypi/v/django-graphql-auth.svg)](https://pypi.org/project/django-graphql-auth/)
@@ -8,11 +10,13 @@
 
 ---
 
+## Demo
+
+[![Demo Video](https://github.com/pedrobern/django-graphql-auth/raw/master/demo.jpg)](https://streamable.com/700r8)
+
 ## About
 
-[Django](https://github.com/django/django) registration and authentication with GraphQL.
-
-It abstract all the basic logic of handling user accounts out of your app,
+Abstract all the basic logic of handling user accounts out of your app,
 so you don't need to think about it and can ==get up and running faster==.
 
 No lock-in. When you are ready to implement your own code or this package
