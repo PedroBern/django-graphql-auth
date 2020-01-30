@@ -1067,8 +1067,7 @@ class AuthMutation(graphene.ObjectType):
     verify_secondary_email = mutations.VerifySecondaryEmail.Field()
     swap_emails = mutations.SwapEmails.Field()
 
-    # django-graphql-jwt authentication
-    # with some extra features
+    # django-graphql-jwt inheritances
     token_auth = mutations.ObtainJSONWebToken.Field()
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()
@@ -1090,8 +1089,7 @@ class AuthMutation(graphene.ObjectType):
     verify_secondary_email = relay.VerifySecondaryEmail.Field()
     swap_emails = relay.SwapEmails.Field()
 
-    # django-graphql-jwt authentication
-    # with some extra features
+    # django-graphql-jwt inheritances
     token_auth = relay.ObtainJSONWebToken.Field()
     verify_token = relay.VerifyToken.Field()
     refresh_token = relay.RefreshToken.Field()
