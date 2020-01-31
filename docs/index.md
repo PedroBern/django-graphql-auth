@@ -30,8 +30,8 @@ your implementation^^.
 * [x] Awesome docs!
 * [x] Fully compatible with [Relay](https://github.com/facebook/relay>)
 * [x] Works with ==default or custom== user model
-* [x] JWT authentication <small>(with [Django GraphQL JWT](https://github.com/flavors/django-graphql-jwt>))</small>
-* [x] User query with filters <small>(with [Django Filter](https://github.com/carltongibson/django-filter>) and [Graphene Django](https://github.com/graphql-python/graphene-django>))</small>
+* [x] JWT authentication <small>(with [Django GraphQL JWT](https://github.com/flavors/django-graphql-jwt))</small>
+* [x] User query with filters <small>(with [Django Filter](https://github.com/carltongibson/django-filter) and [Graphene Django](https://github.com/graphql-python/graphene-django))</small>
 * [x] User registration with email verification
 * [x] Add secondary email, with email verification too
 * [x] Resend activation email
