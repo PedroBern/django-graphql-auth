@@ -24,13 +24,11 @@ from .settings import graphql_auth_settings as app_settings
 from .schema import UserNode
 
 
-class Register(
-    MutationMixin, DynamicArgsMixin, RegisterMixin, graphene.Mutation,
-):
+class Register(MutationMixin, DynamicArgsMixin, RegisterMixin, graphene.Mutation):
 
     __doc__ = RegisterMixin.__doc__
     _required_args = normalize_fields(
-        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2"],
+        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2"]
     )
     _args = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
@@ -43,14 +41,14 @@ class VerifyAccount(
 
 
 class ResendActivationEmail(
-    MutationMixin, DynamicArgsMixin, ResendActivationEmailMixin, graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, ResendActivationEmailMixin, graphene.Mutation
 ):
     __doc__ = ResendActivationEmailMixin.__doc__
     _required_args = ["email"]
 
 
 class SendPasswordResetEmail(
-    MutationMixin, DynamicArgsMixin, SendPasswordResetEmailMixin, graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, SendPasswordResetEmailMixin, graphene.Mutation
 ):
     __doc__ = SendPasswordResetEmailMixin.__doc__
     _required_args = ["email"]
@@ -67,21 +65,19 @@ class SendSecondaryEmailActivation(
 
 
 class VerifySecondaryEmail(
-    MutationMixin, DynamicArgsMixin, VerifySecondaryEmailMixin, graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, VerifySecondaryEmailMixin, graphene.Mutation
 ):
     __doc__ = VerifySecondaryEmailMixin.__doc__
     _required_args = ["token"]
 
 
-class SwapEmails(
-    MutationMixin, DynamicArgsMixin, SwapEmailsMixin, graphene.Mutation,
-):
+class SwapEmails(MutationMixin, DynamicArgsMixin, SwapEmailsMixin, graphene.Mutation):
     __doc__ = SwapEmailsMixin.__doc__
     _required_args = ["password"]
 
 
 class RemoveSecondaryEmail(
-    MutationMixin, DynamicArgsMixin, RemoveSecondaryEmailMixin, graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, RemoveSecondaryEmailMixin, graphene.Mutation
 ):
     __doc__ = RemoveSecondaryEmailMixin.__doc__
     _required_args = ["password"]
@@ -95,7 +91,7 @@ class PasswordReset(
 
 
 class ObtainJSONWebToken(
-    MutationMixin, ObtainJSONWebTokenMixin, graphql_jwt.JSONWebTokenMutation,
+    MutationMixin, ObtainJSONWebTokenMixin, graphql_jwt.JSONWebTokenMutation
 ):
     __doc__ = ObtainJSONWebTokenMixin.__doc__
     user = graphene.Field(UserNode)
@@ -110,28 +106,28 @@ class ObtainJSONWebToken(
 
 
 class ArchiveAccount(
-    MutationMixin, ArchiveAccountMixin, DynamicArgsMixin, graphene.Mutation,
+    MutationMixin, ArchiveAccountMixin, DynamicArgsMixin, graphene.Mutation
 ):
     __doc__ = ArchiveAccountMixin.__doc__
     _required_args = ["password"]
 
 
 class DeleteAccount(
-    MutationMixin, DeleteAccountMixin, DynamicArgsMixin, graphene.Mutation,
+    MutationMixin, DeleteAccountMixin, DynamicArgsMixin, graphene.Mutation
 ):
     __doc__ = DeleteAccountMixin.__doc__
     _required_args = ["password"]
 
 
 class PasswordChange(
-    MutationMixin, PasswordChangeMixin, DynamicArgsMixin, graphene.Mutation,
+    MutationMixin, PasswordChangeMixin, DynamicArgsMixin, graphene.Mutation
 ):
     __doc__ = PasswordChangeMixin.__doc__
     _required_args = ["old_password", "new_password1", "new_password2"]
 
 
 class UpdateAccount(
-    MutationMixin, DynamicArgsMixin, UpdateAccountMixin, graphene.Mutation,
+    MutationMixin, DynamicArgsMixin, UpdateAccountMixin, graphene.Mutation
 ):
     __doc__ = UpdateAccountMixin.__doc__
     _args = app_settings.UPDATE_MUTATION_FIELDS

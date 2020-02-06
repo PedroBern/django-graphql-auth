@@ -27,9 +27,7 @@ class UserStatus(models.Model):
     """
 
     user = models.OneToOneField(
-        django_settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="status",
+        django_settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="status"
     )
     verified = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
@@ -89,7 +87,7 @@ class UserStatus(models.Model):
         if self.verified is False:
             raise UserNotVerified
         email_context = self.get_email_context(
-            info, app_settings.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET,
+            info, app_settings.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET
         )
         template = app_settings.EMAIL_TEMPLATE_PASSWORD_RESET
         subject = app_settings.EMAIL_SUBJECT_PASSWORD_RESET
@@ -131,7 +129,7 @@ class UserStatus(models.Model):
     @classmethod
     def verify(cls, token):
         payload = get_token_paylod(
-            token, TokenAction.ACTIVATION, app_settings.EXPIRATION_ACTIVATION_TOKEN,
+            token, TokenAction.ACTIVATION, app_settings.EXPIRATION_ACTIVATION_TOKEN
         )
         user = UserModel._default_manager.get(**payload)
         user_status = cls.objects.get(user=user)

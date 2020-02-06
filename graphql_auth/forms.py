@@ -1,8 +1,4 @@
-from django.contrib.auth.forms import (
-    UserCreationForm,
-    UserChangeForm,
-    UsernameField,
-)
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, UsernameField
 from django.contrib.auth import get_user_model
 from django import forms
 
@@ -19,7 +15,7 @@ class RegisterForm(UserCreationForm):
 
 
 class EmailForm(forms.Form):
-    email = forms.EmailField(max_length=254,)
+    email = forms.EmailField(max_length=254)
 
 
 class CustomUsernameField(UsernameField):

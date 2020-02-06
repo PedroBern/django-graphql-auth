@@ -40,7 +40,7 @@ class SendPasswordResetEmailTestCaseMixin:
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
         self.assertEqual(
-            executed["errors"]["email"], Messages.NOT_VERIFIED_PASSWORD_RESET,
+            executed["errors"]["email"], Messages.NOT_VERIFIED_PASSWORD_RESET
         )
 
     @mock.patch(
@@ -51,25 +51,19 @@ class SendPasswordResetEmailTestCaseMixin:
         query = self.get_query("foo@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL,
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL)
 
     def test_send_email_valid_email_verified_user(self):
         query = self.get_query("bar@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], True)
-        self.assertEqual(
-            executed["errors"], None,
-        )
+        self.assertEqual(executed["errors"], None)
 
     def test_send_to_secondary_email(self):
         query = self.get_query("secondary@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], True)
-        self.assertEqual(
-            executed["errors"], None,
-        )
+        self.assertEqual(executed["errors"], None)
 
     @mock.patch(
         "graphql_auth.models.UserStatus.send_password_reset_email",
@@ -80,9 +74,7 @@ class SendPasswordResetEmailTestCaseMixin:
         query = self.get_query("bar@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL,
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL)
 
 
 class SendPasswordResetEmailTestCase(

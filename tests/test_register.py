@@ -66,7 +66,7 @@ class RegisterTestCaseMixin:
 
     def test_register_duplicate_unique_email_2(self):
 
-        user = self.register_user(email="test@email.com", username="foo",)
+        user = self.register_user(email="test@email.com", username="foo")
 
         executed = self.make_request(self.register_query())
         self.assertEqual(executed["success"], False)

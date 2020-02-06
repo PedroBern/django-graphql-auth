@@ -26,18 +26,14 @@ class DeleteAccountTestCaseMixin:
         query = self.make_query()
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.UNAUTHENTICATED,
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.UNAUTHENTICATED)
 
     def test_invalid_password(self):
         query = self.make_query(password="123")
         variables = {"user": self.user2}
         executed = self.make_request(query, variables)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["password"], Messages.INVALID_PASSWORD,
-        )
+        self.assertEqual(executed["errors"]["password"], Messages.INVALID_PASSWORD)
 
     def test_revoke_refresh_tokens_on_delete_account(self):
 

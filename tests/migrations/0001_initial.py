@@ -10,9 +10,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ("auth", "0011_update_proxy_permissions"),
-    ]
+    dependencies = [("auth", "0011_update_proxy_permissions")]
 
     operations = [
         migrations.CreateModel(
@@ -27,10 +25,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                (
-                    "password",
-                    models.CharField(max_length=128, verbose_name="password"),
-                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
                 (
                     "last_login",
                     models.DateTimeField(
@@ -63,13 +58,13 @@ class Migration(migrations.Migration):
                 (
                     "first_name",
                     models.CharField(
-                        blank=True, max_length=30, verbose_name="first name", null=True,
+                        blank=True, max_length=30, verbose_name="first name", null=True
                     ),
                 ),
                 (
                     "last_name",
                     models.CharField(
-                        blank=True, max_length=150, verbose_name="last name", null=True,
+                        blank=True, max_length=150, verbose_name="last name", null=True
                     ),
                 ),
                 (
@@ -97,7 +92,7 @@ class Migration(migrations.Migration):
                 (
                     "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined",
+                        default=django.utils.timezone.now, verbose_name="date joined"
                     ),
                 ),
                 (
@@ -123,7 +118,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"unique_together": {("first_name", "last_name")},},
-            managers=[("objects", django.contrib.auth.models.UserManager()),],
-        ),
+            options={"unique_together": {("first_name", "last_name")}},
+            managers=[("objects", django.contrib.auth.models.UserManager())],
+        )
     ]

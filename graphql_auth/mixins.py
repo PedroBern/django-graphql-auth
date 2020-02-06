@@ -24,11 +24,7 @@ from .exceptions import (
     InvalidCredentials,
 )
 from .constants import Messages, TokenAction
-from .utils import (
-    revoke_user_refresh_token,
-    get_token_paylod,
-    using_refresh_tokens,
-)
+from .utils import revoke_user_refresh_token, get_token_paylod, using_refresh_tokens
 from .shortcuts import get_user_by_email, get_user_to_login
 from .decorators import (
     password_confirmation_required,

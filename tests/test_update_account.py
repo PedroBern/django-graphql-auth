@@ -10,37 +10,31 @@ from graphql_auth.constants import Messages
 class UpdateAccountTestCaseMixin:
     def setUp(self):
         self.user1 = self.register_user(
-            email="foo@email.com", username="foo", verified=False, first_name="foo",
+            email="foo@email.com", username="foo", verified=False, first_name="foo"
         )
         self.user2 = self.register_user(
-            email="bar@email.com", username="bar", verified=True, first_name="bar",
+            email="bar@email.com", username="bar", verified=True, first_name="bar"
         )
         self.user3 = self.register_user(
-            email="gaa@email.com", username="gaa", verified=True, first_name="gaa",
+            email="gaa@email.com", username="gaa", verified=True, first_name="gaa"
         )
 
     def test_update_account_unauthenticated(self):
         executed = self.make_request(self.get_query())
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.UNAUTHENTICATED,
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.UNAUTHENTICATED)
 
     def test_update_account_not_verified(self):
         variables = {"user": self.user1}
         executed = self.make_request(self.get_query(), variables)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED,
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED)
 
     def test_update_account(self):
         variables = {"user": self.user2}
         executed = self.make_request(self.get_query(), variables)
         self.assertEqual(executed["success"], True)
-        self.assertEqual(
-            executed["errors"], None,
-        )
+        self.assertEqual(executed["errors"], None)
         self.user2.refresh_from_db()
         self.assertEqual(self.user2.first_name, "firstname")
 
@@ -60,9 +54,7 @@ class UpdateAccountTestCaseMixin:
         variables = {"user": self.user2}
         executed = self.make_request(self.get_query(), variables)
         self.assertEqual(executed["success"], True)
-        self.assertEqual(
-            executed["errors"], None,
-        )
+        self.assertEqual(executed["errors"], None)
         self.user2.refresh_from_db()
         self.assertEqual(self.user2.first_name, "firstname")
 
@@ -79,9 +71,7 @@ class UpdateAccountTestCaseMixin:
         variables = {"user": self.user2}
         executed = self.make_request(mutation, variables)
         self.assertEqual(executed["success"], True)
-        self.assertEqual(
-            executed["errors"], None,
-        )
+        self.assertEqual(executed["errors"], None)
         self.user2.refresh_from_db()
         self.assertEqual(self.user2.first_name, "first")
 

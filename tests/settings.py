@@ -17,9 +17,7 @@ INSTALLED_APPS = [
     "graphql_auth",
 ]
 
-DATABASES = {
-    "default": {"ENGINE": "django.db.backends.sqlite3",},
-}
+DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3"}}
 
 SECRET_KEY = "test"
 
@@ -30,11 +28,11 @@ AUTHENTICATION_BACKENDS = [
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 TEMPLATES = [
@@ -46,14 +44,12 @@ TEMPLATES = [
     }
 ]
 
-MIDDLEWARE = [
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-]
+MIDDLEWARE = ["django.contrib.auth.middleware.AuthenticationMiddleware"]
 
 
 GRAPHENE = {
     "SCHEMA": "schema.schema",
-    "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware",],
+    "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
 }
 
 AUTHENTICATION_BACKENDS = [

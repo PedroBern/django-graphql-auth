@@ -25,7 +25,7 @@ from .schema import UserNode
 
 
 class Register(
-    RelayMutationMixin, DynamicInputMixin, RegisterMixin, graphene.ClientIDMutation,
+    RelayMutationMixin, DynamicInputMixin, RegisterMixin, graphene.ClientIDMutation
 ):
 
     __doc__ = RegisterMixin.__doc__
@@ -37,10 +37,7 @@ class Register(
 
 
 class VerifyAccount(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    VerifyAccountMixin,
-    graphene.ClientIDMutation,
+    RelayMutationMixin, DynamicInputMixin, VerifyAccountMixin, graphene.ClientIDMutation
 ):
     __doc__ = VerifyAccountMixin.__doc__
     _required_inputs = ["token"]
@@ -87,7 +84,7 @@ class VerifySecondaryEmail(
 
 
 class SwapEmails(
-    RelayMutationMixin, DynamicInputMixin, SwapEmailsMixin, graphene.ClientIDMutation,
+    RelayMutationMixin, DynamicInputMixin, SwapEmailsMixin, graphene.ClientIDMutation
 ):
     __doc__ = SwapEmailsMixin.__doc__
     _required_inputs = ["password"]
@@ -104,17 +101,14 @@ class RemoveSecondaryEmail(
 
 
 class PasswordReset(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    PasswordResetMixin,
-    graphene.ClientIDMutation,
+    RelayMutationMixin, DynamicInputMixin, PasswordResetMixin, graphene.ClientIDMutation
 ):
     __doc__ = PasswordResetMixin.__doc__
     _required_inputs = ["token", "new_password1", "new_password2"]
 
 
 class ObtainJSONWebToken(
-    RelayMutationMixin, ObtainJSONWebTokenMixin, graphql_jwt.relay.JSONWebTokenMutation,
+    RelayMutationMixin, ObtainJSONWebTokenMixin, graphql_jwt.relay.JSONWebTokenMutation
 ):
     __doc__ = ObtainJSONWebTokenMixin.__doc__
     user = graphene.Field(UserNode)
@@ -143,10 +137,7 @@ class ArchiveAccount(
 
 
 class DeleteAccount(
-    RelayMutationMixin,
-    DeleteAccountMixin,
-    DynamicInputMixin,
-    graphene.ClientIDMutation,
+    RelayMutationMixin, DeleteAccountMixin, DynamicInputMixin, graphene.ClientIDMutation
 ):
     __doc__ = DeleteAccountMixin.__doc__
     _required_inputs = ["password"]
@@ -163,17 +154,14 @@ class PasswordChange(
 
 
 class UpdateAccount(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    UpdateAccountMixin,
-    graphene.ClientIDMutation,
+    RelayMutationMixin, DynamicInputMixin, UpdateAccountMixin, graphene.ClientIDMutation
 ):
     __doc__ = UpdateAccountMixin.__doc__
     _inputs = app_settings.UPDATE_MUTATION_FIELDS
 
 
 class VerifyToken(
-    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Verify,
+    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Verify
 ):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
@@ -182,7 +170,7 @@ class VerifyToken(
 
 
 class RefreshToken(
-    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Refresh,
+    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Refresh
 ):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 
@@ -191,7 +179,7 @@ class RefreshToken(
 
 
 class RevokeToken(
-    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Revoke,
+    RelayMutationMixin, VerifyOrRefreshOrRevokeTokenMixin, graphql_jwt.relay.Revoke
 ):
     __doc__ = VerifyOrRefreshOrRevokeTokenMixin.__doc__
 

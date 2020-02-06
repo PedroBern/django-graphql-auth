@@ -30,7 +30,7 @@ class SwapEmailsCaseMixin:
         executed = self.make_request(self.query(), {"user": self.user2})
         self.assertEqual(executed["success"], False)
         self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.SECONDARY_EMAIL_REQUIRED,
+            executed["errors"]["nonFieldErrors"], Messages.SECONDARY_EMAIL_REQUIRED
         )
 
 

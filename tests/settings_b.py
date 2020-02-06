@@ -7,8 +7,6 @@ GRAPHQL_AUTH = {
     "ALLOW_LOGIN_NOT_VERIFIED": False,
 }
 
-INSTALLED_APPS += [
-    "tests",
-]
+INSTALLED_APPS += ["tests"]
 
 AUTH_USER_MODEL = "tests.CustomUser"

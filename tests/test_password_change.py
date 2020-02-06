@@ -36,7 +36,7 @@ class PasswordChangeTestCaseMixin:
         variables = {"user": self.user}
         executed = self.make_request(self.get_query("wrong"), variables)
         self.assertEqual(executed["success"], False)
-        self.assertTrue(executed["errors"]["newPassword2"],)
+        self.assertTrue(executed["errors"]["newPassword2"])
         self.assertFalse(executed["token"])
         self.assertFalse(executed["refreshToken"])
         self.user.refresh_from_db()

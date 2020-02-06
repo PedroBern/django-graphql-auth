@@ -14,7 +14,7 @@ from graphql_auth.constants import Messages
 
 class RevokeTokenTestCaseMixin:
     def setUp(self):
-        self.user1 = self.register_user(email="foo@email.com", username="foo_username",)
+        self.user1 = self.register_user(email="foo@email.com", username="foo_username")
 
     def test_revoke_token(self):
         query = self.get_login_query()

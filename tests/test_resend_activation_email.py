@@ -35,9 +35,7 @@ class ResendActivationEmailTestCaseMixin:
         query = self.get_query("bar@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["email"], Messages.ALREADY_VERIFIED,
-        )
+        self.assertEqual(executed["errors"]["email"], Messages.ALREADY_VERIFIED)
 
     def test_invalid_form(self):
         query = self.get_query("baremail.com")
@@ -57,9 +55,7 @@ class ResendActivationEmailTestCaseMixin:
         query = self.get_query("gaa@email.com")
         executed = self.make_request(query)
         self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL,
-        )
+        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL)
 
 
 class ResendActivationEmailTestCase(
