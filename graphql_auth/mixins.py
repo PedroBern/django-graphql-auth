@@ -104,9 +104,9 @@ class RegisterMixin(Output):
         except EmailAlreadyInUse:
             return cls(
                 success=False,
-                # while the token was sent and the user haven't verified,
-                # the email was free. If other account was created with it
-                # it is already in use
+                # if the email was set as a secondary email,
+                # the RegisterForm will not catch it,
+                # so we need to run UserStatus.clean_email(email)
                 errors={UserModel.EMAIL_FIELD: Messages.EMAIL_IN_USE},
             )
         except SMTPException:
