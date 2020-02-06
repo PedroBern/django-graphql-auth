@@ -2,7 +2,7 @@
 
 # Contributing
 
-Thanks for helping improve `django-graphql-auth`!
+Thanks for helping improve Django GraphQL Auth!
 
 All kinds of contributions are welcome:
 
