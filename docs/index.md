@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.com/pedrobern/django-graphql-auth.svg?branch=master)](https://travis-ci.com/pedrobern/django-graphql-auth)
 [![Pypi](https://img.shields.io/pypi/v/django-graphql-auth.svg)](https://pypi.org/project/django-graphql-auth/)
 [![Documentation Status](https://readthedocs.org/projects/django-graphql-auth/badge/?version=latest)](https://django-graphql-auth.readthedocs.io/en/latest/?badge=latest)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/pedrobern/django-graphql-auth/issues)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/pedrobern/django-graphql-auth/blob/master/CONTRIBUTING.md)
 
 ---
 
