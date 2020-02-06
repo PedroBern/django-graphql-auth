@@ -37,9 +37,9 @@ with open(destination, "w") as file:
     file.write(yaml_string)
 
 
-# copy contributors and changes files to docs dir
-files = ["CONTRIBUTORS.md", "CHANGES.md"]
-dest = ["contributors.md", "changelog.md"]
+# copy files from project root to docs dir
+files = ["CONTRIBUTORS.md", "CHANGES.md", "CONTRIBUTING.md"]
+dest = ["contributors.md", "changelog.md", "contributing.md"]
 for index, file in enumerate(files):
     shutil.copyfile(
         current_dir + "/" + file, current_dir + "/docs/" + dest[index]

@@ -157,3 +157,8 @@ u.status.verified
 ```
 
 Check the [installation guide](https://django-graphql-auth.readthedocs.io/en/latest/installation/) or jump to the [quickstart](https://django-graphql-auth.readthedocs.io/en/latest/quickstart/). Or if you prefer, browse the [api](https://django-graphql-auth.readthedocs.io/en/latest/api/).
+
+
+## Contributing
+
+See [CONTRIBUTING.md](https://github.com/pedrobern/django-graphql-auth/blob/master/CONTRIBUTING.md)

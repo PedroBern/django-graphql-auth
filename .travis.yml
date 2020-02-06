@@ -23,7 +23,7 @@ jobs:
 
   include:
     - python: 3.7
-      env: TOXENV=flake8
+      env: TOXENV=black,flake8
 
     - python: 3.6
       env: DJANGO=2.1

@@ -1,4 +1,4 @@
-.PHONY : test-local test-local-file serve build-docs check-readme install-local lint format
+.PHONY : test-local test-local-file serve build-docs check-readme install-local lint format dev-setup
 
 check-readme:
 	rm -rf dist build django_graphql_auth.egg-info
@@ -28,7 +28,10 @@ build-docs:
 	mkdocs build
 
 format:
-	black graphql_auth testproject setup.py quickstart tests
+	black --exclude "/migrations/" graphql_auth testproject setup.py quickstart tests
 
 lint:
 	flake8 graphql_auth
+
+dev-setup:
+	pip install -e ".[dev]"

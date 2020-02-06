@@ -67,5 +67,5 @@ setup(
     keywords="api graphql rest relay graphene auth",
     zip_safe=False,
     include_package_data=True,
-    extras_require={"test": tests_require, "dev": dev_requires,},
+    extras_require={"test": tests_require, "dev": dev_requires},
 )
