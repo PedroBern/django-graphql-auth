@@ -31,7 +31,7 @@ pip install tox
 
 ## Running tests
 
-After developing, the full test suite on specific versions can be evaluated by running:
+After developing, you can run tests with:
 
 ```bash
 # python=3.7 and django=3.0
@@ -45,17 +45,26 @@ You can specify versions, for the full list see the `tox.ini` file.
 make test p=36 d=22
 ```
 
-To test on all python and django versions:
+Test directly with tox:
 
 ```bash
 tox
 ```
 
-For single file test you can run:
+Single file test shortcut:
 
 ```bash
 # run only tests in tests/test_register.py
 make test-file f=register
+```
+
+For live testing on a django project, you can use the testproject.
+
+ Create a different virtualenv and run:
+
+```bash
+cd testproject
+make install-local v=<CURRENT VERSION IN graphql_auth.__init__>
 ```
 
 ## Opening Pull Requests

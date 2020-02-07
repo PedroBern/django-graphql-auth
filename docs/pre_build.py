@@ -1,6 +1,6 @@
 """
 - get class names and docstrings as context variables into the docs
-- copy [CONTRIBUTORS, CHANGES] files to the docs dir
+- copy [CONTRIBUTORS, CHANGES, CONTRIBUTING] files to the docs dir
 """
 
 import os
