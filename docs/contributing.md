@@ -59,8 +59,7 @@ make test-file f=register
 ```
 
 For live testing on a django project, you can use the testproject.
-
- Create a different virtualenv and run, install the dependencies again and run:
+ Create a different virtualenv, install the dependencies again and run:
 
 ```bash
 cd testproject
