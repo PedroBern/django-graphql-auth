@@ -12,7 +12,7 @@
 
 ## Demo
 
-[![Demo Video](https://raw.githubusercontent.com/pedrobern/django-graphql-auth/master/docs/images/demo.jpg)](https://github.com/pedrobern/django-graphql-auth#demo)
+[![Demo Video](/images/demo.jpg)](https://github.com/pedrobern/django-graphql-auth#demo)
 
 ## About
 
