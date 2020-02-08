@@ -8,11 +8,9 @@
 [![Documentation Status](https://readthedocs.org/projects/django-graphql-auth/badge/?version=latest)](https://django-graphql-auth.readthedocs.io/en/latest/?badge=latest)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/pedrobern/django-graphql-auth/blob/master/CONTRIBUTING.md)
 
-
-
 ## Demo
 
-[![Demo Video](https://github.com/pedrobern/django-graphql-auth/raw/master/demo.jpg)](https://streamable.com/700r8)
+![Demo Video](https://github.com/pedrobern/django-graphql-auth/blob/master/demo.gif)
 
 ## About
 
