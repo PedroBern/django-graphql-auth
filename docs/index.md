@@ -10,6 +10,10 @@
 
 ---
 
+## Demo
+
+![Demo Video](/images/demo.gif)
+
 ## About
 
 Abstract all the basic logic of handling user accounts out of your app,
