@@ -14,9 +14,13 @@ class UserNode(DjangoObjectType):
         exclude_fields = app_settings.USER_NODE_EXCLUDE_FIELDS
         interfaces = (graphene.relay.Node,)
 
+    pk = graphene.Int()
     archived = graphene.Boolean()
     verified = graphene.Boolean()
     secondary_email = graphene.String()
+
+    def resolve_pk(self, info):
+        return self.pk
 
     def resolve_archived(self, info):
         return self.status.archived

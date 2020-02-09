@@ -3,9 +3,13 @@
 
 ## v0.3
 
+### v0.3.1
+
+- add pk to UserNode.
+
 ### v0.3.0
 
-- release beta
+- release beta.
 
 
 ## v0.2

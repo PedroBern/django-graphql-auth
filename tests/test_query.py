@@ -23,7 +23,8 @@ class QueryTestCase(DefaultTestCase):
                     node {
                         archived,
                         verified,
-                        secondaryEmail
+                        secondaryEmail,
+                        pk
                     }
                 }
             }
