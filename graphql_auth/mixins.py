@@ -127,7 +127,7 @@ class VerifyAccountMixin(Output):
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
         except SignatureExpired:
-            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
         except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
@@ -160,7 +160,7 @@ class VerifySecondaryEmailMixin(Output):
             # was created with it, it is already in use.
             return cls(success=False, errors=Messages.EMAIL_IN_USE)
         except SignatureExpired:
-            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
         except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
@@ -264,7 +264,7 @@ class PasswordResetMixin(Output):
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except SignatureExpired:
-            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
         except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
@@ -455,7 +455,7 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
         try:
             return cls.parent_resolve(root, info, **kwargs)
         except JSONWebTokenExpired:
-            return cls(success=False, errors=Messages.EXPIRATED_TOKEN)
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
         except JSONWebTokenError:
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
