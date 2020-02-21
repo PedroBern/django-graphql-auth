@@ -10,6 +10,8 @@ All kinds of contributions are welcome:
 - Documentation improvements
 - New features
 - Refactoring
+- Fix some typo
+- Write more tests
 
 ## Getting started
 

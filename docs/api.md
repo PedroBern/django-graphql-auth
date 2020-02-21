@@ -1026,7 +1026,7 @@ mutation {
 }
 ```
 
-```bash tab="Expirated token"
+```bash tab="Expired token"
 {
   "data": {
     "verifySecondaryEmail": {
@@ -1034,8 +1034,8 @@ mutation {
       "errors": {
         "nonFieldErrors": [
           {
-            "message": "Expirated token.",
-            "code": "expirated_token"
+            "message": "Expired token.",
+            "code": "expired_token"
           }
         ]
       }
@@ -1114,7 +1114,7 @@ mutation {
 }
 ```
 
-```bash tab="Expirated token"
+```bash tab="Expired token"
 {
   "data": {
     "verifyToken": {
@@ -1122,8 +1122,8 @@ mutation {
       "errors": {
         "nonFieldErrors": [
           {
-            "message": "Expirated token.",
-            "code": "expirated_token"
+            "message": "Expired token.",
+            "code": "expired_token"
           }
         ]
       }

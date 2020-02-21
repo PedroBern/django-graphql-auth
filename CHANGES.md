@@ -3,6 +3,10 @@
 
 ## v0.3
 
+### v0.3.2
+
+- Fix typo in error code/message for `expired_token`.
+
 ### v0.3.1
 
 - add pk to UserNode.
