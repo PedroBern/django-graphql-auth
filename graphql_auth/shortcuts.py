@@ -24,7 +24,7 @@ def get_user_by_email(email):
 def get_user_to_login(**kwargs):
     """
     get user by kwargs or secondary email
-    to perfrom login
+    to perform login
     raise ObjectDoesNotExist
     """
     try:
