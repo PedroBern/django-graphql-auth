@@ -236,7 +236,7 @@ GRAPHQL_JWT = {
 }
 ```
 
-And remenber to migrate:
+And remember to migrate:
 
 ```bash
 python manage.py migrate

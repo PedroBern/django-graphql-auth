@@ -119,7 +119,7 @@ GRAPHQL_JWT = {
 }
 ```
 
-If you choose to use the refresh tokens, remenber to migrate:
+If you choose to use the refresh tokens, remember to migrate:
 
 ```bash
 python manage.py migrate
