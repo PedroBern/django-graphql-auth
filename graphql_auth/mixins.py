@@ -414,7 +414,7 @@ class PasswordChangeMixin(Output):
                 root,
                 info,
                 password=kwargs.get("new_password1"),
-                username=getattr(user, user.USERNAME_FIELD),
+                **{user.USERNAME_FIELD: getattr(user, user.USERNAME_FIELD)}
             )
             return_value = {}
             for field in cls._meta.fields:
