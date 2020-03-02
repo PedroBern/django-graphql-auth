@@ -3,9 +3,13 @@
 
 ## v0.3
 
+### v0.3.3
+
+- Fixed bug when performing login in `PasswordChangeMixin` (thanks to [panosangelopoulos](https://github.com/panosangelopoulos)).
+
 ### v0.3.2
 
-- Fix typo in error code/message for `expired_token`.
+- Fixed typo in error code/message for `expired_token` (thanks to [yanivtoledano](https://github.com/yanivtoledano)).
 
 ### v0.3.1
 
