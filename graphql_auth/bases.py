@@ -1,6 +1,6 @@
 import graphene
 
-from .types import ErrorType
+from .types import ExpectedErrorType
 
 
 class Output:
@@ -10,7 +10,7 @@ class Output:
     """
 
     success = graphene.Boolean(default_value=True)
-    errors = graphene.Field(ErrorType)
+    errors = graphene.Field(ExpectedErrorType)
 
 
 class MutationMixin:
