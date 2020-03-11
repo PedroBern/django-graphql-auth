@@ -32,3 +32,14 @@ class QueryTestCase(DefaultTestCase):
         """
         executed = self.make_request(query)
         self.assertTrue(executed["edges"])
+
+    def test_me(self):
+        query = """
+        query {
+            me {
+                username
+            }
+        }
+        """
+        executed = self.make_request(query, variables={"user": self.user2})
+        self.assertTrue(executed["username"])

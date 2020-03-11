@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
+from graphql import GraphQLError
 
 from .settings import graphql_auth_settings as app_settings
 
@@ -35,3 +36,11 @@ class UserNode(DjangoObjectType):
 class UserQuery(graphene.ObjectType):
     user = graphene.relay.Node.Field(UserNode)
     users = DjangoFilterConnectionField(UserNode)
+    me = graphene.Field(UserNode)
+
+    def resolve_me(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise GraphQLError('Not logged in.')
+
+        return user
