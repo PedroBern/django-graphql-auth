@@ -4,13 +4,17 @@
 
 ## Query
 
-GraphQL Auth provides a single query with some useful filters.
+GraphQL Auth provides the UserQuery to query users with some useful filters.
+
+GraphQL Auth also provides the MeQuery to retrieve data for the currently authenticated user.
+
+### UserQuery
 
 ```
 from graphql_auth.schema import UserQuery
 ```
 
-The easiest way to explore it is using the [graphiQL](https://docs.graphene-python.org/projects/django/en/latest/tutorial-plain/#creating-graphql-and-graphiql-views).
+The easiest way to explore it is by using [graphiQL](https://docs.graphene-python.org/projects/django/en/latest/tutorial-plain/#creating-graphql-and-graphiql-views).
 
 Examples from the [quickstart](quickstart.md):
 
@@ -127,6 +131,36 @@ query {
 ```
 
 ```tab="response3"
+{
+  "data": {
+    "user": {
+      "username": "new_user",
+      "verified": true
+    }
+  }
+}
+```
+
+### MeQuery
+
+```
+from graphql_auth.schema import MeQuery
+```
+
+Since this query requires an authenticated user it can be explored by using the [insomnia API client](https://insomnia.rest/). See the [quickstart](quickstart.md) for more on how to use Insomnia.
+
+Example from the [quickstart](quickstart.md):
+
+```tab="query"
+query {
+  me {
+    username,
+    verified
+  }
+}
+```
+
+```tab="response"
 {
   "data": {
     "user": {
@@ -912,7 +946,7 @@ mutation {
 ```bash tab="success"
 {
   "data": {
-    "register": {
+    "verifyAccount": {
       "success": true,
       "errors": null
     }

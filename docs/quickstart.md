@@ -186,13 +186,15 @@ Create a file called ``schema.py`` next to your ``settings.py`` with the followi
 
 import graphene
 
-from graphql_auth.schema import UserQuery
+from graphql_auth.schema import UserQuery, MeQuery
 
-class Query(UserQuery, graphene.ObjectType):
+class Query(UserQuery, MeQuery, graphene.ObjectType):
     pass
 
 schema = graphene.Schema(query=Query)
 ```
+
+Note: you can choose not to include ``UserQuery`` or ``MeQuery`` depending on your use case.
 
 And add [Django-Filter](https://django-filter.readthedocs.io/en/master/index.html)
 to the installed apps.
@@ -452,6 +454,32 @@ query {
 Take a minute to explore the GraphiQL API browser and query schema on the right upper
 corner under docs tab.
 
+### MeQuery
+
+With ``MeQuery`` you can retrieve data for the currently authenticated user:
+
+```tab="query"
+query {
+  me {
+    username,
+    verified
+  }
+}
+```
+
+```tab="response"
+{
+  "data": {
+    "user": {
+      "username": "new_user",
+      "verified": true
+    }
+  }
+}
+```
+
+Since this query requires an authenticated user it can only be explored by using the [insomnia API client](https://insomnia.rest/). See the below for more on how to use Insomnia.
+
 ---
 
 ## Setup Email Backend
@@ -483,13 +511,13 @@ Now let's add some mutations to our schema, starting with the registration. On t
 
 import graphene
 
-from graphql_auth.schema import UserQuery
+from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
 
 class AuthMutation(graphene.ObjectType):
    register = mutations.Register.Field()
 
-class Query(UserQuery, graphene.ObjectType):
+class Query(UserQuery, MeQuery, graphene.ObjectType):
     pass
 
 class Mutation(AuthMutation, graphene.ObjectType):
@@ -503,13 +531,13 @@ schema = graphene.Schema(query=Query, mutation=Mutation)
 
 import graphene
 
-from graphql_auth.schema import UserQuery
+from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import relay
 
 class AuthMutation(graphene.ObjectType):
    register = relay.Register.Field()
 
-class Query(UserQuery, graphene.ObjectType):
+class Query(UserQuery, MeQuery, graphene.ObjectType):
     pass
 
 class Mutation(AuthMutation, graphene.ObjectType):

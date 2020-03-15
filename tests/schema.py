@@ -2,7 +2,7 @@ import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 import graphql_jwt
 
-from graphql_auth.schema import UserQuery
+from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import relay
 from graphql_auth import mutations
 
@@ -47,7 +47,7 @@ class AuthRelayMutation(graphene.ObjectType):
     send_secondary_email_activation = relay.SendSecondaryEmailActivation.Field()
 
 
-class Query(UserQuery, graphene.ObjectType):
+class Query(UserQuery, MeQuery, graphene.ObjectType):
     pass
 
 
