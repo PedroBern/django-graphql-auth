@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.5
+
+- Added `MeQuery` (thanks to [pors](https://github.com/pors)).
+
 ### v0.3.4
 
 - Renamed from `ErrorType` to`ExpectedErrorType`, preventing clash with a `graphene_django` type with same name..
