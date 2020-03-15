@@ -4,7 +4,7 @@ from graphene_django.utils import camelize
 from .exceptions import WrongUsage
 
 
-class ErrorType(graphene.Scalar):
+class ExpectedErrorType(graphene.Scalar):
     class Meta:
         description = """
     Errors messages and codes mapped to
