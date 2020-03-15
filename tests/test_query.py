@@ -32,3 +32,25 @@ class QueryTestCase(DefaultTestCase):
         """
         executed = self.make_request(query)
         self.assertTrue(executed["edges"])
+
+    def test_me_authenticated(self):
+        query = """
+        query {
+            me {
+                username
+            }
+        }
+        """
+        executed = self.make_request(query, variables={"user": self.user2})
+        self.assertTrue(executed["username"])
+
+    def test_me_anonymous(self):
+        query = """
+        query {
+            me {
+                username
+            }
+        }
+        """
+        executed = self.make_request(query)
+        self.assertIsNone(executed)
