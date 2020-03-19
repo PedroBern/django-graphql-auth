@@ -10,7 +10,7 @@ install-local:
 	python setup.py sdist bdist_wheel
 	python -m pip install dist/django-graphql-auth-${v}.tar.gz
 
-p ?= 37
+p ?= 38
 d ?= 30
 
 test:
