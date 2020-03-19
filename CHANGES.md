@@ -2,6 +2,11 @@
 
 ## v0.3
 
+
+### v0.3.6
+
+- Replace RemovedInDjango40Warning ugettext with gettext (thanks to [@ulgens](https://github.com/ulgens))
+
 ### v0.3.5
 
 - Added `MeQuery` (thanks to [pors](https://github.com/pors)).
