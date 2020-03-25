@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "users",
     "graphene_django",
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "graphql_auth",
@@ -146,3 +147,5 @@ GRAPHQL_JWT = {
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+AUTH_USER_MODEL = 'users.CustomUser'

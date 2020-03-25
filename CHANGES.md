@@ -5,7 +5,7 @@
 
 ### v0.3.6
 
-- Replace RemovedInDjango40Warning ugettext with gettext (thanks to [@ulgens](https://github.com/ulgens))
+- Replace RemovedInDjango40Warning ugettext with gettext (thanks to [ulgens](https://github.com/ulgens))
 
 ### v0.3.5
 

@@ -1,6 +1,6 @@
 [
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 1,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
@@ -15,7 +15,7 @@
       }
   },
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 2,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
@@ -40,7 +40,7 @@
       }
   },
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 3,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
@@ -65,7 +65,7 @@
       }
   },
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 4,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",

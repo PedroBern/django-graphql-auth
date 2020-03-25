@@ -6,6 +6,7 @@
 
 - Fully functional API to handle user account
 - Both graphQL and Relay versions
+- Setup with custom user model
 - 20 to 30 minutes
 
 [Final code on github](https://github.com/PedroBern/django-graphql-auth/tree/master/quickstart).
@@ -37,8 +38,49 @@ Then, create the new project:
 ```bash
 django-admin startproject quickstart
 cd quickstart
+```
+
+### Create the custom user model
+
+Changing to a custom user model mid-project is significantly more difficult. So let's start by adding it now. Run the following:
+
+```bash
+python manage.py startapp users
+```
+
+Then, create the custom user model:
+
+```python
+# users/models.py
+
+from django.contrib.auth.models import AbstractUser
+
+class CustomUser(AbstractUser):
+    USERNAME_FIELD = "username"   # e.g: "username", "email"
+    EMAIL_FIELD = "email"         # e.g: "email", "primary_email"
+```
+
+Add it to the settings:
+
+```python
+# quickstart/settings.py
+
+INSTALLED_APPS = [
+    # ...
+    'users'
+]
+
+AUTH_USER_MODEL = 'users.CustomUser'
+```
+
+Finally, migrate:
+
+```bash
 python manage.py migrate
 ```
+
+!!! info ""
+    You can customize the mutations to match your custom user model fields, see the [settings](/settings/#dynamic-fields).
 
 ---
 
@@ -152,7 +194,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 ```
 
-[Here](http://localhost:7000/installation/#3-authentication-backend-optional) is an explanation why we are adding this backend.
+[Here](/installation/#3-authentication-backend-optional) is an explanation why we are adding this backend.
 
 And make sure your templates configuration has the following:
 
@@ -231,7 +273,7 @@ Before starting to query, let's load some users on the database. Create a new fi
 ```json
 [
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 1,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
@@ -246,7 +288,7 @@ Before starting to query, let's load some users on the database. Create a new fi
       }
   },
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 2,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
@@ -271,7 +313,7 @@ Before starting to query, let's load some users on the database. Create a new fi
       }
   },
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 3,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
@@ -296,7 +338,7 @@ Before starting to query, let's load some users on the database. Create a new fi
       }
   },
   {
-      "model": "auth.user",
+      "model": "users.CustomUser",
       "pk": 4,
       "fields": {
           "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
@@ -321,6 +363,7 @@ Before starting to query, let's load some users on the database. Create a new fi
       }
   }
 ]
+
 
 ```
 
