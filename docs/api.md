@@ -263,7 +263,7 @@ mutation {
 
 ### Public
 
-Public mutations don't require user to be logged in. You should add all of them in `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting, check [how it looks like](installation.md/#2-allow-any-classes).
+Public mutations don't require user to be logged in. You should add all of them in `#!python GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"]` setting.
 
 ---
 
@@ -1177,7 +1177,7 @@ If you send a request **without** the http Authorization header, or a **bad toke
 - If using `graphql_jwt.backends.JSONWebTokenBackend`, it will raise.
 - If using `graphql_auth.backends.GraphQLAuthBackend`, it will return a standard response, with `success=False` and `errors`.
 
-As explained on the [installation guide](installation.md/#5-authentication-backend-optional)
+As explained on the [installation guide](installation.md)
 
 ---
 

@@ -36,7 +36,7 @@ Create the following folder and files structure:
       manage.py
 ```
 
-This is the minimum. Check the [email templates settings](settings.md/#email-templates), you can create custom templates for:
+This is the minimum. Check the [email templates settings](settings.md), you can create custom templates for:
 
 - account activation
 - resend account activation email

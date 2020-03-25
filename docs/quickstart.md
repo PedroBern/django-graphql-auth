@@ -80,7 +80,7 @@ python manage.py migrate
 ```
 
 !!! info ""
-    You can customize the mutations to match your custom user model fields, see the [settings](/settings/#dynamic-fields).
+    You can customize the mutations to match your custom user model fields, see the [dynamic-fields settings](settings.md).
 
 ---
 
@@ -1114,7 +1114,7 @@ query {
 
 ## Next steps
 
-- Add [all mutations](quickstart.md/#full-schema) to your schema!
+- Add all mutations to your schema! (see below)
 - Navigate through the GraphiQL Documentation Explorer.
 - Change the [settings](settings.md).
 - Explore the [api](api.md).

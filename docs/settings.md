@@ -90,19 +90,19 @@ default: `#!python ["email", "username"]`
 
 Required fields on registration, along with `password1` and `password2`.
 
-default: `#!python ["email", "username"]` [\*](settings.md/#basics)
+default: `#!python ["email", "username"]`
 
 ### REGISTER_MUTATION_FIELDS_OPTIONAL
 
 Optional fields on registration.
 
-default: `#!python []` [\*](settings.md/#basics)
+default: `#!python []`
 
 ### UPDATE_MUTATION_FIELDS
 
 Optional fields on update account.
 
-default: `#!python ["first_name", "last_name"]` [\*](settings.md/#basics)
+default: `#!python ["first_name", "last_name"]`
 
 ---
 
@@ -156,19 +156,19 @@ default: `#!python getattr(django_settings, "DEFAULT_FROM_EMAIL", "test@email.co
 
 ### ACTIVATION_PATH_ON_EMAIL
 
-Path [variable](overriding-email-templates.md/#email-variables) used in activation email.
+Path [variable](overriding-email-templates.md) used in activation email.
 
 default: `#!python "activate"`
 
 ### PASSWORD_RESET_PATH_ON_EMAIL
 
-Path [variable](overriding-email-templates.md/#email-variables) used in password reset email.
+Path [variable](overriding-email-templates.md) used in password reset email.
 
 default: `#!python "password-reset"`
 
 ### ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL
 
-Path [variable](overriding-email-templates.md/#email-variables) used in secondary email activation email.
+Path [variable](overriding-email-templates.md) used in secondary email activation email.
 
 default: `#!python "activate"`
 
