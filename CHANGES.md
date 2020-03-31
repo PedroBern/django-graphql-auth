@@ -2,6 +2,9 @@
 
 ## v0.3
 
+### v0.3.7
+
+- Add template variables to email subjects.
 
 ### v0.3.6
 

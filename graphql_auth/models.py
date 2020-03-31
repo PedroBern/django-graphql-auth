@@ -37,7 +37,7 @@ class UserStatus(models.Model):
         return "%s - status" % (self.user)
 
     def send(self, subject, template, context, recipient_list=None):
-        _subject = render_to_string(subject).replace("\n", " ").strip()
+        _subject = render_to_string(subject, context).replace("\n", " ").strip()
         html_message = render_to_string(template, context)
         message = strip_tags(html_message)
 
