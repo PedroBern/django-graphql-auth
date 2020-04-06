@@ -102,8 +102,11 @@ python manage.py migrate
 ### Installation
 
 ```bash
-pip install graphene-django django-graphql-jwt
+pip install graphene-django django-graphql-jwt==0.3.0
 ```
+
+!!! info ""
+    This package uses the 0.3.0 version of the django-graphql-jwt. We are working on to support the new 0.3.1 version. You can check the progress [here](https://github.com/PedroBern/django-graphql-auth/issues/23).
 
 ### Add the url
 
