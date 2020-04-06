@@ -1,3 +1,4 @@
+import time
 from django.db import models
 from django.conf import settings as django_settings
 from django.template.loader import render_to_string
@@ -57,12 +58,14 @@ class UserStatus(models.Model):
         site = get_current_site(info.context)
         return {
             "user": self.user,
+            "request": info.context,
             "token": token,
             "port": info.context.get_port(),
             "site_name": site.name,
             "domain": site.domain,
             "protocol": "https" if info.context.is_secure() else "http",
             "path": path,
+            "timestamp": time.time(),
         }
 
     def send_activation_email(self, info, *args, **kwargs):
