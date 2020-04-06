@@ -54,6 +54,8 @@ Both subject and email templates receive the following variables:
 - domain --> from [django sites framework](https://docs.djangoproject.com/en/3.0/ref/contrib/sites/) <small>(optional)</small>
 - protocol
 - path --> defined in [settings](settings.md) <small>(some frontend path)</small>
+- request
+- timestamp
 
 
 ## Writing the templates

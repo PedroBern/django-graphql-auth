@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.8
+
+- Add request and timestamp to email templates (thanks to [yanivtoledano](https://github.com/yanivtoledano))
+
 ### v0.3.7
 
 - Add template variables to email subjects.
