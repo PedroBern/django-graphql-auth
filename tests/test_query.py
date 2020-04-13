@@ -54,3 +54,14 @@ class QueryTestCase(DefaultTestCase):
         """
         executed = self.make_request(query)
         self.assertIsNone(executed)
+
+    def test_public_user_query(self):
+        query = """
+        query {
+            publicUser {
+                verified
+            }
+        }
+        """
+        executed = self.make_request(query, variables={"user": self.user1})
+        self.assertEqual(executed, {"verified": False})

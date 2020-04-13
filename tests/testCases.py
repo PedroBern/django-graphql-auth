@@ -1,16 +1,15 @@
-import re
 import pprint
+import re
 
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
+from django.test import RequestFactory, TestCase
 from graphene.test import Client
 from graphene.types.schema import Schema
-from django.test import TestCase, RequestFactory
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import get_user_model
-
-
-from .schema import relay_schema, default_schema
 
 from graphql_auth.models import UserStatus
+
+from .schema import default_schema, relay_schema
 
 
 class TestBase(TestCase):
