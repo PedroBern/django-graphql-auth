@@ -13,7 +13,6 @@ class UserNode(DjangoObjectType):
         filter_fields = app_settings.USER_NODE_FILTER_FIELDS
         exclude = app_settings.USER_NODE_EXCLUDE_FIELDS
         interfaces = (graphene.relay.Node,)
-        skip_registry = True
 
     pk = graphene.Int()
     archived = graphene.Boolean()

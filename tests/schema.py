@@ -1,21 +1,10 @@
 import graphene
-import graphql_jwt
 from graphene_django.filter.fields import DjangoFilterConnectionField
+import graphql_jwt
 
-from graphql_auth import mutations, relay
-from graphql_auth.schema import MeQuery, UserQuery
-
-from .types import UserType
-
-
-class PublicUserQuery(graphene.ObjectType):
-    public_user = graphene.Field(UserType)
-
-    def resolve_public_user(self, info):
-        user = info.context.user
-        if user.is_authenticated:
-            return user
-        return None
+from graphql_auth.schema import UserQuery, MeQuery
+from graphql_auth import relay
+from graphql_auth import mutations
 
 
 class AuthMutation(graphene.ObjectType):
@@ -58,7 +47,7 @@ class AuthRelayMutation(graphene.ObjectType):
     send_secondary_email_activation = relay.SendSecondaryEmailActivation.Field()
 
 
-class Query(UserQuery, MeQuery, PublicUserQuery, graphene.ObjectType):
+class Query(UserQuery, MeQuery, graphene.ObjectType):
     pass
 
 
