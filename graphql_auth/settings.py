@@ -53,7 +53,6 @@ DEFAULTS = {
     "EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION": "email/activation_email.html",
     "EMAIL_TEMPLATE_PASSWORD_RESET": "email/password_reset_email.html",
     # query stuff
-    "USER_NODE_EXCLUDE_FIELDS": ["password", "is_superuser"],
     "USER_NODE_FIELDS": [
         "email",
         "username",
