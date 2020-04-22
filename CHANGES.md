@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.9
+
+- Prevents that UserNode is registered globally for the User type (thanks to [panosangelopoulos](https://github.com/panosangelopoulos))
+
 ### v0.3.8
 
 - Add request and timestamp to email templates (thanks to [yanivtoledano](https://github.com/yanivtoledano))
