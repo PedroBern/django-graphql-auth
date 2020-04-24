@@ -34,9 +34,9 @@ from .decorators import (
 )
 
 UserModel = get_user_model()
-try:
+if app_settings.EMAIL_ASYNC_TASK and isinstance(app_settings.EMAIL_ASYNC_TASK, str):
     async_email_func = import_string(app_settings.EMAIL_ASYNC_TASK)
-except ImportError:
+else:
     async_email_func = None
 
 
