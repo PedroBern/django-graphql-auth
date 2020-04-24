@@ -64,7 +64,7 @@ DEFAULTS = {
     },
     # turn is_active to False instead
     "ALLOW_DELETE_ACCOUNT": False,
-    "EMAIL_ASYNC_TASK" : False,
+    "EMAIL_ASYNC_TASK": False,
 }
 
 
