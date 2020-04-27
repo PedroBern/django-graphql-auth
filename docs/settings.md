@@ -172,6 +172,35 @@ Path [variable](overriding-email-templates.md) used in secondary email activatio
 
 default: `#!python "activate"`
 
+### EMAIL_ASYNC_TASK
+
+String path to wrapper function of all email sending functions. This function must have accepts 2 arguments: the send email function and a tuple of arguments.
+
+Notice that this is pseudo async support, just a hook to let you implement the async code.
+
+Basic usage with celery:
+
+```python
+from celery import task
+
+@task
+def graphql_auth_async_email(func, args):
+    """
+    Task to send an e-mail for the graphql_auth package
+    """
+    return func(*args)
+```
+
+For the example above, the setting would be:
+
+```python
+GRAPHQL_AUTH = {
+    "EMAIL_ASYNC_TASK": "path/to/file.graphql_auth_async_email"
+}
+```
+
+default: `#!python False`
+
 ---
 
 ## Email subject templates

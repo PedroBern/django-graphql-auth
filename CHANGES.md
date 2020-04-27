@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.10
+
+- Pseudo async email support (thanks to [bzhr](https://github.com/bzhr) and [me](https://github.com/pedrobern))
+
 ### v0.3.9
 
 - Prevents that UserNode is registered globally for the User type (thanks to [panosangelopoulos](https://github.com/panosangelopoulos))
