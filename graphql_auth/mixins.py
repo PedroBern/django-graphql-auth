@@ -92,7 +92,7 @@ class RegisterMixin(Output):
                     if send_activation:
                         # TODO CHECK FOR EMAIL ASYNC SETTING
                         if async_email_func:
-                            async_email_func(user.status.send_activation_email, info)
+                            async_email_func(user.status.send_activation_email, (info,))
                         else:
                             user.status.send_activation_email(info)
                     if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
@@ -194,7 +194,7 @@ class ResendActivationEmailMixin(Output):
             if f.is_valid():
                 user = get_user_by_email(email)
                 if async_email_func:
-                    async_email_func(user.status.resend_activation_email, info)
+                    async_email_func(user.status.resend_activation_email, (info,))
                 else:
                     user.status.resend_activation_email(info)
                 return cls(success=True)
@@ -242,7 +242,11 @@ class SendPasswordResetEmailMixin(Output):
         except UserNotVerified:
             user = get_user_by_email(email)
             if async_email_func:
-                async_email_func(user.status.resend_activation_email, info)
+                async_email_func(user.status.resend_activation_email, (info,))
+                return cls(
+                    success=False,
+                    errors={"email": Messages.NOT_VERIFIED_PASSWORD_RESET},
+                )
             else:
                 try:
                     user.status.resend_activation_email(info)

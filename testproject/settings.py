@@ -123,4 +123,6 @@ GRAPHQL_JWT = {
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-GRAPHQL_AUTH = {}
+GRAPHQL_AUTH = {
+    "EMAIL_ASYNC_TASK": "pseudo_async_email_support.pseudo_async_email_support"
+}

@@ -64,6 +64,7 @@ DEFAULTS = {
     },
     # turn is_active to False instead
     "ALLOW_DELETE_ACCOUNT": False,
+    # string path for email function wrapper, see the testproject example
     "EMAIL_ASYNC_TASK": False,
 }
 
