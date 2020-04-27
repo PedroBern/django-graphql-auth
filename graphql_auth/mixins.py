@@ -243,11 +243,9 @@ class SendPasswordResetEmailMixin(Output):
             user = get_user_by_email(email)
             try:
                 if async_email_func:
-                    async_email_func(
-                        user.status.send_password_reset_email, (info, [email])
-                    )
+                    async_email_func(user.status.resend_activation_email, (info,))
                 else:
-                    user.status.send_password_reset_email(info, [email])
+                    user.status.resend_activation_email(info)
                 return cls(
                     success=False,
                     errors={"email": Messages.NOT_VERIFIED_PASSWORD_RESET},
