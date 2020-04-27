@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.db import transaction
+from django.utils.module_loading import import_string
 
 import graphene
 
@@ -33,6 +34,10 @@ from .decorators import (
 )
 
 UserModel = get_user_model()
+if app_settings.EMAIL_ASYNC_TASK and isinstance(app_settings.EMAIL_ASYNC_TASK, str):
+    async_email_func = import_string(app_settings.EMAIL_ASYNC_TASK)
+else:
+    async_email_func = None
 
 
 class RegisterMixin(Output):
@@ -85,7 +90,11 @@ class RegisterMixin(Output):
                         app_settings.SEND_ACTIVATION_EMAIL is True and email
                     )
                     if send_activation:
-                        user.status.send_activation_email(info)
+                        # TODO CHECK FOR EMAIL ASYNC SETTING
+                        if async_email_func:
+                            async_email_func(user.status.send_activation_email, (info,))
+                        else:
+                            user.status.send_activation_email(info)
                     if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
                         payload = cls.login_on_register(
                             root, info, password=kwargs.get("password1"), **kwargs
@@ -184,7 +193,10 @@ class ResendActivationEmailMixin(Output):
             f = EmailForm({"email": email})
             if f.is_valid():
                 user = get_user_by_email(email)
-                user.status.resend_activation_email(info)
+                if async_email_func:
+                    async_email_func(user.status.resend_activation_email, (info,))
+                else:
+                    user.status.resend_activation_email(info)
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except ObjectDoesNotExist:
@@ -215,7 +227,12 @@ class SendPasswordResetEmailMixin(Output):
             f = EmailForm({"email": email})
             if f.is_valid():
                 user = get_user_by_email(email)
-                user.status.send_password_reset_email(info, [email])
+                if async_email_func:
+                    async_email_func(
+                        user.status.send_password_reset_email, (info, [email])
+                    )
+                else:
+                    user.status.send_password_reset_email(info, [email])
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except ObjectDoesNotExist:
@@ -225,7 +242,10 @@ class SendPasswordResetEmailMixin(Output):
         except UserNotVerified:
             user = get_user_by_email(email)
             try:
-                user.status.resend_activation_email(info)
+                if async_email_func:
+                    async_email_func(user.status.resend_activation_email, (info,))
+                else:
+                    user.status.resend_activation_email(info)
                 return cls(
                     success=False,
                     errors={"email": Messages.NOT_VERIFIED_PASSWORD_RESET},
@@ -476,7 +496,12 @@ class SendSecondaryEmailActivationMixin(Output):
             f = EmailForm({"email": email})
             if f.is_valid():
                 user = info.context.user
-                user.status.send_secondary_email_activation(info, email)
+                if async_email_func:
+                    async_email_func(
+                        user.status.send_secondary_email_activation, (info, email)
+                    )
+                else:
+                    user.status.send_secondary_email_activation(info, email)
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except EmailAlreadyInUse:
