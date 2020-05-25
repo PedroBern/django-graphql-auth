@@ -12,11 +12,11 @@ For more information, see the [CONTRIBUTING](https://github.com/PedroBern/django
 
 # Description
 
-> Description of the bug/feature/question
+Description of the bug/feature/question
 
 # Steps to Reproduce
 
->If we need to reproduce and you don't provide steps for it, it will be closed. Alternatively, you can link a repo with the code to run your issue.
+If we need to reproduce and you don't provide steps for it, it will be closed. Alternatively, you can link a repo with the code to run your issue.
 
 1. [First Step]
 2. [Second Step]
@@ -24,12 +24,12 @@ For more information, see the [CONTRIBUTING](https://github.com/PedroBern/django
 
 ## Expected behavior
 
-> What you expected to happen
+What you expected to happen
 
 ## Actual behavior
 
-> What actually happened
+What actually happened
 
 # Requirements
 
-> Paste the packages you are using, you can get this information from executing `pip freeze`.
+Paste the packages you are using, you can get this information from executing `pip freeze`.
