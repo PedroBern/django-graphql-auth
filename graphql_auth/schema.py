@@ -32,6 +32,10 @@ class UserNode(DjangoObjectType):
     def resolve_secondary_email(self, info):
         return self.status.secondary_email
 
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        return queryset.select_related("status")
+
 
 class UserQuery(graphene.ObjectType):
     user = graphene.relay.Node.Field(UserNode)
