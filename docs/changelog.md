@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.11
+
+- Add select_related to UserNode to limit db queries (thanks to [maxpeterson](https://github.com/maxpeterson))
+
 ### v0.3.10
 
 - Pseudo async email support (thanks to [bzhr](https://github.com/bzhr) and [me](https://github.com/pedrobern))

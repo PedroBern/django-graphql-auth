@@ -8,3 +8,4 @@
 - [@panosangelopoulos](https://github.com/panosangelopoulos)
 - [@pors](https://github.com/pors)
 - [@bzhr](https://github.com/bzhr)
+- [@maxpeterson](https://github.com/maxpeterson)
