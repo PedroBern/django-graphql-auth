@@ -8,13 +8,6 @@
 [![Documentation Status](https://readthedocs.org/projects/django-graphql-auth/badge/?version=latest)](https://django-graphql-auth.readthedocs.io/en/latest/?badge=latest)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/pedrobern/django-graphql-auth/blob/master/CONTRIBUTING.md)
 
-**Supporting the project**
-
-You can support the project by checking out the following tool:
-
-<a href="https://tracking.gitads.io/?repo=django-graphql-auth">
-<img src="https://images.gitads.io/django-graphql-auth" alt="GitAds"/> </a>
-
 ## Demo
 
 ![Demo Video](https://github.com/pedrobern/django-graphql-auth/blob/master/demo.gif)
