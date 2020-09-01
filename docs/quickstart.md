@@ -200,7 +200,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 ```
 
-[Here](/installation/#3-authentication-backend-optional) is an explanation why we are adding this backend.
+[Here](installation.md#3-authentication-backend-optional) is an explanation why we are adding this backend.
 
 And make sure your templates configuration has the following:
 
