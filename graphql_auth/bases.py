@@ -1,6 +1,14 @@
 import graphene
 
+from django.utils.module_loading import import_string
+
 from .types import ExpectedErrorType
+from .settings import graphql_auth_settings as app_settings
+
+if app_settings.CUSTOM_ERROR_TYPE and isinstance(app_settings.CUSTOM_ERROR_TYPE, str):
+    OutputErrorType = import_string(app_settings.CUSTOM_ERROR_TYPE)
+else:
+    OutputErrorType = ExpectedErrorType
 
 
 class Output:
@@ -10,7 +18,7 @@ class Output:
     """
 
     success = graphene.Boolean(default_value=True)
-    errors = graphene.Field(ExpectedErrorType)
+    errors = graphene.Field(OutputErrorType)
 
 
 class MutationMixin:
