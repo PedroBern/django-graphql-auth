@@ -104,6 +104,20 @@ Optional fields on update account.
 
 default: `#!python ["first_name", "last_name"]`
 
+### CUSTOM_ERROR_TYPE
+
+Customize mutations error output by providing a Graphene type.
+
+default: `graphql_auth.types.ExpectedErrorType`
+
+example:
+```python
+class CustomErrorType(graphene.Scalar):
+    @staticmethod
+    def serialize(errors):
+        return {"my_custom_error_format"}
+```
+
 ---
 
 ## Query

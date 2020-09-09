@@ -66,6 +66,8 @@ DEFAULTS = {
     "ALLOW_DELETE_ACCOUNT": False,
     # string path for email function wrapper, see the testproject example
     "EMAIL_ASYNC_TASK": False,
+    # mutation error type
+    "CUSTOM_ERROR_TYPE": None,
 }
 
 
