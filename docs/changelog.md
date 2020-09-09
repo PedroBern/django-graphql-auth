@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.12
+
+- Add CUSTOM_ERROR_TYPE setting (thanks to [boolangery ](https://github.com/boolangery))
+
 ### v0.3.11
 
 - Add select_related to UserNode to limit db queries (thanks to [maxpeterson](https://github.com/maxpeterson))
