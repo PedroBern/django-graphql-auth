@@ -467,12 +467,15 @@ mutation {
 
 ```bash tab="graphql"
 mutation {
-  revokeToken(
+  refreshToken(
     refreshToken: "d9b58dce41cf14549030873e3fab3be864f76ce44"
   ) {
     success,
     errors,
-    revoked
+    payload,
+    refreshExpiresIn,
+    token,
+    refreshToken
   }
 }
 ```
@@ -480,10 +483,17 @@ mutation {
 ```bash tab="success"
 {
   "data": {
-    "revokeToken": {
+    "refreshToken": {
       "success": true,
       "errors": null,
-      "revoked": 1579458880
+      "payload": {
+        "username": "skywalker",
+        "exp": 1601646082,
+        "origIat": 1601645782
+      },
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImV4cCI6MTYwMTY0NjA4Miwib3JpZ0lhdCI6MTYwMTY0NTc4Mn0.H6gLeky7lX834kBI5RFT8ziNNfGOL3XXg1dRwvpQuRI",
+      "refreshToken": "a64f732b4e00432f2ff1b47537a11458be13fc82",
+      "refreshExpiresIn": 1602250582
     }
   }
 }
@@ -491,14 +501,17 @@ mutation {
 
 ```bash tab="relay"
 mutation {
-  revokeToken(
+  refreshToken(
     input: {
       refreshToken: "d9b58dce41cf14549030873e3fab3be864f76ce44"
     }
   ) {
     success,
     errors,
-    revoked
+    payload,
+    refreshExpiresIn,
+    token,
+    refreshToken
   }
 }
 ```
@@ -507,7 +520,7 @@ mutation {
 ```bash tab="Invalid token"
 {
   "data": {
-    "revokeToken": {
+    "refreshToken": {
       "success": false,
       "errors": {
         "nonFieldErrors": [
@@ -516,8 +529,7 @@ mutation {
             "code": "invalid_token"
           }
         ]
-      },
-      "revoked": null
+      }
     }
   }
 }
@@ -554,7 +566,7 @@ mutation {
       "success": true,
       "errors": null,
       "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImpvZWpvZSIsImV4cCI6MTU4MDE0MjE0MCwib3JpZ0lhdCI6MTU4MDE0MTg0MH0.BGUSGKUUd7IuHnWKy8V6MU3slJ-DHsyAdAjGrGb_9fw",
-     "refreshToken":
+      "refreshToken": "d9b58dce41cf14549030873e3fab3be864f76ce44"
     }
   }
 }
