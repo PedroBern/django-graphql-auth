@@ -56,6 +56,7 @@ Both subject and email templates receive the following variables:
 - path --> defined in [settings](settings.md) <small>(some frontend path)</small>
 - request
 - timestamp
+- custom variables defined using EMAIL_TEMPLATE_VARIABLES setting --> defined in [settings](settings.md)
 
 
 ## Writing the templates

@@ -260,3 +260,28 @@ default: `#!python "email/activation_email.html"`
 ### EMAIL_TEMPLATE_PASSWORD_RESET
 
 default: `#!python "email/password_reset_email.html"`
+
+### EMAIL_TEMPLATE_VARIABLES
+
+default: `#!python {}`
+
+Dictionary of key value pairs of template variables that will be injected into the templates.
+
+Example:
+
+```python
+GRAPHQL_AUTH = {
+    "EMAIL_TEMPLATE_VARIABLES": {
+        "frontend_domain": "the-frontend.com"
+    }
+}
+```
+
+Now, in the templates:
+{% raw %}
+
+```html
+<p>{{ protocol }}://{{ frontend_domain }}/{{ path }}/{{ token }}</p>
+```
+
+{% endraw %}

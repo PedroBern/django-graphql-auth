@@ -66,6 +66,7 @@ class UserStatus(models.Model):
             "protocol": "https" if info.context.is_secure() else "http",
             "path": path,
             "timestamp": time.time(),
+            **app_settings.EMAIL_TEMPLATE_VARIABLES,
         }
 
     def send_activation_email(self, info, *args, **kwargs):
