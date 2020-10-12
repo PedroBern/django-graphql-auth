@@ -263,6 +263,8 @@ class PasswordResetMixin(Output):
     If token and new passwords are valid, update
     user password and in case of using refresh
     tokens, revoke all of them.
+
+    Also, if user has not been verified yet, verify it.
     """
 
     form = SetPasswordForm
@@ -281,6 +283,11 @@ class PasswordResetMixin(Output):
             if f.is_valid():
                 revoke_user_refresh_token(user)
                 user = f.save()
+
+                if user.status.verified is False:
+                    user.status.verified = True
+                    user.status.save(update_fields=["verified"])
+
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except SignatureExpired:

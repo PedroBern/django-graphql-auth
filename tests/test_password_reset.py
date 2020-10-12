@@ -55,6 +55,20 @@ class PasswordResetTestCaseMixin:
         for token in refresh_tokens:
             self.assertTrue(token.revoked)
 
+    def test_reset_password_verify_user(self):
+        self.user1.verified = False
+        self.user1.save()
+
+        token = get_token(self.user1, "password_reset")
+        query = self.get_query(token)
+        executed = self.make_request(query)
+
+        self.assertEqual(executed["success"], True)
+        self.assertEqual(executed["errors"], None)
+        self.user1.refresh_from_db()
+        self.assertFalse(self.user1_old_pass == self.user1.password)
+        self.assertTrue(self.user1.status.verified)
+
 
 class PasswordResetTestCase(PasswordResetTestCaseMixin, DefaultTestCase):
     def get_login_query(self):

@@ -70,6 +70,8 @@ PasswordReset: |
     If token and new passwords are valid, update
     user password and in case of using refresh
     tokens, revoke all of them.
+
+    Also, if user has not been verified yet, verify it.
     
 ObtainJSONWebToken: |
     Obtain JSON web token for given user.

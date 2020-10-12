@@ -35,24 +35,6 @@ class SendPasswordResetEmailTestCaseMixin:
         self.assertEqual(executed["success"], False)
         self.assertTrue(executed["errors"]["email"])
 
-    def test_send_email_to_not_verified_user(self):
-        query = self.get_query("foo@email.com")
-        executed = self.make_request(query)
-        self.assertEqual(executed["success"], False)
-        self.assertEqual(
-            executed["errors"]["email"], Messages.NOT_VERIFIED_PASSWORD_RESET
-        )
-
-    @mock.patch(
-        "graphql_auth.models.UserStatus.resend_activation_email",
-        mock.MagicMock(side_effect=SMTPException),
-    )
-    def test_send_email_to_not_verified_user_emal_fail(self):
-        query = self.get_query("foo@email.com")
-        executed = self.make_request(query)
-        self.assertEqual(executed["success"], False)
-        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.EMAIL_FAIL)
-
     def test_send_email_valid_email_verified_user(self):
         query = self.get_query("bar@email.com")
         executed = self.make_request(query)
