@@ -10,3 +10,4 @@
 - [@bzhr](https://github.com/bzhr)
 - [@maxpeterson](https://github.com/maxpeterson)
 - [@boolangery ](https://github.com/boolangery)
+- [@capaci](https://github.com/capaci)

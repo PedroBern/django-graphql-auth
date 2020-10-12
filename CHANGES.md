@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.13
+
+- Add EMAIL_TEMPLATE_VARIABLES setting (thanks to [capaci ](https://github.com/capaci))
+
 ### v0.3.12
 
 - Add CUSTOM_ERROR_TYPE setting (thanks to [boolangery ](https://github.com/boolangery))

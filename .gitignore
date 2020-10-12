@@ -25,6 +25,7 @@ __pycache__
 /coverage.xml
 /dist
 /docs/_build
+/site
 
 .venv/
 .python-version
