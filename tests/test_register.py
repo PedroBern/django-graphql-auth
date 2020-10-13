@@ -9,6 +9,7 @@ from .testCases import RelayTestCase, DefaultTestCase
 from .decorators import skipif_django_21
 
 from graphql_auth.constants import Messages
+from graphql_auth.signals import user_registered
 from graphql_auth.utils import get_token, get_token_paylod
 
 
@@ -27,6 +28,14 @@ class RegisterTestCaseMixin:
         """
         Register user, fail to register same user again
         """
+        signal_received = False
+
+        def receive_signal(sender, user, signal):
+            self.assertTrue(user.id is not None)
+            nonlocal signal_received
+            signal_received = True
+
+        user_registered.connect(receive_signal)
 
         # register
         executed = self.make_request(self.register_query())
@@ -34,6 +43,7 @@ class RegisterTestCaseMixin:
         self.assertEqual(executed["errors"], None)
         self.assertTrue(executed["token"])
         self.assertTrue(executed["refreshToken"])
+        self.assertTrue(signal_received)
 
         # try to register again
         executed = self.make_request(self.register_query())

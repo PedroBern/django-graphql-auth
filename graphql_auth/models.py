@@ -18,6 +18,7 @@ from .exceptions import (
     EmailAlreadyInUse,
     WrongUsage,
 )
+from .signals import user_verified
 
 UserModel = get_user_model()
 
@@ -140,6 +141,7 @@ class UserStatus(models.Model):
         if user_status.verified is False:
             user_status.verified = True
             user_status.save(update_fields=["verified"])
+            user_verified.send(sender=cls, user=user)
         else:
             raise UserAlreadyVerified
 

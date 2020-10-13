@@ -4,6 +4,7 @@ from .testCases import RelayTestCase, DefaultTestCase
 from graphql_auth.constants import Messages
 from graphql_auth.utils import get_token, get_token_paylod
 from graphql_auth.models import UserStatus
+from graphql_auth.signals import user_verified
 
 
 class VerifyAccountCaseMixin:
@@ -16,10 +17,19 @@ class VerifyAccountCaseMixin:
         )
 
     def test_verify_user(self):
+        signal_received = False
+
+        def receive_signal(sender, user, signal):
+            self.assertEqual(user.id, self.user1.id)
+            nonlocal signal_received
+            signal_received = True
+
+        user_verified.connect(receive_signal)
         token = get_token(self.user1, "activation")
         executed = self.make_request(self.verify_query(token))
         self.assertEqual(executed["success"], True)
         self.assertFalse(executed["errors"])
+        self.assertTrue(signal_received)
 
     def test_verified_user(self):
         token = get_token(self.user2, "activation")
