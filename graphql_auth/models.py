@@ -88,8 +88,6 @@ class UserStatus(models.Model):
         return self.send(subject, template, email_context, *args, **kwargs)
 
     def send_password_reset_email(self, info, *args, **kwargs):
-        if self.verified is False:
-            raise UserNotVerified
         email_context = self.get_email_context(
             info, app_settings.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET
         )
