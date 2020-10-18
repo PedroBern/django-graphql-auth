@@ -27,6 +27,7 @@ from .exceptions import (
 from .constants import Messages, TokenAction
 from .utils import revoke_user_refresh_token, get_token_paylod, using_refresh_tokens
 from .shortcuts import get_user_by_email, get_user_to_login
+from .signals import user_registered
 from .decorators import (
     password_confirmation_required,
     verification_required,
@@ -95,6 +96,9 @@ class RegisterMixin(Output):
                             async_email_func(user.status.send_activation_email, (info,))
                         else:
                             user.status.send_activation_email(info)
+
+                    user_registered.send(sender=cls, user=user)
+
                     if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
                         payload = cls.login_on_register(
                             root, info, password=kwargs.get("password1"), **kwargs
