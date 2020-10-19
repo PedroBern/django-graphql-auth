@@ -12,7 +12,7 @@ import graphene
 from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
 from graphql_jwt.decorators import token_auth
 
-from .forms import RegisterForm, EmailForm, UpdateAccountForm
+from .forms import RegisterForm, EmailForm, UpdateAccountForm, PasswordLessRegisterForm
 from .bases import Output
 from .models import UserStatus
 from .settings import graphql_auth_settings as app_settings
@@ -23,6 +23,7 @@ from .exceptions import (
     TokenScopeError,
     EmailAlreadyInUse,
     InvalidCredentials,
+    PasswordAlreadySetError,
 )
 from .constants import Messages, TokenAction
 from .utils import revoke_user_refresh_token, get_token_paylod, using_refresh_tokens
@@ -63,7 +64,11 @@ class RegisterMixin(Output):
     If allowed to not verified users login, return token.
     """
 
-    form = RegisterForm
+    form = (
+        PasswordLessRegisterForm
+        if app_settings.ALLOW_PASSWORDLESS_REGISTRATION
+        else RegisterForm
+    )
 
     @classmethod
     def Field(cls, *args, **kwargs):
@@ -90,12 +95,26 @@ class RegisterMixin(Output):
                     send_activation = (
                         app_settings.SEND_ACTIVATION_EMAIL is True and email
                     )
+                    send_password_set = (
+                        app_settings.ALLOW_PASSWORDLESS_REGISTRATION is True
+                        and app_settings.SEND_PASSWORD_SET_EMAIL is True
+                        and email
+                    )
                     if send_activation:
                         # TODO CHECK FOR EMAIL ASYNC SETTING
                         if async_email_func:
                             async_email_func(user.status.send_activation_email, (info,))
                         else:
                             user.status.send_activation_email(info)
+
+                    if send_password_set:
+                        # TODO CHECK FOR EMAIL ASYNC SETTING
+                        if async_email_func:
+                            async_email_func(
+                                user.status.send_password_set_email, (info,)
+                            )
+                        else:
+                            user.status.send_password_set_email(info)
 
                     user_registered.send(sender=cls, user=user)
 
@@ -298,6 +317,53 @@ class PasswordResetMixin(Output):
             return cls(success=False, errors=Messages.EXPIRED_TOKEN)
         except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
+
+
+class PasswordSetMixin(Output):
+    """
+    Set user password - for passwordless registration
+
+    Receive the token that was sent by email.
+
+    If token and new passwords are valid, set
+    user password and in case of using refresh
+    tokens, revoke all of them.
+
+    Also, if user has not been verified yet, verify it.
+    """
+
+    form = SetPasswordForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            token = kwargs.pop("token")
+            payload = get_token_paylod(
+                token,
+                TokenAction.PASSWORD_SET,
+                app_settings.EXPIRATION_PASSWORD_SET_TOKEN,
+            )
+            user = UserModel._default_manager.get(**payload)
+            f = cls.form(user, kwargs)
+            if f.is_valid():
+                # Check if user has already set a password
+                if user.has_usable_password():
+                    raise PasswordAlreadySetError
+                revoke_user_refresh_token(user)
+                user = f.save()
+
+                if user.status.verified is False:
+                    user.status.verified = True
+                    user.status.save(update_fields=["verified"])
+
+                return cls(success=True)
+            return cls(success=False, errors=f.errors.get_json_data())
+        except SignatureExpired:
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
+        except (BadSignature, TokenScopeError):
+            return cls(success=False, errors=Messages.INVALID_TOKEN)
+        except (PasswordAlreadySetError):
+            return cls(success=False, errors=Messages.PASSWORD_ALREADY_SET)
 
 
 class ObtainJSONWebTokenMixin(Output):
