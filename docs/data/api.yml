@@ -73,6 +73,17 @@ PasswordReset: |
 
     Also, if user has not been verified yet, verify it.
     
+PasswordSet: |
+    Set user password - for passwordless registration
+
+    Receive the token that was sent by email.
+
+    If token and new passwords are valid, set
+    user password and in case of using refresh
+    tokens, revoke all of them.
+
+    Also, if user has not been verified yet, verify it.
+    
 ObtainJSONWebToken: |
     Obtain JSON web token for given user.
 

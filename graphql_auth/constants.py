@@ -34,9 +34,16 @@ class Messages:
             "code": "secondary_email_required",
         }
     ]
+    PASSWORD_ALREADY_SET = [
+        {
+            "message": _("Password already set for account."),
+            "code": "password_already_set",
+        }
+    ]
 
 
 class TokenAction(object):
     ACTIVATION = "activation"
     PASSWORD_RESET = "password_reset"
     ACTIVATION_SECONDARY_EMAIL = "activation_secondary_email"
+    PASSWORD_SET = "password_set"

@@ -32,6 +32,14 @@ If a user has a secondary email set, he can use to login.
 
 default: `#!python True`
 
+### ALLOW_PASSWORDLESS_REGISTRATION
+
+To allow registration with no password; Django `set_unusable_password()` will be used in setting the default password.
+
+- User cannot login until they set their password
+
+default: `#!python False`
+
 ### ALLOW_DELETE_ACCOUNT
 
 Instead of deleting the account, make `#!python user.is_active=False`.
@@ -47,6 +55,12 @@ If set to `#!python False`, no email will be sent.
 Note that users will still have an `#!python verified=False` status.
 
 default: `#!python True`
+
+### SEND_PASSWORD_SET_EMAIL
+
+If set to `#!python True`, user will be notified to set their password after registration - dependent on `ALLOW_PASSWORDLESS_REGISTRATION`.
+
+default: `#!python False`
 
 ---
 
@@ -158,6 +172,10 @@ default: `#!python timedelta(hours=1)`
 
 default: `#!python timedelta(hours=1)`
 
+### EXPIRATION_PASSWORD_SET_TOKEN
+
+default: `#!python timedelta(days=7)`
+
 ---
 
 ## Email
@@ -179,6 +197,12 @@ default: `#!python "activate"`
 Path [variable](overriding-email-templates.md) used in password reset email.
 
 default: `#!python "password-reset"`
+
+### PASSWORD_SET_PATH_ON_EMAIL
+
+Path [variable](overriding-email-templates.md) used in password set email.
+
+default: `#!python "password-set"`
 
 ### ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL
 
@@ -237,6 +261,10 @@ default: `#!python "email/activation_subject.txt"`
 
 default: `#!python "email/password_reset_subject.txt"`
 
+### EMAIL_SUBJECT_PASSWORD_SET
+
+default: `#!python "email/password_set_subject.txt"`
+
 
 ---
 
@@ -260,6 +288,10 @@ default: `#!python "email/activation_email.html"`
 ### EMAIL_TEMPLATE_PASSWORD_RESET
 
 default: `#!python "email/password_reset_email.html"`
+
+### EMAIL_TEMPLATE_PASSWORD_SET
+
+default: `#!python "email/password_set_email.html"`
 
 ### EMAIL_TEMPLATE_VARIABLES
 

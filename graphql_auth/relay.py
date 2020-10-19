@@ -7,6 +7,7 @@ from .mixins import (
     VerifyAccountMixin,
     ResendActivationEmailMixin,
     SendPasswordResetEmailMixin,
+    PasswordSetMixin,
     PasswordResetMixin,
     ObtainJSONWebTokenMixin,
     ArchiveAccountMixin,
@@ -30,8 +31,14 @@ class Register(
 
     __doc__ = RegisterMixin.__doc__
 
+    password_fields = (
+        []
+        if app_settings.ALLOW_PASSWORDLESS_REGISTRATION
+        else ["password1", "password2"]
+    )
+
     _required_inputs = normalize_fields(
-        app_settings.REGISTER_MUTATION_FIELDS, ["password1", "password2"]
+        app_settings.REGISTER_MUTATION_FIELDS, password_fields
     )
     _inputs = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
@@ -98,6 +105,13 @@ class RemoveSecondaryEmail(
 ):
     __doc__ = RemoveSecondaryEmailMixin.__doc__
     _required_inputs = ["password"]
+
+
+class PasswordSet(
+    RelayMutationMixin, DynamicInputMixin, PasswordSetMixin, graphene.ClientIDMutation
+):
+    __doc__ = PasswordSetMixin.__doc__
+    _required_inputs = ["token", "new_password1", "new_password2"]
 
 
 class PasswordReset(

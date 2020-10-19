@@ -34,23 +34,28 @@ DEFAULTS = {
     "EXPIRATION_ACTIVATION_TOKEN": timedelta(days=7),
     "EXPIRATION_PASSWORD_RESET_TOKEN": timedelta(hours=1),
     "EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN": timedelta(hours=1),
+    "EXPIRATION_PASSWORD_SET_TOKEN": timedelta(hours=1),
     # email stuff
     "EMAIL_FROM": getattr(django_settings, "DEFAULT_FROM_EMAIL", "test@email.com"),
     "SEND_ACTIVATION_EMAIL": True,
     # client: example.com/activate/token
     "ACTIVATION_PATH_ON_EMAIL": "activate",
     "ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL": "activate",
+    # client: example.com/password-set/token
+    "PASSWORD_SET_PATH_ON_EMAIL": "password-set",
     # client: example.com/password-reset/token
     "PASSWORD_RESET_PATH_ON_EMAIL": "password-reset",
     # email subjects templates
     "EMAIL_SUBJECT_ACTIVATION": "email/activation_subject.txt",
     "EMAIL_SUBJECT_ACTIVATION_RESEND": "email/activation_subject.txt",
     "EMAIL_SUBJECT_SECONDARY_EMAIL_ACTIVATION": "email/activation_subject.txt",
+    "EMAIL_SUBJECT_PASSWORD_SET": "email/password_set_subject.txt",
     "EMAIL_SUBJECT_PASSWORD_RESET": "email/password_reset_subject.txt",
     # email templates
     "EMAIL_TEMPLATE_ACTIVATION": "email/activation_email.html",
     "EMAIL_TEMPLATE_ACTIVATION_RESEND": "email/activation_email.html",
     "EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION": "email/activation_email.html",
+    "EMAIL_TEMPLATE_PASSWORD_SET": "email/password_set_email.html",
     "EMAIL_TEMPLATE_PASSWORD_RESET": "email/password_reset_email.html",
     "EMAIL_TEMPLATE_VARIABLES": {},
     # query stuff
@@ -69,6 +74,9 @@ DEFAULTS = {
     "EMAIL_ASYNC_TASK": False,
     # mutation error type
     "CUSTOM_ERROR_TYPE": None,
+    # registration with no password
+    "ALLOW_PASSWORDLESS_REGISTRATION": False,
+    "SEND_PASSWORD_SET_EMAIL": False,
 }
 
 

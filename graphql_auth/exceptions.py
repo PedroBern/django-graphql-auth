@@ -31,6 +31,10 @@ class TokenScopeError(GraphQLAuthError):
     default_message = _("This token if for something else.")
 
 
+class PasswordAlreadySetError(GraphQLAuthError):
+    default_message = _("Password already set for account.")
+
+
 class WrongUsage(GraphQLAuthError):
     """
     internal exception

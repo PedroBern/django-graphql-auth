@@ -352,6 +352,130 @@ mutation {
 ```
 
 ---
+#### PasswordSet
+
+{{ api.PasswordSet }}
+
+```bash tab="graphql"
+mutation {
+  passwordSet(
+    token: "1eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImFjdGlvbiI6InBhc3N3b3JkX3Jlc2V0In0:1itExL:op0roJi-ZbO9cszNEQMs5mX3c6s",
+    newPassword1: "supersecretpassword",
+    newPassword2: "supersecretpassword"
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="success"
+{
+  "data": {
+    "passwordSet": {
+      "success": true,
+      "errors": null
+    }
+  }
+}
+```
+
+```bash tab="relay"
+mutation {
+  passwordSet(
+    input: {
+      token: "1eyJ1c2VybmFtZSI6InNreXdhbGtlciIsImFjdGlvbiI6InBhc3N3b3JkX3Jlc2V0In0:1itExL:op0roJi-ZbO9cszNEQMs5mX3c6s",
+      newPassword1: "supersecretpassword",
+      newPassword2: "supersecretpassword"
+    }
+  ) {
+    success,
+    errors
+  }
+}
+```
+
+```bash tab="Invalid token"
+{
+  "data": {
+    "passwordSet": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Invalid token.",
+            "code": "invalid_token"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Password mismatch"
+{
+  "data": {
+    "passwordSet": {
+      "success": false,
+      "errors": {
+        "newPassword2": [
+          {
+            "message": "The two password fields didn’t match.",
+            "code": "password_mismatch"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Password validators"
+{
+  "data": {
+    "passwordSet": {
+      "success": false,
+      "errors": {
+        "newPassword2": [
+          {
+            "message": "This password is too short. It must contain at least 8 characters.",
+            "code": "password_too_short"
+          },
+          {
+            "message": "This password is too common.",
+            "code": "password_too_common"
+          },
+          {
+            "message": "This password is entirely numeric.",
+            "code": "password_entirely_numeric"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+```bash tab="Password Set"
+{
+  "data": {
+    "passwordSet": {
+      "success": false,
+      "errors": {
+        "nonFieldErrors": [
+          {
+            "message": "Password already set for account.",
+            "code": "password_already_set"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+---
 
 #### PasswordReset
 

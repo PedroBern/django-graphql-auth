@@ -65,6 +65,7 @@ class AuthMutation(graphene.ObjectType):
     resend_activation_email = mutations.ResendActivationEmail.Field()
     send_password_reset_email = mutations.SendPasswordResetEmail.Field()
     password_reset = mutations.PasswordReset.Field()
+    password_set = mutations.PasswordSet.Field() # For passwordless registration
     password_change = mutations.PasswordChange.Field()
     update_account = mutations.UpdateAccount.Field()
     archive_account = mutations.ArchiveAccount.Field()
@@ -105,6 +106,7 @@ class AuthRelayMutation(graphene.ObjectType):
     resend_activation_email = relay.ResendActivationEmail.Field()
     send_password_reset_email = relay.SendPasswordResetEmail.Field()
     password_reset = relay.PasswordReset.Field()
+    password_set = relay.PasswordSet.Field() # For passwordless registration
     password_change = relay.PasswordChange.Field()
     update_account = relay.UpdateAccount.Field()
     archive_account = relay.ArchiveAccount.Field()

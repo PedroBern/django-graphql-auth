@@ -88,6 +88,14 @@ class UserStatus(models.Model):
         subject = app_settings.EMAIL_SUBJECT_ACTIVATION_RESEND
         return self.send(subject, template, email_context, *args, **kwargs)
 
+    def send_password_set_email(self, info, *args, **kwargs):
+        email_context = self.get_email_context(
+            info, app_settings.PASSWORD_SET_PATH_ON_EMAIL, TokenAction.PASSWORD_SET
+        )
+        template = app_settings.EMAIL_TEMPLATE_PASSWORD_SET
+        subject = app_settings.EMAIL_SUBJECT_PASSWORD_SET
+        return self.send(subject, template, email_context, *args, **kwargs)
+
     def send_password_reset_email(self, info, *args, **kwargs):
         email_context = self.get_email_context(
             info, app_settings.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET
