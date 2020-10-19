@@ -46,6 +46,7 @@ your implementation^^.
 * [x] All mutations return `success` and `errors`
 * [x] Default email templates <small>(you will customize though)</small>
 * [x] Customizable, no lock-in
+* [x] Passwordless registration
 
 ---
 
