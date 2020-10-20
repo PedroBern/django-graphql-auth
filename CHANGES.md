@@ -2,6 +2,12 @@
 
 ## v0.3
 
+### v0.3.14
+
+- Add passwordless registration (thanks to [@joshuachinemezu](https://github.com/joshuachinemezu))
+- Add `user_verified` and `user_registered` signals (thanks to [@mnieber](https://github.com/mnieber))
+- Verify user in password reset mutation (thanks to [capaci ](https://github.com/capaci))
+
 ### v0.3.13
 
 - Add EMAIL_TEMPLATE_VARIABLES setting (thanks to [capaci ](https://github.com/capaci))

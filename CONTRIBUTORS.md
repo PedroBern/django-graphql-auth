@@ -11,3 +11,5 @@
 - [@maxpeterson](https://github.com/maxpeterson)
 - [@boolangery ](https://github.com/boolangery)
 - [@capaci](https://github.com/capaci)
+- [@mnieber](https://github.com/mnieber)
+- [@joshuachinemezu](https://github.com/joshuachinemezu)
