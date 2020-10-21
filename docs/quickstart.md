@@ -1140,7 +1140,7 @@ class AuthMutation(graphene.ObjectType):
     archive_account = mutations.ArchiveAccount.Field()
     delete_account = mutations.DeleteAccount.Field()
     update_account = mutations.UpdateAccount.Field()
-    send_secondary_email_activation =  mutations.SendSecondaryEmailActivation.Field()
+    send_secondary_email_activation = mutations.SendSecondaryEmailActivation.Field()
     verify_secondary_email = mutations.VerifySecondaryEmail.Field()
     swap_emails = mutations.SwapEmails.Field()
 
@@ -1162,7 +1162,7 @@ class AuthMutation(graphene.ObjectType):
     archive_account = relay.ArchiveAccount.Field()
     delete_account = relay.DeleteAccount.Field()
     update_account = relay.UpdateAccount.Field()
-    send_secondary_email_activation =  relay.SendSecondaryEmailActivation.Field()
+    send_secondary_email_activation = relay.SendSecondaryEmailActivation.Field()
     verify_secondary_email = relay.VerifySecondaryEmail.Field()
     swap_emails = relay.SwapEmails.Field()
 
