@@ -28,7 +28,7 @@ from .exceptions import (
 from .constants import Messages, TokenAction
 from .utils import revoke_user_refresh_token, get_token_paylod, using_refresh_tokens
 from .shortcuts import get_user_by_email, get_user_to_login
-from .signals import user_registered
+from .signals import user_registered, user_verified
 from .decorators import (
     password_confirmation_required,
     verification_required,
@@ -310,6 +310,7 @@ class PasswordResetMixin(Output):
                 if user.status.verified is False:
                     user.status.verified = True
                     user.status.save(update_fields=["verified"])
+                    user_verified.send(sender=cls, user=user)
 
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
