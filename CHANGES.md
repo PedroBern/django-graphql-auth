@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.15
+
+- Emit `user_verified` signal on password reset (thanks to [@imsheldon](https://github.com/imsheldon))
+
 ### v0.3.14
 
 - Add passwordless registration (thanks to [@joshuachinemezu](https://github.com/joshuachinemezu))
