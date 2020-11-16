@@ -65,3 +65,4 @@ jobs:
         password:
           secure: c8Uji09i8T3jlUfYuWgqpxfKKQi2I3zuh+U03bjvqOSCZ38gRtZm4+OnA6CWMvTiL5c7ePYKinIaqTBYSB/fmmDBGrBosiZPM7LweEOHtlK+zbM8DE2hqiGJOs968e7JA1tItTCBnyBtGeyXE2YrXjbk1YkSkRBz/dSxw3doToBJXVANw3Dv7A/WBj4i0bHscsYchC4uHGNDX4uAqKFM1asPDwcOkCWMzn1/iAoBMaq5nImgYIC3ni+2+I2hExgzz3VUzv+OXU2DPb9+5y1Vp01kvqhNOMlu9pfmAU4aOxswAgt3EM+xCcGiwlGt5vn8JkhasSznOCcz1m7PH70ZefwlQu+WWQJdHHR+2PzY05FSMxEYdarnlQzkJENHPKyiP5Hpe6mx/FWL7zF4LPBOb5BQwOpg6KwXjE40r1knsUShrORUJ2KJtjg2/4a/MfbKcIeRaMvFxuzsbJK6CpuZTjkaW9ebfGvoVonQRdTTkkBJ9CH9b+OCNRhjSC/fs11lVyg3LJ80cBMfQ3qB1HpkrbRdSTISmwiw/bF8di1GHQYHnpb2rUWf9wGTgs+OPIjbTTJGSmLiAi6J3Atlw/C9b6ZZeHpMwjka4Mh1KcbsWBbgixw8/2qGrYmyVyNdkWerZtnei4VkTIomf6d1WhsgC0d89EiFG6PFdB89BwZSkho=
         distributions: sdist bdist_wheel
+        edge: true
