@@ -10,7 +10,7 @@ from .decorators import skipif_django_21
 
 from graphql_auth.constants import Messages
 from graphql_auth.signals import user_registered
-from graphql_auth.utils import get_token, get_token_paylod
+from graphql_auth.utils import get_token, get_token_payload
 
 
 class RegisterTestCaseMixin:

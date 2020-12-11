@@ -17,7 +17,7 @@ def get_token(user, action, **kwargs):
     return token
 
 
-def get_token_paylod(token, action, exp=None):
+def get_token_payload(token, action, exp=None):
     payload = signing.loads(token, max_age=exp)
     _action = payload.pop("action")
     if _action != action:
