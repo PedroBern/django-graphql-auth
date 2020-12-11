@@ -429,9 +429,7 @@ class ObtainJSONWebTokenMixin(Output):
                 raise UserNotVerified
             raise InvalidCredentials
         except (JSONWebTokenError, ObjectDoesNotExist, InvalidCredentials):
-            return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
-        except UserNotVerified:
-            return cls(success=False, errors=Messages.NOT_VERIFIED)
+            raise InvalidCredentials
 
 
 class ArchiveOrDeleteMixin(Output):
@@ -550,12 +548,7 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        try:
-            return cls.parent_resolve(root, info, **kwargs)
-        except JSONWebTokenExpired:
-            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
-        except JSONWebTokenError:
-            return cls(success=False, errors=Messages.INVALID_TOKEN)
+        return cls.parent_resolve(root, info, **kwargs)
 
 
 class SendSecondaryEmailActivationMixin(Output):
