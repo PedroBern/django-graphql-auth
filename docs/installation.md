@@ -18,6 +18,7 @@
 ## Installation
 
 ```bash
+pip install pyjwt==1.7.1
 pip install django-graphql-auth
 ```
 
