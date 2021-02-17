@@ -114,7 +114,7 @@ class AuthRelayMutation(graphene.ObjectType):
     send_secondary_email_activation =  relay.SendSecondaryEmailActivation.Field()
     verify_secondary_email = relay.VerifySecondaryEmail.Field()
     swap_emails = relay.SwapEmails.Field()
-    remove_secondary_email = mutations.RemoveSecondaryEmail.Field()
+    remove_secondary_email = relay.RemoveSecondaryEmail.Field()
 
     # django-graphql-jwt inheritances
     token_auth = relay.ObtainJSONWebToken.Field()
