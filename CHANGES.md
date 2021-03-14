@@ -2,6 +2,10 @@
 
 ## v0.3
 
+### v0.3.16
+
+- Nothing new, adding `PyJWT<=2.0.0` to requirements
+
 ### v0.3.15
 
 - Emit `user_verified` signal on password reset (thanks to [@imsheldon](https://github.com/imsheldon))
