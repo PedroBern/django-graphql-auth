@@ -30,6 +30,7 @@ class LoginTestCaseMixin:
         self.assertFalse(executed["errors"])
         self.assertTrue(executed["token"])
         self.assertTrue(executed["refreshToken"])
+        self.assertTrue(executed["refreshExpiresIn"])
 
     def test_login_username(self):
         query = self.get_query("username", self.verified_user.username)
@@ -38,6 +39,7 @@ class LoginTestCaseMixin:
         self.assertFalse(executed["errors"])
         self.assertTrue(executed["token"])
         self.assertTrue(executed["refreshToken"])
+        self.assertTrue(executed["refreshExpiresIn"])
 
         query = self.get_query("username", self.not_verified_user.username)
         executed = self.make_request(query)
@@ -45,6 +47,7 @@ class LoginTestCaseMixin:
         self.assertFalse(executed["errors"])
         self.assertTrue(executed["token"])
         self.assertTrue(executed["refreshToken"])
+        self.assertTrue(executed["refreshExpiresIn"])
 
     def test_login_email(self):
         query = self.get_query("email", self.verified_user.email)
@@ -53,6 +56,7 @@ class LoginTestCaseMixin:
         self.assertFalse(executed["errors"])
         self.assertTrue(executed["token"])
         self.assertTrue(executed["refreshToken"])
+        self.assertTrue(executed["refreshExpiresIn"])
 
     def test_login_secondary_email(self):
         query = self.get_query("email", "secondary@email.com")
@@ -61,44 +65,31 @@ class LoginTestCaseMixin:
         self.assertFalse(executed["errors"])
         self.assertTrue(executed["token"])
         self.assertTrue(executed["refreshToken"])
+        self.assertTrue(executed["refreshExpiresIn"])
 
     def test_login_wrong_credentials(self):
         query = self.get_query("username", "wrong")
-        executed = self.make_request(query)
-        self.assertFalse(executed["success"])
-        self.assertTrue(executed["errors"])
-        self.assertFalse(executed["token"])
-        self.assertFalse(executed["refreshToken"])
+        executed = self.make_request(query, raw=True)
+        self.assertIsNotNone(executed["errors"])
 
     def test_login_wrong_credentials_2(self):
         query = self.get_query("username", self.verified_user.username, "wrongpass")
-        executed = self.make_request(query)
-        self.assertFalse(executed["success"])
-        self.assertTrue(executed["errors"])
-        self.assertFalse(executed["token"])
-        self.assertFalse(executed["refreshToken"])
+        executed = self.make_request(query, raw=True)
+        self.assertIsNotNone(executed["errors"])
 
     @mark.settings_b
     @skipif_django_21()
     def test_not_verified_login_on_different_settings(self):
         query = self.get_query("username", self.not_verified_user.username)
-        executed = self.make_request(query)
-        self.assertFalse(executed["success"])
-        self.assertEqual(executed["errors"]["nonFieldErrors"], Messages.NOT_VERIFIED)
-        self.assertFalse(executed["token"])
-        self.assertFalse(executed["refreshToken"])
+        executed = self.make_request(query, raw=True)
+        self.assertIsNotNone(executed["errors"])
 
     @mark.settings_b
     @skipif_django_21()
     def test_not_verified_login_on_different_settings_wrong_pass(self):
         query = self.get_query("username", self.not_verified_user.username, "wrongpass")
-        executed = self.make_request(query)
-        self.assertFalse(executed["success"])
-        self.assertEqual(
-            executed["errors"]["nonFieldErrors"], Messages.INVALID_CREDENTIALS
-        )
-        self.assertFalse(executed["token"])
-        self.assertFalse(executed["refreshToken"])
+        executed = self.make_request(query, raw=True)
+        self.assertIsNotNone(executed["errors"])
 
 
 class LoginTestCase(LoginTestCaseMixin, DefaultTestCase):
@@ -106,7 +97,7 @@ class LoginTestCase(LoginTestCaseMixin, DefaultTestCase):
         return """
         mutation {
         tokenAuth(%s: "%s", password: "%s" )
-            { token, refreshToken, success, errors  }
+            { token, refreshToken, refreshExpiresIn, payload, success, errors  }
         }
         """ % (
             field,
@@ -120,7 +111,7 @@ class LoginRelayTestCase(LoginTestCaseMixin, RelayTestCase):
         return """
         mutation {
         tokenAuth(input:{ %s: "%s", password: "%s" })
-            { token, refreshToken, success, errors  }
+            { token, refreshToken, refreshExpiresIn, payload, success, errors  }
         }
         """ % (
             field,

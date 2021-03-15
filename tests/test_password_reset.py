@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 
 from .testCases import RelayTestCase, DefaultTestCase
 from graphql_auth.constants import Messages
-from graphql_auth.utils import get_token, get_token_paylod
+from graphql_auth.utils import get_token, get_token_payload
 
 
 class PasswordResetTestCaseMixin:

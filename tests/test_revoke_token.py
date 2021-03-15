@@ -29,10 +29,8 @@ class RevokeTokenTestCaseMixin:
 
     def test_invalid_token(self):
         query = self.get_revoke_query("invalid_token")
-        executed = self.make_request(query)
-        self.assertFalse(executed["success"])
-        self.assertTrue(executed["errors"])
-        self.assertFalse(executed["revoked"])
+        executed = self.make_request(query, raw=True)
+        self.assertIsNotNone(executed["errors"])
 
 
 class RevokeTokenTestCase(RevokeTokenTestCaseMixin, DefaultTestCase):

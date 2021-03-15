@@ -26,7 +26,7 @@ from .exceptions import (
     PasswordAlreadySetError,
 )
 from .constants import Messages, TokenAction
-from .utils import revoke_user_refresh_token, get_token_paylod, using_refresh_tokens
+from .utils import revoke_user_refresh_token, get_token_payload, using_refresh_tokens
 from .shortcuts import get_user_by_email, get_user_to_login
 from .signals import user_registered, user_verified
 from .decorators import (
@@ -296,7 +296,7 @@ class PasswordResetMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         try:
             token = kwargs.pop("token")
-            payload = get_token_paylod(
+            payload = get_token_payload(
                 token,
                 TokenAction.PASSWORD_RESET,
                 app_settings.EXPIRATION_PASSWORD_RESET_TOKEN,
@@ -339,7 +339,7 @@ class PasswordSetMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         try:
             token = kwargs.pop("token")
-            payload = get_token_paylod(
+            payload = get_token_payload(
                 token,
                 TokenAction.PASSWORD_SET,
                 app_settings.EXPIRATION_PASSWORD_SET_TOKEN,
@@ -429,9 +429,7 @@ class ObtainJSONWebTokenMixin(Output):
                 raise UserNotVerified
             raise InvalidCredentials
         except (JSONWebTokenError, ObjectDoesNotExist, InvalidCredentials):
-            return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
-        except UserNotVerified:
-            return cls(success=False, errors=Messages.NOT_VERIFIED)
+            raise InvalidCredentials
 
 
 class ArchiveOrDeleteMixin(Output):
@@ -550,12 +548,7 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        try:
-            return cls.parent_resolve(root, info, **kwargs)
-        except JSONWebTokenExpired:
-            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
-        except JSONWebTokenError:
-            return cls(success=False, errors=Messages.INVALID_TOKEN)
+        return cls.parent_resolve(root, info, **kwargs)
 
 
 class SendSecondaryEmailActivationMixin(Output):

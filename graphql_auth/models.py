@@ -11,7 +11,7 @@ from django.db import transaction
 
 from .settings import graphql_auth_settings as app_settings
 from .constants import TokenAction
-from .utils import get_token, get_token_paylod
+from .utils import get_token, get_token_payload
 from .exceptions import (
     UserAlreadyVerified,
     UserNotVerified,
@@ -139,7 +139,7 @@ class UserStatus(models.Model):
 
     @classmethod
     def verify(cls, token):
-        payload = get_token_paylod(
+        payload = get_token_payload(
             token, TokenAction.ACTIVATION, app_settings.EXPIRATION_ACTIVATION_TOKEN
         )
         user = UserModel._default_manager.get(**payload)
@@ -153,7 +153,7 @@ class UserStatus(models.Model):
 
     @classmethod
     def verify_secondary_email(cls, token):
-        payload = get_token_paylod(
+        payload = get_token_payload(
             token,
             TokenAction.ACTIVATION_SECONDARY_EMAIL,
             app_settings.EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN,
