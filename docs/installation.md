@@ -11,7 +11,7 @@
 ## Requirements
 
 - Python: 3.6 - 3.7 - 3.8
-- Django: 2.1 - 2.2 - 3.0
+- Django: 2.2 - 3.0
 
 ---
 
