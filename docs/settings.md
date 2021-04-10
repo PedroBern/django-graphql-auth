@@ -152,9 +152,9 @@ default:
 }
 ```
 
-### USER_NODE_EXCLUDE_FIELDS
+### USER_NODE_FIELDS
 
-default: `#!python ["password", "is_superuser"]`
+default: `#!python ["email", "username", "last_login", "isStaff", "isActive", "archieved", "verified", "secondary_email"]`
 
 ---
 
