@@ -193,7 +193,7 @@ register = use relay.Register
 
 ### Standard response
 
-All mutations return a standard response containing `#!python errors` and `#!python success`.
+All mutations return a standard response containing `#!python errors` and `#!python success` with the exception of the `ObtainJSONWebToken` mutation.
 
 - Example:
 
@@ -331,22 +331,9 @@ mutation {
 
 ```bash tab="Invalid credentials"
 {
+  "errors": [{"message": "Invalid credentials"}],
   "data": {
-    "tokenAuth": {
-      "success": false,
-      "errors": {
-        "nonFieldErrors": [
-          {
-            "message": "Please, enter valid credentials.",
-            "code": "invalid_credentials"
-          }
-        ]
-      },
-      "token": null,
-      "refreshToken": null,
-      "unarchiving": false,
-      "user": null
-    }
+    "tokenAuth": null
   }
 }
 ```

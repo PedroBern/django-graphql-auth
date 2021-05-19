@@ -681,8 +681,7 @@ mutation {
 }
 ```
 
-Something went wrong! Now you know the response format that you can expect of
-all mutations.
+Something went wrong! Now you know the response format that you can expect of all mutations (with the exception of the `ObtainJSONWebToken` mutation - more on that later).
 
 Let's try again:
 
@@ -1001,7 +1000,35 @@ mutation {
 
 Save this `token`, we are going to use it to do some protected actions.
 
-The GraphiQL interface that comes with Graphene is great! But to try all features, we need to send this token on the header and the GraphiQL do not support this.
+Let's also see what happens if we send an invalid password in our input as the response is slightly different from the other payloads we've seen so far.
+
+```python tab="graphql"
+mutation {
+  tokenAuth(username: "new_user", password: "wrongpassword") {
+    success,
+    errors,
+    unarchiving,
+    token,
+    refreshToken,
+    unarchiving,
+    user {
+      id,
+      username,
+    }
+  }
+}
+```
+
+```python tab="response"
+{
+  "errors":[{"message":"Invalid credentials"}],
+  "data": {"tokenAuth":null}
+}
+```
+
+You'll notice that instead of an "errors" key within our data object, we receive a top-level list of errors. This allows for special handling of authentication errors and many popular GraphQL client libraries expect authentication errors to be within this top-level errors array.
+
+Returning to our successful authentication, the GraphiQL interface that comes with Graphene is great! But to try all features, we need to send a token on the header and GraphiQL does not support this.
 
 ---
 
