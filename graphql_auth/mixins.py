@@ -13,7 +13,6 @@ from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
 from graphql_jwt.decorators import token_auth
 
 from .forms import RegisterForm, EmailForm, UpdateAccountForm, PasswordLessRegisterForm
-from .bases import Output
 from .models import UserStatus
 from .settings import graphql_auth_settings as app_settings
 from .exceptions import (
@@ -42,7 +41,7 @@ else:
     async_email_func = None
 
 
-class RegisterMixin(Output):
+class RegisterMixin:
     """
     Register user with fields defined in the settings.
 
@@ -141,7 +140,7 @@ class RegisterMixin(Output):
             return cls(success=False, errors=Messages.EMAIL_FAIL)
 
 
-class VerifyAccountMixin(Output):
+class VerifyAccountMixin:
     """
     Verify user account.
 
@@ -164,7 +163,7 @@ class VerifyAccountMixin(Output):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
-class VerifySecondaryEmailMixin(Output):
+class VerifySecondaryEmailMixin:
     """
     Verify user secondary email.
 
@@ -197,7 +196,7 @@ class VerifySecondaryEmailMixin(Output):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
-class ResendActivationEmailMixin(Output):
+class ResendActivationEmailMixin:
     """
     Sends activation email.
 
@@ -230,7 +229,7 @@ class ResendActivationEmailMixin(Output):
             return cls(success=False, errors={"email": Messages.ALREADY_VERIFIED})
 
 
-class SendPasswordResetEmailMixin(Output):
+class SendPasswordResetEmailMixin:
     """
     Send password reset email.
 
@@ -277,7 +276,7 @@ class SendPasswordResetEmailMixin(Output):
                 return cls(success=False, errors=Messages.EMAIL_FAIL)
 
 
-class PasswordResetMixin(Output):
+class PasswordResetMixin:
     """
     Change user password without old password.
 
@@ -320,7 +319,7 @@ class PasswordResetMixin(Output):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
-class PasswordSetMixin(Output):
+class PasswordSetMixin:
     """
     Set user password - for passwordless registration
 
@@ -367,7 +366,7 @@ class PasswordSetMixin(Output):
             return cls(success=False, errors=Messages.PASSWORD_ALREADY_SET)
 
 
-class ObtainJSONWebTokenMixin(Output):
+class ObtainJSONWebTokenMixin:
     """
     Obtain JSON web token for given user.
 
@@ -437,7 +436,7 @@ class ObtainJSONWebTokenMixin(Output):
             raise InvalidCredentials
 
 
-class ArchiveOrDeleteMixin(Output):
+class ArchiveOrDeleteMixin:
     @classmethod
     @verification_required
     @password_confirmation_required
@@ -481,7 +480,7 @@ class DeleteAccountMixin(ArchiveOrDeleteMixin):
             revoke_user_refresh_token(user=user)
 
 
-class PasswordChangeMixin(Output):
+class PasswordChangeMixin:
     """
     Change account password when user knows the old password.
 
@@ -525,7 +524,7 @@ class PasswordChangeMixin(Output):
             return cls(success=False, errors=f.errors.get_json_data())
 
 
-class UpdateAccountMixin(Output):
+class UpdateAccountMixin:
     """
     Update user model fields, defined on settings.
 
@@ -546,7 +545,7 @@ class UpdateAccountMixin(Output):
             return cls(success=False, errors=f.errors.get_json_data())
 
 
-class VerifyOrRefreshOrRevokeTokenMixin(Output):
+class VerifyOrRefreshOrRevokeTokenMixin:
     """
     Same as `grapgql_jwt` implementation, with standard output.
     """
@@ -556,7 +555,7 @@ class VerifyOrRefreshOrRevokeTokenMixin(Output):
         return cls.parent_resolve(root, info, **kwargs)
 
 
-class SendSecondaryEmailActivationMixin(Output):
+class SendSecondaryEmailActivationMixin:
     """
     Send activation to secondary email.
 
@@ -589,7 +588,7 @@ class SendSecondaryEmailActivationMixin(Output):
             return cls(success=False, errors=Messages.EMAIL_FAIL)
 
 
-class SwapEmailsMixin(Output):
+class SwapEmailsMixin:
     """
     Swap between primary and secondary emails.
 
@@ -604,7 +603,7 @@ class SwapEmailsMixin(Output):
         return cls(success=True)
 
 
-class RemoveSecondaryEmailMixin(Output):
+class RemoveSecondaryEmailMixin:
     """
     Remove user secondary email.
 

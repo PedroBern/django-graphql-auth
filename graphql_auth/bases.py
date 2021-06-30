@@ -11,20 +11,13 @@ else:
     OutputErrorType = ExpectedErrorType
 
 
-class Output:
-    """
-    A class to all public classes extend to
-    padronize the output
-    """
-
-    success = graphene.Boolean(default_value=True)
-    errors = graphene.Field(OutputErrorType)
-
-
 class MutationMixin:
     """
     All mutations should extend this class
     """
+
+    success = graphene.Boolean(default_value=True)
+    errors = graphene.Field(OutputErrorType)
 
     @classmethod
     def mutate(cls, root, info, **input):
