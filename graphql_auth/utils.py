@@ -1,9 +1,11 @@
+import warnings
 from django.core import signing
 from django.contrib.auth import get_user_model
 from django.conf import settings as django_settings
 from django.core.signing import BadSignature
 
 from .exceptions import TokenScopeError
+warnings.simplefilter("once")
 
 
 def get_token(user, action, **kwargs):
@@ -17,12 +19,17 @@ def get_token(user, action, **kwargs):
     return token
 
 
-def get_token_paylod(token, action, exp=None):
+def get_token_payload(token, action, exp=None):
     payload = signing.loads(token, max_age=exp)
     _action = payload.pop("action")
     if _action != action:
         raise TokenScopeError
     return payload
+
+
+def get_token_paylod(token, action, exp=None):
+    warnings.warn("get_token_paylod is deprecated, use get_token_payload instead", DeprecationWarning, stacklevel=2)
+    return get_token_payload(token, action, exp)
 
 
 def using_refresh_tokens():

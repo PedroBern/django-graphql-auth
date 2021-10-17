@@ -26,7 +26,7 @@ from .exceptions import (
     PasswordAlreadySetError,
 )
 from .constants import Messages, TokenAction
-from .utils import revoke_user_refresh_token, get_token_paylod, using_refresh_tokens
+from .utils import revoke_user_refresh_token, get_token_payload, using_refresh_tokens
 from .shortcuts import get_user_by_email, get_user_to_login
 from .signals import user_registered, user_verified
 from .decorators import (
@@ -296,7 +296,7 @@ class PasswordResetMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         try:
             token = kwargs.pop("token")
-            payload = get_token_paylod(
+            payload = get_token_payload(
                 token,
                 TokenAction.PASSWORD_RESET,
                 app_settings.EXPIRATION_PASSWORD_RESET_TOKEN,
@@ -339,7 +339,7 @@ class PasswordSetMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         try:
             token = kwargs.pop("token")
-            payload = get_token_paylod(
+            payload = get_token_payload(
                 token,
                 TokenAction.PASSWORD_SET,
                 app_settings.EXPIRATION_PASSWORD_SET_TOKEN,
