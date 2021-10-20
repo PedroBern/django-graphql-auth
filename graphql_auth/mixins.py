@@ -535,6 +535,10 @@ class UpdateAccountMixin(Output):
     @verification_required
     def resolve_mutation(cls, root, info, **kwargs):
         user = info.context.user
+        fields = cls.form.Meta.fields
+        for field in fields:
+            if field not in kwargs:
+                kwargs[field] = getattr(user, field)
         f = cls.form(kwargs, instance=user)
         if f.is_valid():
             f.save()
