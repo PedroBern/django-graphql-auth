@@ -1,4 +1,4 @@
-mkdocs==1.0.4
+mkdocs==1.2.3
 mkdocs-markdownextradata-plugin==0.1.1
 mkdocs-material==4.6.0
 mkdocs-minify-plugin==0.2.1
