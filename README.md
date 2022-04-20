@@ -31,7 +31,7 @@ Documentation is available at [read the docs](https://django-graphql-auth.readth
 ## Features
 
 * [x] [Awesome docs](https://django-graphql-auth.readthedocs.io/en/latest/) :tada:
-* [x] Fully compatible with [Relay](https://github.com/facebook/relay>)
+* [x] Fully compatible with [Relay](https://github.com/facebook/relay)
 * [x] Works with **default or custom** user model
 * [x] JWT authentication *(with [Django GraphQL JWT](https://github.com/flavors/django-graphql-jwt))*
 * [x] User query with filters *(with [Django Filter](https://github.com/carltongibson/django-filter) and [Graphene Django](https://github.com/graphql-python/graphene-django))*
