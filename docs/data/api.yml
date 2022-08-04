@@ -91,6 +91,11 @@ ObtainJSONWebToken: |
     and secondary email if set. The fields are
     defined on settings.
 
+    Unlike other mutations, if the given credentials are invalid 
+    or the user does not exist, a top-level GraphQL error will be
+    returned to the client instead of an "errors"
+    object within the data object.
+
     Not verified users can login by default. This
     can be changes on settings.
 

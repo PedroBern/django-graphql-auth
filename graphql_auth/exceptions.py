@@ -12,27 +12,27 @@ class GraphQLAuthError(Exception):
 
 
 class UserAlreadyVerified(GraphQLAuthError):
-    default_message = _("User already verified.")
+    default_message = _("User already verified")
 
 
 class InvalidCredentials(GraphQLAuthError):
-    default_message = _("Invalid credentials.")
+    default_message = _("Invalid credentials")
 
 
 class UserNotVerified(GraphQLAuthError):
-    default_message = _("User is not verified.")
+    default_message = _("User is not verified")
 
 
 class EmailAlreadyInUse(GraphQLAuthError):
-    default_message = _("This email is already in use.")
+    default_message = _("This email is already in use")
 
 
 class TokenScopeError(GraphQLAuthError):
-    default_message = _("This token if for something else.")
+    default_message = _("This token is invalid for this action")
 
 
 class PasswordAlreadySetError(GraphQLAuthError):
-    default_message = _("Password already set for account.")
+    default_message = _("Password already set for account")
 
 
 class WrongUsage(GraphQLAuthError):
@@ -40,4 +40,4 @@ class WrongUsage(GraphQLAuthError):
     internal exception
     """
 
-    default_message = _("Wrong usage, check your code!.")
+    default_message = _("Wrong usage, check your code!")

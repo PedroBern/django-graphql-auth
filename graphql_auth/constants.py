@@ -10,12 +10,6 @@ class Messages:
         {"message": _("Account already verified."), "code": "already_verified"}
     ]
     EMAIL_FAIL = [{"message": _("Failed to send email."), "code": "email_fail"}]
-    INVALID_CREDENTIALS = [
-        {
-            "message": _("Please, enter valid credentials."),
-            "code": "invalid_credentials",
-        }
-    ]
     NOT_VERIFIED = [
         {"message": _("Please verify your account."), "code": "not_verified"}
     ]

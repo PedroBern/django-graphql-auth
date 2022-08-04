@@ -26,11 +26,8 @@ class RefreshTokenTestCaseMixin:
 
     def test_invalid_token(self):
         query = self.get_verify_query("invalid_token")
-        executed = self.make_request(query)
-        self.assertFalse(executed["success"])
-        self.assertFalse(executed["refreshToken"])
-        self.assertFalse(executed["payload"])
-        self.assertTrue(executed["errors"])
+        executed = self.make_request(query, raw=True)
+        self.assertIsNotNone(executed["errors"])
 
 
 class RefreshTokenTestCase(RefreshTokenTestCaseMixin, DefaultTestCase):
@@ -60,7 +57,7 @@ class RefreshTokenRelayTestCase(RefreshTokenTestCaseMixin, RelayTestCase):
         return """
         mutation {
         tokenAuth(input:{ email: "foo@email.com", password: "%s"  })
-            { refreshToken, success, errors  }
+            { refreshToken, refreshExpiresIn, success, errors  }
         }
         """ % (
             self.default_password
@@ -70,7 +67,7 @@ class RefreshTokenRelayTestCase(RefreshTokenTestCaseMixin, RelayTestCase):
         return """
         mutation {
         refreshToken(input: {refreshToken: "%s"} )
-            { success, errors, refreshToken, payload  }
+            { success, errors, refreshToken, refreshExpiresIn, payload  }
         }
         """ % (
             token
