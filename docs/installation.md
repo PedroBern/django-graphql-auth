@@ -190,7 +190,8 @@ AUTHENTICATION_BACKENDS = [
     # add this
     "graphql_auth.backends.GraphQLAuthBackend",
 
-    # ...
+    # if you have no more authentication backends defined besides graphql_auth.backends.GraphQLAuthBackend, add this
+    "django.contrib.auth.backends.ModelBackend"  
 ]
 ```
 
