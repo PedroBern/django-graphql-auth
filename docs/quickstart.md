@@ -527,7 +527,7 @@ query {
 }
 ```
 
-Since this query requires an authenticated user it can only be explored by using the [insomnia API client](https://insomnia.rest/). See the below for more on how to use Insomnia.
+Since this query requires an authenticated user it can only be explored by supplying the `Authorization` header with `JWT <TOKEN FROM THE LOGIN>` value. See [Auth Using GraphiQL](#auth-using-graphiql) or [Auth Using insomnia](#auth-using-insomnia).
 
 ---
 
@@ -1039,20 +1039,7 @@ class AuthMutation(graphene.ObjectType):
     update_account = relay.UpdateAccount.Field()
 ```
 
-On the insomnia, create a new request and call it `updateAccount`. Select the method `POST`.
-
-On the top of the window, add your graphql url:
-
-```bash
-http://127.0.0.1:8000/graphql
-```
-
-For the body, select `GraphQL Query`. Now it works exaclty as the graphiQL.
-
-On the headers pane, create a new header:
-
-- name: `Authorization`
-- value: `JWT <TOKEN FROM THE LOGIN>`
+See [Auth Using GraphiQL](#auth-using-graphiql) or [Auth Using insomnia](#auth-using-insomnia) to setup auth before using the below queries.
 
 Make the query:
 
@@ -1210,3 +1197,24 @@ GRAPHQL_JWT = {
     ],
 }
 ```
+
+### Auth Using GraphiQL
+At the bottom of the page click on `REQUEST HEADERS` options and in the text field enter:
+
+`{ "Authorization": "JWT <TOKEN FROM THE LOGIN>" }`
+
+### Auth Using insomnia
+On the insomnia, create a new request and call it `updateAccount`. Select the method `POST`.
+
+On the top of the window, add your graphql url:
+
+```bash
+http://127.0.0.1:8000/graphql
+```
+
+For the body, select `GraphQL Query`. Now it works exaclty as the graphiQL.
+
+On the headers pane, create a new header:
+
+- name: `Authorization`
+- value: `JWT <TOKEN FROM THE LOGIN>`
