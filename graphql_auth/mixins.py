@@ -74,8 +74,8 @@ class RegisterMixin(Output):
     def Field(cls, *args, **kwargs):
         if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
             if using_refresh_tokens():
-                cls._meta.fields["refresh_token"] = graphene.Field(graphene.String)
-            cls._meta.fields["token"] = graphene.Field(graphene.String)
+                setattr(cls, "refresh_token", graphene.Field(graphene.String))
+            setattr(cls, "token", graphene.Field(graphene.String))
         return super().Field(*args, **kwargs)
 
     @classmethod
